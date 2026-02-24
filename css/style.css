@@ -1,5 +1,6 @@
 /* ===================================
-   cautas.HP - Hero Section Static Test
+   cautas.HP - Hero Animation
+   hadaka.jp inspired scroll animation
    =================================== */
 
 * {
@@ -15,9 +16,20 @@ body {
   overflow-x: hidden;
 }
 
-/* Scroll Container */
+/* Three.js Canvas - 背景レイヤー */
+#three-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Scroll Container - Long scroll area for animation */
 .scroll-container {
-  height: 250vh;
+  height: 500vh;
 }
 
 /* Hero Section */
@@ -28,152 +40,92 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 /* Catchphrase */
 .hero-catchphrase {
+  position: absolute;
   text-align: center;
-  z-index: 10;
+  z-index: 50;
   will-change: transform, opacity;
   transform-origin: center center;
+  bottom: 12%;
 }
 
 .hero-catchphrase h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #1a1a1a;
-  letter-spacing: 0.05em;
-  line-height: 1.6;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
 }
 
-/* Icons Base Style */
-.hero-icon {
+/* Character */
+.hero-character {
   position: absolute;
-  pointer-events: none;
-  will-change: transform, opacity, filter;
-  transform-origin: center center;
+  top: 50%;
+  left: 50%;
+  margin-left: -200px;
+  margin-top: -200px;
+  width: 400px;
+  height: 400px;
+  z-index: 100;
+  will-change: transform, opacity;
+  transform-origin: center bottom;
 }
 
-.hero-icon img {
+.hero-character img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.2));
 }
 
-/* Icon Positions - Scattered Layout */
-
-/* Calendar - Left Middle */
-.icon-calendar {
-  top: 35%;
-  left: 5%;
-  width: 180px;
-  height: 180px;
-  transform: rotate(-15deg);
+/* Icons Base Style - Three.jsに統一するため非表示 */
+.hero-icon {
+  display: none !important;
 }
 
-/* Memo - Bottom Right */
-.icon-memo {
-  bottom: 15%;
-  right: 8%;
-  width: 160px;
-  height: 160px;
-  transform: rotate(12deg);
-}
-
-/* Mic - Right Middle */
-.icon-mic {
-  top: 38%;
-  right: 5%;
-  width: 140px;
-  height: 140px;
-  transform: rotate(-8deg);
-}
-
-/* Invoice - Bottom Center */
-.icon-invoice {
-  bottom: 8%;
-  left: 45%;
-  width: 180px;
-  height: 180px;
-  transform: rotate(18deg);
-}
-
-/* Clock - Bottom Left */
-.icon-clock {
-  bottom: 18%;
-  left: 10%;
-  width: 120px;
-  height: 120px;
-  transform: rotate(10deg);
-}
-
-/* Chat - Top Right */
-.icon-chat {
-  top: 8%;
-  right: 15%;
-  width: 170px;
-  height: 170px;
-  transform: rotate(-12deg);
-}
-
-/* Chart - Top Left */
-.icon-chart {
-  top: 10%;
-  left: 18%;
-  width: 150px;
-  height: 150px;
-  transform: rotate(6deg);
-}
 
 /* Responsive */
 @media (max-width: 768px) {
+  .scroll-container {
+    height: 400vh;
+  }
+
+  .hero-catchphrase {
+    bottom: 20%;
+  }
+
   .hero-catchphrase h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     padding: 0 20px;
   }
 
+  .hero-character {
+    width: 200px;
+    height: 200px;
+  }
+
   .hero-icon {
-    transform: scale(0.7);
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-catchphrase h1 {
+    font-size: 1.2rem;
   }
 
-  .icon-calendar {
-    top: 8%;
-    left: 5%;
-    transform: scale(0.7) rotate(-15deg);
+  .hero-character {
+    width: 160px;
+    height: 160px;
   }
 
-  .icon-memo {
-    top: 5%;
-    right: 5%;
-    transform: scale(0.7) rotate(12deg);
-  }
-
-  .icon-mic {
-    top: 35%;
-    left: 2%;
-    transform: scale(0.7) rotate(-8deg);
-  }
-
-  .icon-invoice {
-    top: 30%;
-    right: 2%;
-    transform: scale(0.7) rotate(18deg);
-  }
-
-  .icon-clock {
-    bottom: 25%;
-    left: 8%;
-    transform: scale(0.7) rotate(10deg);
-  }
-
-  .icon-chat {
-    bottom: 20%;
-    right: 5%;
-    transform: scale(0.7) rotate(-12deg);
-  }
-
-  .icon-chart {
-    bottom: 5%;
-    transform: translateX(-50%) scale(0.7) rotate(6deg);
+  .hero-icon {
+    width: 60px;
+    height: 60px;
   }
 }
