@@ -119,7 +119,7 @@
   <div id="scene-notebook">
     <div id="book-gif-wrap">
       <img id="book-gif"
-           src="public/images/characters/Cbook1.png"
+           src="public/images/characters/Cbook1.webp"
            alt="絵本アニメーション">
     </div>
   </div>
@@ -134,12 +134,12 @@
     </div>
     <div id="phone-character">
       <img id="rabbit-img"
-           src="public/images/characters/rabbitl.png"
+           src="public/images/characters/rabbitl.webp"
            alt="うさぎ">
     </div>
     <div id="big-phone">
       <img class="phone-img"
-           src="public/images/characters/smartphone.png"
+           src="public/images/characters/smartphone.webp"
            alt="スマホ">
       <div class="phone-screen">
         <div class="phone-status-bar"><span>9:41</span><span>●●●</span></div>
@@ -412,10 +412,33 @@
       gsap.to(brandTaglineEl, { opacity:1, duration:0.4, delay:0.9 });
     }, 1600);
 
+    // 絵本コマ（Cbook1〜30）を実際に先読みし、完了までローディングを開けない。
+    // これにより開いた瞬間からページめくりが即座に動く。
+    // （CBOOK_FRAMES はスクリプト後方で宣言されるが、タイマー実行時には評価済み）
+    let preloadedCount = 0;
+    let assetsReady   = false;
+    // セーフティ：先読みが極端に遅くても10秒で必ず開く
+    setTimeout(() => { assetsReady = true; }, 10000);
+    window.addEventListener('load', () => {
+      const frames = CBOOK_FRAMES;
+      frames.forEach(src => {
+        const img = new Image();
+        img.onload = img.onerror = () => {
+          preloadedCount++;
+          if (preloadedCount >= frames.length) assetsReady = true;
+        };
+        img.src = src;
+      });
+    });
+
     function updateProgress() {
       if (progress < 100) {
         progress += Math.random() * 4 + 2;
-        if (progress > 100) progress = 100;
+        // 実際の先読み進捗を超えないようキャップ（完了までは最大99%で待機）
+        const realCap = assetsReady
+          ? 100
+          : Math.min(99, 40 + (preloadedCount / CBOOK_TOTAL) * 60);
+        if (progress > realCap) progress = realCap;
         progressBarEl.style.strokeDashoffset = circumference - (progress / 100) * circumference;
         progressTextEl.textContent = Math.floor(progress);
         if (progress < 100) setTimeout(updateProgress, 30);
@@ -451,10 +474,10 @@
     // ================================================================
     const photoSlideshow = document.getElementById('photoSlideshow');
     const photoUrls = [
-      'public/images/photos/busy1.png','public/images/photos/busy2.png',
-      'public/images/photos/busy3.png','public/images/photos/busy4.png',
-      'public/images/photos/busy5.png','public/images/photos/busy6.png',
-      'public/images/photos/busy7.png','public/images/photos/busy8.png'
+      'public/images/photos/busy1.webp','public/images/photos/busy2.webp',
+      'public/images/photos/busy3.webp','public/images/photos/busy4.webp',
+      'public/images/photos/busy5.webp','public/images/photos/busy6.webp',
+      'public/images/photos/busy7.webp','public/images/photos/busy8.webp'
     ];
     const slidingPhotos = [];
 
@@ -528,7 +551,7 @@
     // ================================================================
     // Cbook1〜30（連番・欠番なし）
     const CBOOK_FRAMES = Array.from({length: 30}, (_, i) =>
-      `public/images/characters/Cbook${i + 1}.png`
+      `public/images/characters/Cbook${i + 1}.webp`
     );
     const CBOOK_TOTAL = CBOOK_FRAMES.length;  // 30枚
     // GLB飛び出しは Cbook17 → index 16
@@ -644,8 +667,8 @@
     // ================================================================
     // スマホスクロール連動
     // ================================================================
-    const RABBIT_L = 'public/images/characters/rabbitl.png';
-    const RABBIT_R = 'public/images/characters/rabbitr.png';
+    const RABBIT_L = 'public/images/characters/rabbitl.webp';
+    const RABBIT_R = 'public/images/characters/rabbitr.webp';
     const STEPS = organizedIcons.length;
     let currentStep  = -1;
     let phoneStarted = false;
