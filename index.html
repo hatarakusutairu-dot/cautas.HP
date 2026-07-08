@@ -1249,7 +1249,8 @@
 
         const scene  = new THREE.Scene();
         scene.background = new THREE.Color(PHASES[0].bg);
-        scene.fog = new THREE.Fog(PHASES[0].bg, 10, 34);
+        // 霧を近めに：次のゾーンが霧の中から現れて「進んでいる」感を出す
+        scene.fog = new THREE.Fog(PHASES[0].bg, 6, 26);
         const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
         camera.position.set(0, 0, 12);
 
@@ -1268,20 +1269,59 @@
         resize();
         window.addEventListener('resize', resize);
 
-        // アイコンはセクションに近づいたら遅延ロード（初期表示を軽く保つ）
+        // 「1日の回廊」：カメラが旅する空間に、朝・昼・夕の3ゾーンを配置
+        // （maximeguillon.com の「スクロール＝空間を前進する」構造の解釈）
+        const PATH_LEN = 56;   // 旅の全長（zの深さ）
+        const ZONES = [
+          { z: -8,  chara: 'character-green.webp',  side: -1 },  // 朝：緑ロボ
+          { z: -28, chara: 'character-rabbit.webp', side:  1 },  // 昼：白うさぎ
+          { z: -48, chara: 'character-pink.webp',   side: -1 }   // 夕：ピンクロボ
+        ];
         const meshes = [];
         let glbRequested = false;
-        const EXP_GLBS = ['calender.glb', 'mic.glb', 'chart.glb', 'folder.glb', 'heart.glb', 'clock.glb'];
-        function loadIcons() {
-          if (glbRequested || typeof THREE.GLTFLoader === 'undefined') return;
+        const EXP_GLBS = ['calender.glb', 'folder.glb', 'mic.glb', 'clock.glb', 'chart.glb', 'heart.glb'];
+
+        function buildWorld() {
+          if (glbRequested) return;
           glbRequested = true;
+
+          // 星屑パーティクル：通り過ぎる速度感と奥行き
+          const N = 260;
+          const pos = new Float32Array(N * 3);
+          for (let i = 0; i < N; i++) {
+            pos[i * 3]     = (Math.random() - 0.5) * 24;
+            pos[i * 3 + 1] = (Math.random() - 0.5) * 14;
+            pos[i * 3 + 2] = 6 - Math.random() * (PATH_LEN + 18);
+          }
+          const pgeo = new THREE.BufferGeometry();
+          pgeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+          scene.add(new THREE.Points(pgeo,
+            new THREE.PointsMaterial({ color: 0xffffff, size: 0.09, transparent: true, opacity: 0.55 })));
+
+          // ロボキャラ：各ゾーンの道ばたに立って迎えてくれる（スプライト＝常にカメラを向く）
+          const texLoader = new THREE.TextureLoader();
+          ZONES.forEach(zone => {
+            texLoader.load('public/images/characters/' + zone.chara, tex => {
+              const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+              const aspect = tex.image ? tex.image.width / tex.image.height : 1;
+              sp.scale.set(3.4 * aspect, 3.4, 1);
+              sp.position.set(zone.side * 3.6, -1.0, zone.z - 1.5);
+              scene.add(sp);
+            });
+          });
+
+          // GLBアイコン：ゾーンごとに2個ずつ、道の左右に浮かび、横をすり抜けていく
+          if (typeof THREE.GLTFLoader === 'undefined') return;
           const loader = new THREE.GLTFLoader();
           EXP_GLBS.forEach((file, i) => {
             loader.load('public/images/icons/' + file, gltf => {
               const m = gltf.scene;
-              const angle = (i / EXP_GLBS.length) * Math.PI * 2;
-              m.position.set(Math.cos(angle) * 5.2, Math.sin(angle * 2) * 2.2, Math.sin(angle) * 3 - 2);
-              const s = 1.1 + (i % 3) * 0.35;
+              const zone = ZONES[Math.floor(i / 2)];
+              const side = (i % 2 === 0 ? 1 : -1);
+              m.position.set(side * (2.6 + Math.random() * 1.6),
+                             0.6 + Math.random() * 2.2,
+                             zone.z + (i % 2 === 0 ? 2.5 : -2.5));
+              const s = 1.0 + Math.random() * 0.5;
               m.scale.set(s, s, s);
               m.userData.baseY = m.position.y;
               m.userData.spin  = 0.003 + (i % 3) * 0.002;
@@ -1293,7 +1333,7 @@
         }
         ScrollTrigger.create({
           trigger: section, start: 'top bottom',
-          onEnter: loadIcons, once: true
+          onEnter: buildWorld, once: true
         });
 
         let active = false;
@@ -1318,10 +1358,16 @@
           key.color.copy(new THREE.Color(a.key).lerp(new THREE.Color(b.key), tt));
           key.intensity = a.keyInt + (b.keyInt - a.keyInt) * tt;
           amb.intensity = a.amb + (b.amb - a.amb) * tt;
-          // カメラをゆっくり旅させる（縦の移動＋周回）
-          camera.position.x = Math.sin(p * Math.PI * 1.2) * 2.2;
-          camera.position.y = 1.2 - p * 2.4;
-          camera.lookAt(0, 0, -1);
+          // カメラが回廊を前進する（ゆるやかな蛇行＋少し先を見る＝旅の目線）
+          const cx = Math.sin(p * Math.PI * 2.2) * 1.6;
+          const cy = 0.4 + Math.sin(p * Math.PI * 1.4) * 0.5;
+          const cz = 4 - p * PATH_LEN;
+          camera.position.set(cx, cy, cz);
+          const ax = Math.sin((p + 0.05) * Math.PI * 2.2) * 1.6;
+          const ay = 0.4 + Math.sin((p + 0.05) * Math.PI * 1.4) * 0.5;
+          camera.lookAt(ax, ay, cz - 4);
+          // キーライトはカメラと一緒に旅する（進む先が明るい）
+          key.position.set(cx + 4, cy + 6, cz + 4);
           renderer.render(scene, camera);
         })();
 
