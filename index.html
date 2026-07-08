@@ -4,376 +4,750 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>cautas - 予定を入れるだけ。あとは全部、繋がる。</title>
+  <!-- favicon: インラインSVGでアイコン404を防止 -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+
+    body { overflow: hidden; }
+
+    /* ===== ローディング ===== */
+    .loading-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #030308; z-index: 9999;
+      display: flex; justify-content: center; align-items: center; overflow: hidden;
+    }
+    .loading-glitch-lines { position: absolute; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+    .glitch-line {
+      position: absolute; width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,100,220,0.3), transparent);
+      animation: glitchMove 2s infinite;
+    }
+    @keyframes glitchMove { 0%,100%{transform:translateX(-100%);opacity:0} 50%{transform:translateX(100%);opacity:1} }
+
+    .loading-phase1 { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .phase1-line { font-size: 1.6rem; color: transparent; letter-spacing: 0.2em; position: relative; overflow: hidden; }
+    .phase1-line::before {
+      content: attr(data-text); position: absolute; top: 0; left: 0;
+      width: 0; height: 100%; color: #fff; overflow: hidden; white-space: nowrap;
+      border-right: 2px solid #ff64dc;
+    }
+    .phase1-line.typing::before      { animation: typing 0.6s steps(10) forwards; }
+    .phase1-line.typing-done::before { border-right: none; width: 100%; }
+    @keyframes typing { from{width:0}to{width:100%} }
+
+    .loading-phase2 { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 20px; opacity: 0; transform: scale(0.8); }
+    .logo-container { position: relative; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center; }
+    .logo-ring { position: absolute; width: 100%; height: 100%; border: 2px solid transparent; border-top-color: #ff64dc; border-radius: 50%; animation: logoSpin 1s linear infinite; }
+    .logo-ring:nth-child(2) { width: 80%; height: 80%; border-top-color: #64dcff; animation-direction: reverse; animation-duration: 0.8s; }
+    .logo-ring:nth-child(3) { width: 60%; height: 60%; border-top-color: #ffdc64; animation-duration: 0.6s; }
+    @keyframes logoSpin { to{transform:rotate(360deg)} }
+    .logo-center { width: 40px; height: 40px; background: linear-gradient(135deg,#ff64dc,#64dcff); border-radius: 50%; opacity: 0; transform: scale(0); }
+
+    .brand-name { font-size: 3.5rem; font-weight: 700; letter-spacing: 0.4em; color: #fff; position: relative; text-transform: uppercase; }
+    .brand-name::before,.brand-name::after { content:'cautas'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; }
+    .brand-name::before { color:#ff64dc; animation:glitch1 0.3s infinite; clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
+    .brand-name::after  { color:#64dcff; animation:glitch2 0.3s infinite; clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%); }
+    .brand-name.glitch-active::before,.brand-name.glitch-active::after { opacity:0.8; }
+    @keyframes glitch1{0%,100%{transform:translate(0)}20%{transform:translate(-3px,2px)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,1px)}80%{transform:translate(2px,-1px)}}
+    @keyframes glitch2{0%,100%{transform:translate(0)}20%{transform:translate(3px,-2px)}40%{transform:translate(-3px,2px)}60%{transform:translate(2px,-1px)}80%{transform:translate(-2px,1px)}}
+    .brand-tagline { font-size: 0.9rem; color: rgba(255,255,255,0.5); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0; }
+
+    .progress-container { position: absolute; bottom: 50px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+    .progress-circle { width: 50px; height: 50px; position: relative; }
+    .progress-circle svg { transform: rotate(-90deg); }
+    .progress-circle-bg  { fill:none; stroke:rgba(255,255,255,0.1); stroke-width:2; }
+    .progress-circle-bar { fill:none; stroke:url(#progressGradient); stroke-width:2; stroke-linecap:round; stroke-dasharray:138.2; stroke-dashoffset:138.2; transition:stroke-dashoffset 0.1s ease; }
+    .progress-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:0.7rem; color:rgba(255,255,255,0.7); font-family:monospace; }
+
+    .shutter { position:fixed; top:0; left:0; width:100%; height:100%; z-index:10000; pointer-events:none; display:flex; }
+    .shutter-panel { flex:1; background:#0a0a15; transform:scaleY(0); transform-origin:top; }
+  </style>
 </head>
 <body>
-  <canvas id="three-canvas"></canvas>
 
-  <div class="scroll-container">
-    <section class="hero">
-      <div class="hero-character">
-        <img src="public/images/characters/rabbit-animated.gif" alt="白うさぎ">
-      </div>
-      <div class="hero-catchphrase">
-        <h1>予定を入れるだけ。<br>あとは全部、繋がる。</h1>
-      </div>
-    </section>
+  <!-- シャッター -->
+  <div class="shutter" id="shutter">
+    <div class="shutter-panel"></div><div class="shutter-panel"></div>
+    <div class="shutter-panel"></div><div class="shutter-panel"></div>
+    <div class="shutter-panel"></div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- ローディング -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-glitch-lines" id="glitchLines"></div>
+    <div class="loading-phase1" id="loadingPhase1">
+      <div class="phase1-line" id="line1" data-text="カウンセラーを">カウンセラーを</div>
+      <div class="phase1-line" id="line2" data-text="助けるアプリ">助けるアプリ</div>
+    </div>
+    <div class="loading-phase2" id="loadingPhase2">
+      <div class="logo-container">
+        <div class="logo-ring"></div><div class="logo-ring"></div><div class="logo-ring"></div>
+        <div class="logo-center" id="logoCenter"></div>
+      </div>
+      <div class="brand-name" id="brandName">cautas</div>
+      <div class="brand-tagline" id="brandTagline">for counselors</div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-circle">
+        <svg width="50" height="50">
+          <defs>
+            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#ff64dc"/>
+              <stop offset="50%"  stop-color="#64dcff"/>
+              <stop offset="100%" stop-color="#ffdc64"/>
+            </linearGradient>
+          </defs>
+          <circle class="progress-circle-bg"  cx="25" cy="25" r="22"/>
+          <circle class="progress-circle-bar" id="progressBar" cx="25" cy="25" r="22"/>
+        </svg>
+        <div class="progress-text" id="progressText">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 背景スライドショー -->
+  <div class="photo-slideshow" id="photoSlideshow"></div>
+  <!-- 背景明るさオーバーレイ -->
+  <div id="bg-light-overlay"></div>
+
+  <!-- Three.js canvas（GLBアイコン用） -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- 絵本シーン -->
+  <div id="scene-notebook">
+    <div id="book-gif-wrap">
+      <img id="book-gif"
+           src="public/images/characters/BOOKcalendar.gif"
+           alt="絵本アニメーション">
+    </div>
+  </div>
+
+  <!-- スマホシーン -->
+  <div id="scene-phone">
+    <div id="cautas-letters">
+      <span class="kautas-char">か</span>
+      <span class="kautas-char">う</span>
+      <span class="kautas-char">た</span>
+      <span class="kautas-char">す</span>
+    </div>
+    <div id="phone-character">
+      <img id="rabbit-img"
+           src="public/images/characters/rabbitl.png"
+           alt="うさぎ">
+    </div>
+    <div id="big-phone">
+      <img class="phone-img"
+           src="public/images/characters/smartphone.png"
+           alt="スマホ">
+      <div class="phone-screen">
+        <div class="phone-status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="phone-app-name">cautas</div>
+        <div id="phone-icons-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最終キャッチフレーズ -->
+  <div id="final-catchphrase">
+    <h1>予定を入れるだけ。<br>あとは全部、繋がる。</h1>
+    <p>cautas — for counselors</p>
+  </div>
+
+  <!-- スクロールコンテナ -->
+  <div class="scroll-container"><section class="hero"></section></div>
+
+  <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Three.js r134（jsdelivr CDN） -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    (function initThreeJS() {
-      const canvas = document.getElementById('three-canvas');
-      const scene = new THREE.Scene();
+    // ================================================================
+    // DOM参照（TDZ防止：最上部で全宣言）
+    // ================================================================
+    const loadingScreen  = document.getElementById('loadingScreen');
+    const loadingPhase1  = document.getElementById('loadingPhase1');
+    const loadingPhase2  = document.getElementById('loadingPhase2');
+    const line1El        = document.getElementById('line1');
+    const line2El        = document.getElementById('line2');
+    const logoCenterEl   = document.getElementById('logoCenter');
+    const brandNameEl    = document.getElementById('brandName');
+    const brandTaglineEl = document.getElementById('brandTagline');
+    const progressBarEl  = document.getElementById('progressBar');
+    const progressTextEl = document.getElementById('progressText');
+    const shutterPanels  = document.querySelectorAll('.shutter-panel');
+    const sceneNotebook  = document.getElementById('scene-notebook');
+    const bookGifEl      = document.getElementById('book-gif');
+    // 絵本画像のload/errorデバッグ
+    bookGifEl.addEventListener('load',  () => console.log('✅ bookGif ロード成功:', bookGifEl.src));
+    bookGifEl.addEventListener('error', () => console.warn('❌ bookGif ロード失敗:', bookGifEl.src));
+    const scenePhone     = document.getElementById('scene-phone');
+    const kautasChars    = document.querySelectorAll('.kautas-char');
+    const rabbitImg      = document.getElementById('rabbit-img');
+    const circumference  = 2 * Math.PI * 22;
 
-      const camera = new THREE.PerspectiveCamera(
-        60,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
-      camera.position.set(0, 0, 30);
-      camera.lookAt(0, 0, 0);
+    // ================================================================
+    // Three.js セットアップ（try-catchで安全に）
+    // ================================================================
+    let threeOK    = false;
+    let glbMeshes  = [];
+    let glbLoaded  = false;
+    let glbRunning = false;
+    let renderer3d = null;
+    let scene3d    = null;
+    let camera3d   = null;
+    let loader3d   = null;
 
-      const renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true,
-        alpha: false
-      });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.2;
+    try {
+      const canvas3d = document.getElementById('three-canvas');
+      renderer3d = new THREE.WebGLRenderer({ canvas: canvas3d, alpha: true, antialias: true });
+      renderer3d.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer3d.setSize(window.innerWidth, window.innerHeight);
+      try { renderer3d.outputEncoding = THREE.sRGBEncoding; } catch(e) {}
 
-      const bgColors = {
-        start: new THREE.Color(0x1a1a1a),
-        end: new THREE.Color(0xFDFCFA)
+      scene3d  = new THREE.Scene();
+      camera3d = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
+      camera3d.position.set(0, 0, 14);
+
+      scene3d.add(new THREE.AmbientLight(0xffffff, 1.2));
+      const dL1 = new THREE.DirectionalLight(0xffeedd, 2.2); dL1.position.set(5, 10, 8);  scene3d.add(dL1);
+      const dL2 = new THREE.DirectionalLight(0xaaddff, 1.5); dL2.position.set(-8, -3, 5); scene3d.add(dL2);
+
+      if (typeof THREE.GLTFLoader !== 'undefined') {
+        loader3d = new THREE.GLTFLoader();
+        threeOK  = true;
+        console.log('Three.js + GLTFLoader OK');
+      } else {
+        console.warn('GLTFLoader未定義 → アイコンはスキップ');
+      }
+
+      // レンダーループ
+      (function loop() {
+        requestAnimationFrame(loop);
+        if (glbRunning) {
+          glbMeshes.forEach(item => {
+            if (!item.absorbed) {
+              item.mesh.rotation.x += item.mesh.userData.rx;
+              item.mesh.rotation.y += item.mesh.userData.ry;
+              item.mesh.rotation.z += item.mesh.userData.rz;
+            }
+          });
+        }
+        renderer3d.render(scene3d, camera3d);
+      })();
+
+    } catch(e) {
+      console.warn('Three.js初期化スキップ:', e.message);
+    }
+
+    // ================================================================
+    // GLBファイル一覧（PCの icons フォルダに実際にあるもの）
+    // ================================================================
+    const GLB_BASE = 'public/images/icons/';
+    const glbFiles = [
+      'at.glb','book.glb','boy.glb','calculator.glb','calender.glb',
+      'chart.glb','chat.glb','chat2.glb','clock.glb','computer.glb',
+      'copy.glb','folder.glb','heart.glb',
+      'mobile.glb','pencil.glb','video.glb',
+    ];
+
+    function screenToWorld(sx, sy) {
+      if (!camera3d) return { x: 0, y: 0 };
+      const vFOV = camera3d.fov * Math.PI / 180;
+      const wH   = 2 * Math.tan(vFOV / 2) * camera3d.position.z;
+      const wW   = wH * camera3d.aspect;
+      return {
+        x: (sx / window.innerWidth  - 0.5) * wW,
+        y: -(sy / window.innerHeight - 0.5) * wH
       };
-      scene.background = bgColors.start.clone();
+    }
 
-      // ライティング
-      scene.add(new THREE.AmbientLight(0xffffff, 0.9));
-      
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-      dirLight.position.set(5, 10, 10);
-      scene.add(dirLight);
+    function loadAllGLBs(onDone) {
+      if (!threeOK || !loader3d) { onDone(); return; }
+      if (glbLoaded) { onDone(); return; }
 
-      const pointLight1 = new THREE.PointLight(0x58CC02, 1.5, 50);
-      pointLight1.position.set(-8, 5, -10);
-      scene.add(pointLight1);
+      const TOTAL = glbFiles.length;
+      let done    = 0;
+      const origin = screenToWorld(window.innerWidth * 0.5, window.innerHeight * 0.5);
+      const vFOV   = camera3d.fov * Math.PI / 180;
+      const maxH   = 2 * Math.tan(vFOV / 2) * camera3d.position.z;
+      const maxW   = maxH * camera3d.aspect;
 
-      const pointLight2 = new THREE.PointLight(0xFF9500, 1.5, 50);
-      pointLight2.position.set(8, -3, -10);
-      scene.add(pointLight2);
+      const check = () => { done++; if (done >= TOTAL) { glbLoaded = true; onDone(); } };
 
-      const pointLight3 = new THREE.PointLight(0xFF6B9D, 1.2, 50);
-      pointLight3.position.set(0, 8, -5);
-      scene.add(pointLight3);
-
-      const gltfLoader = new THREE.GLTFLoader();
-
-      // ===== 背景アイコン（12個）- ランダム配置 =====
-      const bgIcons = [];
-      const bgIconData = [
-        { path: 'public/images/icons/book.glb', x: -20, y: 12, z: -10 },
-        { path: 'public/images/icons/heart.glb', x: 22, y: -8, z: -8 },
-        { path: 'public/images/icons/key.glb', x: -15, y: -14, z: -12 },
-        { path: 'public/images/icons/map.glb', x: 18, y: 10, z: -15 },
-        { path: 'public/images/icons/mobile.glb', x: -25, y: 0, z: -5 },
-        { path: 'public/images/icons/video.glb', x: 25, y: 5, z: -10 },
-        { path: 'public/images/icons/computer.glb', x: -10, y: 18, z: -8 },
-        { path: 'public/images/icons/copy.glb', x: 12, y: -16, z: -12 },
-        { path: 'public/images/icons/at.glb', x: -22, y: -10, z: -6 },
-        { path: 'public/images/icons/lock.glb', x: 0, y: 15, z: -10 },
-        { path: 'public/images/icons/chat2.glb', x: -8, y: -18, z: -8 },
-        { path: 'public/images/icons/boy.glb', x: 20, y: -2, z: -14 }
-      ];
-
-      bgIconData.forEach(item => {
-        gltfLoader.load(item.path, gltf => {
-          const model = gltf.scene;
-          model.position.set(item.x, item.y, item.z);
-          model.scale.set(1.5, 1.5, 1.5);
-          // 正面を向かせる（カメラ方向）
-          model.lookAt(camera.position);
-          model.userData = {
-            basePos: new THREE.Vector3(item.x, item.y, item.z),
-            driftSpeed: { 
-              x: 0.3 + Math.random() * 0.2, 
-              y: 0.4 + Math.random() * 0.2, 
-              z: 0.2 + Math.random() * 0.2 
-            },
-            driftOffset: { 
-              x: Math.random() * Math.PI * 2, 
-              y: Math.random() * Math.PI * 2, 
-              z: Math.random() * Math.PI * 2 
-            },
-            driftRange: { x: 2, y: 1.5, z: 1 }
-          };
-          scene.add(model);
-          bgIcons.push(model);
-        }, undefined, err => console.log('背景アイコン読み込みエラー:', item.path));
+      glbFiles.forEach(file => {
+        loader3d.load(
+          GLB_BASE + file,
+          gltf => {
+            const m = gltf.scene;
+            const s = 0.25 + Math.random() * 0.7;
+            m.scale.set(0.01, 0.01, 0.01);           // 最初は極小（見えない）
+            m.userData.origScale = s;                  // 本来のスケールを保存
+            m.position.set(origin.x, origin.y, 0);    // 画面中央に配置（上から落ちない）
+            m.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
+            m.userData.rx = (Math.random() - 0.5) * 0.04;
+            m.userData.ry = (Math.random() - 0.5) * 0.06;
+            m.userData.rz = (Math.random() - 0.5) * 0.03;
+            m.visible = false;
+            scene3d.add(m);
+            glbMeshes.push({
+              mesh:     m,
+              tx:       (Math.random() - 0.5) * maxW * 1.1,
+              ty:       (Math.random() - 0.5) * maxH * 0.9,
+              tz:       (Math.random() - 0.5) * 4,
+              origin:   { ...origin },
+              absorbed: false
+            });
+            check();
+          },
+          undefined,
+          err => { console.warn('GLB skip:', file); check(); }
+        );
       });
+    }
 
-      // ===== メインアイコン（8個）- 背後から入ってくる =====
-      const mainIcons = [];
-      const mainIconData = [
-        { path: 'public/images/icons/calender.glb', entry: { x: 10, y: 5 } },
-        { path: 'public/images/icons/calculator.glb', entry: { x: -12, y: -3 } },
-        { path: 'public/images/icons/chart.glb', entry: { x: -8, y: 8 } },
-        { path: 'public/images/icons/chat.glb', entry: { x: 11, y: -6 } },
-        { path: 'public/images/icons/clock.glb', entry: { x: 0, y: 10 } },
-        { path: 'public/images/icons/folder.glb', entry: { x: -10, y: 0 } },
-        { path: 'public/images/icons/mic.glb', entry: { x: 9, y: -8 } },
-        { path: 'public/images/icons/pencil.glb', entry: { x: -5, y: -9 } }
-      ];
+    function launchGLBs(onDone) {
+      glbRunning = true;
+      if (glbMeshes.length === 0) { if (onDone) onDone(); return; }
 
-      // メインアイコンの最終位置をランダムに設定
-      const mainEndPositions = [
-        { x: -18, y: 8, z: -25 },
-        { x: 15, y: -10, z: -30 },
-        { x: -12, y: -8, z: -22 },
-        { x: 20, y: 5, z: -28 },
-        { x: -5, y: 12, z: -35 },
-        { x: 8, y: -15, z: -20 },
-        { x: -20, y: -5, z: -32 },
-        { x: 12, y: 10, z: -26 }
-      ];
+      let cnt = 0;
+      glbMeshes.forEach((item, i) => {
+        // 吸収済みフラグをリセット（スクロール戻り対応）
+        item.absorbed = false;
+        item.mesh.visible = true;
+        // スケールをオリジナルに戻す（gsapが残っていても上書き）
+        const s = item.mesh.userData.origScale || item.mesh.scale.x;
+        item.mesh.userData.origScale = s;
+        // 既存のgsapアニメをキル
+        gsap.killTweensOf(item.mesh.position);
+        gsap.killTweensOf(item.mesh.scale);
+        // 原点にリセット
+        item.mesh.position.set(item.origin.x, item.origin.y, 0);
+        item.mesh.scale.set(0.01, 0.01, 0.01);
 
-      mainIconData.forEach((item, index) => {
-        gltfLoader.load(item.path, gltf => {
-          const model = gltf.scene;
-          const entry = item.entry;
-
-          const startX = entry.x * 2;
-          const startY = entry.y * 2;
-          const startZ = 50;
-
-          const passX = entry.x * 0.8;
-          const passY = entry.y * 0.8;
-          const passZ = 25;
-
-          // ランダムな最終位置
-          const endPos = mainEndPositions[index];
-
-          model.position.set(startX, startY, startZ);
-          model.scale.set(0, 0, 0);
-          model.visible = false;
-
-          model.userData = {
-            startPos: new THREE.Vector3(startX, startY, startZ),
-            passPos: new THREE.Vector3(passX, passY, passZ),
-            endPos: new THREE.Vector3(endPos.x, endPos.y, endPos.z),
-            appearAt: 0.05 + index * 0.08,
-            index: index
-          };
-
-          scene.add(model);
-          mainIcons.push(model);
-        }, undefined, err => console.log('メインアイコン読み込みエラー:', item.path));
+        gsap.to(item.mesh.position,
+          { x: item.tx, y: item.ty, z: item.tz,
+            duration: 0.6 + Math.random() * 0.6,
+            delay:    i * 0.04 + Math.random() * 0.04,
+            ease:     'power3.out',
+            onComplete: () => { cnt++; if (cnt >= glbMeshes.length && onDone) setTimeout(onDone, 300); }
+          }
+        );
+        gsap.to(item.mesh.scale,
+          { x: s, y: s, z: s,
+            duration: 0.5 + Math.random() * 0.4,
+            delay: i * 0.04,
+            ease: 'back.out(1.4)'
+          }
+        );
       });
+    }
 
-      let scrollProgress = { value: 0 };
-
-      ScrollTrigger.create({
-        trigger: ".scroll-container",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-        onUpdate: (self) => {
-          scrollProgress.value = self.progress;
+    function absorbGLBs() {
+      if (!glbRunning || glbMeshes.length === 0) return;
+      const r  = document.getElementById('big-phone').getBoundingClientRect();
+      const pw = screenToWorld(r.left + r.width * 0.5, r.top + r.height * 0.5);
+      // スマホの左端のworld座標（通過済みの範囲）
+      const pwLeft = screenToWorld(r.left, r.top + r.height * 0.5);
+      glbMeshes.forEach(item => {
+        if (item.absorbed) return;
+        const dx = item.mesh.position.x - pw.x;
+        const dy = item.mesh.position.y - pw.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        // 近距離 or スマホより左に取り残されたGLBは強制吸収
+        const leftBehind = item.mesh.position.x < pwLeft.x - 0.5;
+        if (dist < 3.5 || leftBehind) {
+          item.absorbed = true;
+          const delay = leftBehind ? Math.random() * 0.3 : Math.random() * 0.15;
+          gsap.to(item.mesh.position, { x: pw.x, y: pw.y, z: 0, duration: 0.5, ease: 'power2.in', delay });
+          gsap.to(item.mesh.scale,    { x: 0,    y: 0,    z: 0,  duration: 0.4, ease: 'power2.in', delay });
         }
       });
+    }
 
-      function animate() {
-        requestAnimationFrame(animate);
+    // ================================================================
+    // グリッチライン
+    // ================================================================
+    const glitchLinesEl = document.getElementById('glitchLines');
+    for (let i = 0; i < 8; i++) {
+      const ln = document.createElement('div');
+      ln.className = 'glitch-line';
+      ln.style.top = (Math.random() * 100) + '%';
+      ln.style.animationDelay    = (Math.random() * 2) + 's';
+      ln.style.animationDuration = (1 + Math.random()) + 's';
+      glitchLinesEl.appendChild(ln);
+    }
 
-        const time = Date.now() * 0.001;
-        const progress = scrollProgress.value;
+    // ================================================================
+    // ローディングアニメーション
+    // ================================================================
+    let progress = 0;
 
-        scene.background.lerpColors(bgColors.start, bgColors.end, progress);
+    setTimeout(() => line1El.classList.add('typing'), 200);
+    setTimeout(() => { line1El.classList.add('typing-done'); line2El.classList.add('typing'); }, 800);
+    setTimeout(() => line2El.classList.add('typing-done'), 1400);
+    setTimeout(() => {
+      gsap.to(loadingPhase1, { opacity:0, scale:0.9, filter:'blur(10px)', duration:0.4, ease:'power2.in' });
+      gsap.to(loadingPhase2, { opacity:1, scale:1,   duration:0.5, delay:0.3, ease:'back.out(1.5)' });
+      gsap.to(logoCenterEl,  { opacity:1, scale:1,   duration:0.4, delay:0.5, ease:'back.out(2)' });
+      setTimeout(() => {
+        brandNameEl.classList.add('glitch-active');
+        setTimeout(() => brandNameEl.classList.remove('glitch-active'), 300);
+        setTimeout(() => {
+          brandNameEl.classList.add('glitch-active');
+          setTimeout(() => brandNameEl.classList.remove('glitch-active'), 200);
+        }, 400);
+      }, 600);
+      gsap.to(brandTaglineEl, { opacity:1, duration:0.4, delay:0.9 });
+    }, 1600);
 
-        // ===== 背景アイコンの動き =====
-        bgIcons.forEach(model => {
-          const ud = model.userData;
-          
-          if (progress < 0.7) {
-            model.visible = true;
-            
-            const driftX = Math.sin(time * ud.driftSpeed.x + ud.driftOffset.x) * ud.driftRange.x;
-            const driftY = Math.cos(time * ud.driftSpeed.y + ud.driftOffset.y) * ud.driftRange.y;
-            const driftZ = Math.sin(time * ud.driftSpeed.z + ud.driftOffset.z) * ud.driftRange.z;
-            
-            model.position.set(
-              ud.basePos.x + driftX,
-              ud.basePos.y + driftY,
-              ud.basePos.z + driftZ
-            );
-            
-            // 常にカメラの方を向く（正面が見える）
-            model.lookAt(camera.position);
-            model.scale.set(1.5, 1.5, 1.5);
-            
-          } else if (progress < 0.9) {
-            model.visible = true;
-            const absorpProgress = (progress - 0.7) / 0.2;
-            
-            const targetX = ud.basePos.x * (1 - absorpProgress);
-            const targetY = ud.basePos.y * (1 - absorpProgress);
-            const targetZ = ud.basePos.z * (1 - absorpProgress * 0.5);
-            
-            model.position.set(targetX, targetY, targetZ);
-            model.lookAt(camera.position);
-            
-            const scale = 1.5 * (1 - absorpProgress);
-            model.scale.set(Math.max(0.01, scale), Math.max(0.01, scale), Math.max(0.01, scale));
-            
-          } else {
-            model.visible = false;
-          }
-        });
-
-        // ===== メインアイコンの動き =====
-        mainIcons.forEach(model => {
-          const appearAt = model.userData.appearAt;
-          const duration = 0.15;
-          const idx = model.userData.index;
-
-          if (progress < appearAt) {
-            model.visible = false;
-            model.scale.set(0, 0, 0);
-
-          } else if (progress < appearAt + duration) {
-            // Phase 1: 背後から入ってきてカメラ横を通過
-            model.visible = true;
-            const phaseProgress = (progress - appearAt) / duration;
-
-            const currentPos = new THREE.Vector3().lerpVectors(
-              model.userData.startPos,
-              model.userData.passPos,
-              phaseProgress
-            );
-            model.position.copy(currentPos);
-            
-            // 常にカメラの方を向く
-            model.lookAt(camera.position);
-
-            const scale = phaseProgress * 3;
-            model.scale.set(scale, scale, scale);
-
-          } else if (progress < 0.7) {
-            // Phase 2: 奥へ漂っていく（正面を向いたまま）
-            model.visible = true;
-            const phaseStart = appearAt + duration;
-            const phaseProgress = (progress - phaseStart) / (0.7 - phaseStart);
-
-            const basePos = new THREE.Vector3().lerpVectors(
-              model.userData.passPos,
-              model.userData.endPos,
-              Math.min(1, phaseProgress)
-            );
-
-            const driftX = Math.sin(time * 0.2 + idx * 2) * 1.5;
-            const driftY = Math.cos(time * 0.25 + idx * 1.5) * 1.2;
-            const driftZ = Math.sin(time * 0.15 + idx * 2.5) * 0.8;
-
-            model.position.set(
-              basePos.x + driftX,
-              basePos.y + driftY,
-              basePos.z + driftZ
-            );
-            
-            // 常にカメラの方を向く（何のアイコンか分かる）
-            model.lookAt(camera.position);
-
-            const scale = 3 - phaseProgress * 1.5;
-            model.scale.set(scale, scale, scale);
-
-          } else if (progress < 0.9) {
-            // Phase 3: 中心に吸収されて消える（奥の方で）
-            model.visible = true;
-            const absorpProgress = (progress - 0.7) / 0.2;
-
-            // 中心（0,0）に向かって移動、Zはそのまま奥
-            const currentX = model.position.x * (1 - absorpProgress * 0.8);
-            const currentY = model.position.y * (1 - absorpProgress * 0.8);
-            const currentZ = model.position.z - absorpProgress * 5; // 奥へ
-
-            model.position.set(currentX, currentY, currentZ);
-            model.lookAt(camera.position);
-
-            const scale = 1.5 * (1 - absorpProgress);
-            model.scale.set(Math.max(0.01, scale), Math.max(0.01, scale), Math.max(0.01, scale));
-
-          } else {
-            model.visible = false;
-            model.scale.set(0, 0, 0);
-          }
-        });
-
-        renderer.render(scene, camera);
+    function updateProgress() {
+      if (progress < 100) {
+        progress += Math.random() * 4 + 2;
+        if (progress > 100) progress = 100;
+        progressBarEl.style.strokeDashoffset = circumference - (progress / 100) * circumference;
+        progressTextEl.textContent = Math.floor(progress);
+        if (progress < 100) setTimeout(updateProgress, 30);
+        else setTimeout(triggerShutter, 400);
       }
+    }
+    setTimeout(updateProgress, 300);
 
-      animate();
-
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+    // ================================================================
+    // シャッター
+    // ================================================================
+    function triggerShutter() {
+      gsap.to(shutterPanels, { scaleY: 1, duration: 0.3, stagger: 0.04, ease: 'power2.inOut' });
+      gsap.delayedCall(0.55, () => {
+        loadingScreen.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        gsap.to(shutterPanels, { scaleY: 0, duration: 0.4, stagger: 0.05, ease: 'power2.inOut', transformOrigin: 'bottom' });
+        gsap.delayedCall(0.65, startBookAnimation);
       });
-    })();
+    }
 
-    // ===== キャラクター & キャッチコピー =====
-    const character = document.querySelector('.hero-character');
-    const catchphrase = document.querySelector('.hero-catchphrase');
+    // ================================================================
+    // 背景写真
+    // ================================================================
+    const photoSlideshow = document.getElementById('photoSlideshow');
+    const photoUrls = [
+      'public/images/photos/busy1.png','public/images/photos/busy2.png',
+      'public/images/photos/busy3.png','public/images/photos/busy4.png',
+      'public/images/photos/busy5.png','public/images/photos/busy6.png',
+      'public/images/photos/busy7.png','public/images/photos/busy8.png'
+    ];
+    const slidingPhotos = [];
 
-    gsap.set(character, {
-      scale: 2.5,
-      opacity: 0,
-      y: 800,
-      zIndex: 100
+    for (let i = 0; i < 20; i++) {
+      const img = document.createElement('img');
+      img.src = photoUrls[i % photoUrls.length];
+      img.className = 'sliding-photo';
+      const d = Math.random();
+      let size, opacity, blur, speed, zIndex;
+      if      (d < 0.35) { size=80+Math.random()*70;   opacity=0.15+Math.random()*0.1; blur=4+Math.random()*2;   speed=0.15+Math.random()*0.10; zIndex=1; }
+      else if (d < 0.70) { size=160+Math.random()*100; opacity=0.25+Math.random()*0.1; blur=2+Math.random()*1.5; speed=0.25+Math.random()*0.15; zIndex=3; }
+      else               { size=350+Math.random()*150; opacity=0.35+Math.random()*0.1; blur=0;                   speed=0.40+Math.random()*0.20; zIndex=5; }
+      img.style.cssText = `width:${size}px;height:${size*0.65}px;opacity:${opacity};filter:grayscale(50%) brightness(0.6) blur(${blur}px);z-index:${zIndex};`;
+      const dirs=['left','right','top','bottom'], dir=dirs[Math.floor(Math.random()*4)];
+      const angle=(Math.random()-0.5)*10, prog=Math.random();
+      let sX,sY,eX,eY;
+      if     (dir==='left')  {sX=-30;eX=110;sY=Math.random()*100;eY=sY+(Math.random()-0.5)*20;}
+      else if(dir==='right') {sX=110;eX=-30;sY=Math.random()*100;eY=sY+(Math.random()-0.5)*20;}
+      else if(dir==='top')   {sY=-30;eY=110;sX=Math.random()*100;eX=sX+(Math.random()-0.5)*20;}
+      else                   {sY=110;eY=-30;sX=Math.random()*100;eX=sX+(Math.random()-0.5)*20;}
+      const cX=sX+(eX-sX)*prog, cY=sY+(eY-sY)*prog;
+      img.style.left=cX+'%'; img.style.top=cY+'%'; img.style.transform=`rotate(${angle}deg)`;
+      photoSlideshow.appendChild(img);
+      slidingPhotos.push({element:img,startX:sX,startY:sY,endX:eX,endY:eY,angle,speed,progress:prog,absorbed:false,currentX:cX,currentY:cY,direction:dir});
+    }
+    function animatePhotos() {
+      slidingPhotos.forEach(p => {
+        if (p.absorbed) return;
+        p.progress += p.speed * 0.002;
+        if (p.progress > 1.3) {
+          p.progress = -0.3;
+          const d=['left','right','top','bottom'];
+          p.direction=d[Math.floor(Math.random()*4)]; p.angle=(Math.random()-0.5)*10;
+          if     (p.direction==='left')  {p.startX=-30;p.endX=110;p.startY=Math.random()*100;p.endY=p.startY+(Math.random()-0.5)*20;}
+          else if(p.direction==='right') {p.startX=110;p.endX=-30;p.startY=Math.random()*100;p.endY=p.startY+(Math.random()-0.5)*20;}
+          else if(p.direction==='top')   {p.startY=-30;p.endY=110;p.startX=Math.random()*100;p.endX=p.startX+(Math.random()-0.5)*20;}
+          else                           {p.startY=110;p.endY=-30;p.startX=Math.random()*100;p.endX=p.startX+(Math.random()-0.5)*20;}
+        }
+        p.currentX=p.startX+(p.endX-p.startX)*Math.max(0,p.progress);
+        p.currentY=p.startY+(p.endY-p.startY)*Math.max(0,p.progress);
+        p.element.style.left=p.currentX+'%';
+        p.element.style.top=p.currentY+'%';
+        p.element.style.transform=`rotate(${p.angle}deg)`;
+      });
+      requestAnimationFrame(animatePhotos);
+    }
+    animatePhotos();
+
+    // ================================================================
+    // スマホ内アイコン
+    // ================================================================
+    const organizedIcons = [
+      {emoji:'📅',label:'カレンダー'},{emoji:'👤',label:'クライアント'},
+      {emoji:'💬',label:'面談メモ'}, {emoji:'💰',label:'請求管理'},
+      {emoji:'📋',label:'タスク'},   {emoji:'🔔',label:'通知'},
+      {emoji:'📊',label:'レポート'}, {emoji:'📁',label:'書類'},
+      {emoji:'⏰',label:'リマインダー'},
+    ];
+    const phoneGrid = document.getElementById('phone-icons-grid');
+    organizedIcons.forEach(ic => {
+      const item = document.createElement('div');
+      item.className = 'phone-icon-item';
+      item.innerHTML = `<div class="phone-icon-emoji">${ic.emoji}</div><div class="phone-icon-label">${ic.label}</div>`;
+      phoneGrid.appendChild(item);
+    });
+    const phoneIconItems = document.querySelectorAll('.phone-icon-item');
+
+    // ================================================================
+    // ================================================================
+    // 絵本Cbookコマ送り（スクロール連動）→ GLB飛び出し → 絵本消去
+    // ================================================================
+    // Cbook1〜30（連番・欠番なし）
+    const CBOOK_FRAMES = Array.from({length: 30}, (_, i) =>
+      `public/images/characters/Cbook${i + 1}.png`
+    );
+    const CBOOK_TOTAL = CBOOK_FRAMES.length;  // 30枚
+    // GLB飛び出しは Cbook17 → index 16
+    const GLB_LAUNCH_NAME = 'Cbook17.png';
+    // ===== GLB飛び出し原点の調整 =====
+    // GLB_ORIGIN_Y: 0.0=画面上端, 0.5=中央, 1.0=下端
+    // 絵本ページが画面下半分にある場合は 0.55〜0.70 が目安
+    const GLB_ORIGIN_Y = 0.60;  // ← ここを変えて縦位置を調整
+    let bookStarted    = false;
+    let bookDismissed  = false;
+    let glbLaunched    = false;
+    let cbookST        = null;  // ScrollTriggerインスタンス
+
+    function startBookAnimation() {
+      if (bookStarted) return;
+      bookStarted = true;
+      console.log('▶ startBookAnimation: Cbookスクロールアニメ開始');
+
+      // --- 最初のフレームを表示してフェードイン ---
+      bookGifEl.src = CBOOK_FRAMES[0];
+      sceneNotebook.style.display = 'flex';
+      sceneNotebook.style.opacity = '0';
+
+      gsap.fromTo(sceneNotebook,
+        { opacity: 0, scale: 0.8, y: 40 },
+        { opacity: 1, scale: 1,   y: 0, duration: 0.7, ease: 'back.out(1.4)',
+          onComplete: () => console.log('▶ 絵本フェードイン完了 → スクロールでページを進めてください') }
+      );
+
+      // --- GLBをバックグラウンドでロード開始 ---
+      loadAllGLBs(() => console.log('GLBロード完了:', glbMeshes.length + '個'));
+
+      // --- ScrollTrigger: 0%〜30%でCbook1→2→...→32のコマ送り ---
+      // Cbook17（17/32≒53%）到達でGLB飛び出し、Cbook32でフェードアウト
+      cbookST = ScrollTrigger.create({
+        trigger: '.scroll-container',
+        start:   'top top',
+        end:     '30% top',
+        scrub:   0.4,
+        onUpdate(self) {
+          const idx = Math.min(
+            Math.floor(self.progress * CBOOK_TOTAL),
+            CBOOK_TOTAL - 1
+          );
+          if (bookGifEl.dataset.frame != idx) {
+            bookGifEl.dataset.frame = idx;
+            bookGifEl.src = CBOOK_FRAMES[idx];
+          }
+      // Cbook17到達でGLB飛び出し（一度だけ）
+          if (!glbLaunched && CBOOK_FRAMES[idx].includes(GLB_LAUNCH_NAME)) {
+            glbLaunched = true;
+            console.log('▶ Cbook17到達 → GLB飛び出し');
+            const r  = bookGifEl.getBoundingClientRect();
+            const ow = screenToWorld(r.left + r.width * 0.5, r.top + r.height * GLB_ORIGIN_Y);
+            glbMeshes.forEach(item => {
+              item.origin = ow;
+              item.mesh.position.set(ow.x, ow.y, 0);
+            });
+            if (glbLoaded) {
+              launchGLBs(() => {});  // dismissBookはCbook32後に呼ぶ
+            } else {
+              const wait = () => glbLoaded ? launchGLBs(() => {}) : (threeOK ? setTimeout(wait, 200) : void 0);
+              wait();
+            }
+          }
+        },
+        onLeave() {
+          // Cbook32到達 → 絵本フェードアウト
+          if (!bookDismissed) {
+            bookGifEl.src = CBOOK_FRAMES[CBOOK_TOTAL - 1];
+            dismissBook();
+          }
+        },
+        onLeaveBack() {
+          // 戻りスクロールしたら絵本を再表示・GLBを非表示にリセット
+          bookDismissed = false;
+          glbLaunched   = false;
+          glbRunning    = false;
+          // GLBを全て非表示に戻す
+          glbMeshes.forEach(item => {
+            gsap.killTweensOf(item.mesh.position);
+            gsap.killTweensOf(item.mesh.scale);
+            item.mesh.visible = false;
+            item.absorbed     = false;
+            item.mesh.scale.set(0.01, 0.01, 0.01);
+          });
+          // 絵本を最初のフレームで再表示
+          bookGifEl.src = CBOOK_FRAMES[0];
+          bookGifEl.dataset.frame = 0;
+          sceneNotebook.style.display = 'flex';
+          gsap.to(sceneNotebook, { opacity: 1, scale: 1, y: 0, duration: 0.4 });
+        }
+      });
+    }
+
+    function dismissBook() {
+      if (bookDismissed) return;
+      bookDismissed = true;
+      // 下に引っ張りながら消える（画面高さ分以上下にスライド）
+      gsap.to(sceneNotebook, {
+        y: window.innerHeight * 1.2,  // 画面高さ120%下にスライドアウト
+        opacity: 0,                   // 消えながら少しフェード
+        duration: 1.5,
+        ease: 'power1.inOut',         // 最初ゆっくり、均等に落ちる
+        onComplete: () => {
+          sceneNotebook.style.display = 'none';
+          gsap.set(sceneNotebook, { y: 0 }); // 次回のために位置リセット
+        }
+      });
+    }
+
+    // ================================================================
+    // スマホスクロール連動
+    // ================================================================
+    const RABBIT_L = 'public/images/characters/rabbitl.png';
+    const RABBIT_R = 'public/images/characters/rabbitr.png';
+    const STEPS = organizedIcons.length;
+    let currentStep  = -1;
+    let phoneStarted = false;
+
+    // かうたす文字バウンス
+    kautasChars.forEach((ch, i) => {
+      gsap.to(ch, { y:-16, duration:0.32, yoyo:true, repeat:-1, ease:'power1.inOut', delay:i*0.12 });
+      gsap.to(ch, { rotation:(i%2===0)?-6:6, duration:0.45, yoyo:true, repeat:-1, ease:'sine.inOut', delay:i*0.12 });
     });
 
-    gsap.set(catchphrase, {
-      opacity: 0,
-      y: 50,
-      scale: 0.9
-    });
+    function switchRabbit(step) {
+      const src = (step % 2 === 0) ? RABBIT_L : RABBIT_R;
+      gsap.timeline()
+        .to(rabbitImg, { scaleY:0.75, scaleX:1.1, duration:0.07, ease:'power2.in',
+            onComplete: () => { rabbitImg.src = src; } })
+        .to(rabbitImg, { scaleY:1.12, scaleX:0.92, duration:0.08, ease:'power2.out' })
+        .to(rabbitImg, { scaleY:1,    scaleX:1,    duration:0.12, ease:'elastic.out(1.2,0.5)' });
+    }
+
+    function stepPhone(step) {
+      const vw   = window.innerWidth;
+      const xPos = -vw * 0.55 + (vw * 0.55 + vw * 0.70) * (step / (STEPS - 1));
+      gsap.to('#phone-character', { y:-18, duration:0.12, ease:'power2.out', yoyo:true, repeat:1 });
+      switchRabbit(step);
+      gsap.to(scenePhone, {
+        x: xPos, duration:0.45, ease:'back.out(1.2)',
+        onComplete: () => {
+          absorbGLBs();
+          absorbPhotos();
+          showIcon(step);
+        }
+      });
+    }
+
+    function absorbPhotos() {
+      const r   = document.getElementById('big-phone').getBoundingClientRect();
+      const pcx = r.left + r.width  * 0.5;
+      const pcy = r.top  + r.height * 0.5;
+      slidingPhotos.forEach(p => {
+        if (p.absorbed) return;
+        const pr = p.element.getBoundingClientRect();
+        const px = pr.left + pr.width  * 0.5;
+        const py = pr.top  + pr.height * 0.5;
+        if (Math.hypot(px - pcx, py - pcy) < r.width * 1.4) {
+          p.absorbed = true;
+          gsap.to(p.element, { x:pcx-px, y:pcy-py, scale:0, opacity:0, duration:0.6, ease:'power2.in', delay:Math.random()*0.2 });
+        }
+      });
+    }
+
+    function showIcon(step) {
+      const item = phoneIconItems[step];
+      if (item) gsap.to(item, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' });
+    }
 
     ScrollTrigger.create({
-      trigger: ".scroll-container",
-      start: "top top",
-      end: "bottom bottom",
-      pin: ".hero",
-      pinSpacing: false
-    });
-
-    const mainTL = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.scroll-container',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true
+      trigger: '.scroll-container', start: '35% top', end: '90% top',
+      onEnter() {
+        // スマホ登場 → 背景を明るく（overlayをfade in）
+        gsap.to('#bg-light-overlay', {
+          backgroundColor: 'rgba(200,180,255,0.18)',
+          duration: 1.8,
+          ease: 'power2.out'
+        });
+        // body背景色も少し明るく
+        gsap.to('body', {
+          backgroundColor: '#12102a',
+          duration: 1.8,
+          ease: 'power2.out'
+        });
+      },
+      onLeaveBack() {
+        // スクロール戻り → 背景を暗く戻す
+        gsap.to('#bg-light-overlay', {
+          backgroundColor: 'rgba(200,180,255,0)',
+          duration: 1.0,
+          ease: 'power2.in'
+        });
+        gsap.to('body', {
+          backgroundColor: '#030308',
+          duration: 1.0,
+          ease: 'power2.in'
+        });
+      },
+      onUpdate(self) {
+        if (!phoneStarted && self.progress > 0) {
+          phoneStarted = true;
+          gsap.set(scenePhone, { x: -window.innerWidth * 0.55 });
+        }
+        const s = Math.min(Math.floor(self.progress * STEPS), STEPS - 1);
+        if (s !== currentStep) { currentStep = s; stepPhone(s); }
       }
     });
 
-    mainTL
-      .to(character, { y: 250, opacity: 1, scale: 1.5, duration: 0.1, ease: 'power3.out' }, 0.70)
-      .to(character, { y: 200, scale: 1.2, duration: 0.08, ease: 'power2.out' }, 0.90)
-      .to(catchphrase, { opacity: 1, y: -450, scale: 1, duration: 0.08, ease: 'power2.out' }, 0.88);
+    // ================================================================
+    // 最終キャッチフレーズ
+    // ================================================================
+    ScrollTrigger.create({
+      trigger: '.scroll-container', start: '91% top', end: '100% top',
+      onEnter() {
+        gsap.to('#final-catchphrase', { opacity:1, duration:0.8, ease:'power2.out' });
+        gsap.to(scenePhone, { x:window.innerWidth*1.3, duration:0.8, ease:'power2.in', delay:0.2 });
+      },
+      onLeaveBack() { gsap.to('#final-catchphrase', { opacity:0, duration:0.4 }); }
+    });
 
-    let resizeTimeout;
+    // ================================================================
+    // リサイズ
+    // ================================================================
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 250);
+      if (camera3d) {
+        camera3d.aspect = window.innerWidth / window.innerHeight;
+        camera3d.updateProjectionMatrix();
+      }
+      if (renderer3d) renderer3d.setSize(window.innerWidth, window.innerHeight);
+      clearTimeout(window._rt);
+      window._rt = setTimeout(() => ScrollTrigger.refresh(), 250);
     });
   </script>
 </body>

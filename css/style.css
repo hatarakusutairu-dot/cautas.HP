@@ -1,131 +1,359 @@
 /* ===================================
-   cautas.HP - Hero Animation
-   hadaka.jp inspired scroll animation
+   cautas.HP - Main Stylesheet
+   style.css
    =================================== */
 
+/* ===================== リセット ===================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ===================== ベース ===================== */
 body {
-  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  background-color: #FDFCFA;
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+  background: #030308;
   min-height: 100vh;
   overflow-x: hidden;
+  color: #fff;
 }
 
-/* Three.js Canvas - 背景レイヤー */
-#three-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* Scroll Container - Long scroll area for animation */
+/* ===================== スクロールコンテナ ===================== */
 .scroll-container {
-  height: 500vh;
+  position: relative;
+  z-index: 10;
+  height: 600vh;
 }
 
-/* Hero Section */
 .hero {
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
 }
 
-/* Catchphrase */
-.hero-catchphrase {
-  position: absolute;
-  text-align: center;
-  z-index: 50;
-  will-change: transform, opacity;
-  transform-origin: center center;
-  bottom: 12%;
+/* ===================== 背景写真スライドショー ===================== */
+.photo-slideshow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  will-change: filter;
 }
 
-.hero-catchphrase h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a1a1a;
+.sliding-photo {
+  position: absolute;
+  object-fit: cover;
+  will-change: transform, opacity, filter;
+  border-radius: 6px;
+}
+
+/* ===================== 飛び出しアイコン ===================== */
+#fly-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 25;
+  overflow: hidden;
+}
+
+/* ===================== Three.js canvas ===================== */
+#three-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 60;          /* scene-notebook(50)より上 → GLBが絵本の前面に出る */
+  pointer-events: none;
+}
+
+/* ===================== 絵本シーン（GIF） ===================== */
+#scene-notebook {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;          /* 確実に最前面に */
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ===== 絵本位置調整（ここで上下を変更） =====
+   BOOK_OFFSET_Y: 正の値→下へ、負の値→上へ（例: -10vh で上に10%移動）
+   ============================================== */
+:root {
+  --phone-size: min(640px, 82vh);  /* スマホサイズ（viewport非超過） */
+  --book-offset-y: 0vh;   /* ← ここを変更して上下位置を調整 */
+}
+
+#book-gif-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  transform: translateY(var(--book-offset-y));
+}
+
+#book-gif {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* 画面比率100%ぴったり（余白なし） */
+  mix-blend-mode: normal;
+  filter: none;
+  image-rendering: -webkit-optimize-contrast;
+  display: block;
+}
+
+/* ===================== スマホシーン ===================== */
+#scene-phone {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  display: flex;
+  align-items: flex-end;        /* 画面下揃え */
+  padding-bottom: 18px;         /* 画面ギリギリより少し余白 */
+  z-index: 30;
+  pointer-events: none;
+  transform: translateX(-150vw);
+}
+
+/* かうたす 1文字ずつ */
+#cautas-letters {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-right: 6px;
+  margin-bottom: 0;             /* 底辺同列 */
+  position: relative;
+  z-index: 1;
+  align-self: flex-end;         /* 画面下揃えに追従 */
+}
+
+.kautas-char {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #fff;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-shadow:
+    0 0 12px rgba(255,100,220,1.0),
+    0 0 30px rgba(255,100,220,0.6),
+    0 0 60px rgba(100,220,255,0.4),
+    0 2px 0 rgba(0,0,0,0.5);
+  display: inline-block;
   letter-spacing: 0.08em;
-  line-height: 1.8;
 }
 
-/* Character */
-.hero-character {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -200px;
-  margin-top: -200px;
-  width: 400px;
-  height: 400px;
-  z-index: 100;
-  will-change: transform, opacity;
-  transform-origin: center bottom;
+/* キャラクター（rabbitl / rabbitr 切り替え） */
+#phone-character {
+  position: relative;
+  width: 280px;                 /* サイズ拡大 200→280 */
+  height: 280px;
+  flex-shrink: 0;
+  z-index: 4;
+  align-self: flex-end;         /* 底辺をスマホ・かうたすと揃える */
+  margin-bottom: 0;             /* 底辺同列 */
+  margin-right: -195px;         /* スマホに重なるくらいまで右寄せ */
 }
 
-.hero-character img {
+#rabbit-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));
+  transform-origin: center bottom;
 }
 
-/* Icons Base Style - Three.jsに統一するため非表示 */
-.hero-icon {
-  display: none !important;
+/* スマホ（smartphone.png ベース・1024×1024正方形） */
+#big-phone {
+  position: relative;
+  width: var(--phone-size);
+  height: var(--phone-size);
+  flex-shrink: 0;
+  z-index: 2;
 }
 
+#big-phone .phone-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(-12px 24px 50px rgba(0,0,0,0.7)) drop-shadow(0 0 20px rgba(120,80,255,0.15));
+}
 
-/* Responsive */
+/* 画面オーバーレイ（ピクセル解析値）
+   画像1024x1024 → 500x500表示時:
+   画面X: 262/1024=25.6% ～ 750/1024=73.2%
+   画面Y: 52/1024=5.1%  ～ 975/1024=95.2%  */
+.phone-screen {
+  position: absolute;
+  left: 25.6%;
+  top: 8.5%;
+  width: 47.5%;
+  height: 86.5%;
+  background: linear-gradient(160deg, #0d1220 0%, #130e30 40%, #0a0d1e 100%);
+  border-radius: 3%;
+  overflow: hidden;
+  z-index: 3;
+  box-shadow: inset 0 0 30px rgba(180,100,255,0.08);
+}
+
+.phone-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 10px 4px;
+  font-size: 0.4rem;
+  color: rgba(255,255,255,0.55);
+}
+
+.phone-app-name {
+  text-align: center;
+  padding: 2px 0 6px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: #ff64dc;
+  letter-spacing: 0.4em;
+  text-shadow: 0 0 10px rgba(255,100,220,0.8), 0 0 20px rgba(255,100,220,0.4);
+}
+
+#phone-icons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 6px 10px;
+}
+
+.phone-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.phone-icon-emoji { font-size: 1.5rem; }
+.phone-icon-label {
+  font-size: 0.38rem;
+  color: rgba(255,255,255,0.75);
+  text-align: center;
+}
+
+/* ===================== 最終キャッチフレーズ ===================== */
+#final-catchphrase {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#final-catchphrase h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255,100,220,0.5), 0 0 80px rgba(100,180,255,0.3);
+  text-align: center;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  text-shadow:
+    0 0 50px rgba(255,100,220,0.5),
+    0 0 100px rgba(100,200,255,0.3);
+}
+
+#final-catchphrase p {
+  margin-top: 24px;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.35em;
+}
+
+/* ===================== レスポンシブ ===================== */
 @media (max-width: 768px) {
-  .scroll-container {
-    height: 400vh;
+  .scroll-container { height: 600vh; }
+
+  /* book-gif-wrap はルートCSSで100vw/100vh固定 */
+
+  #big-phone { width: 400px; height: 400px; }
+
+  #phone-character {
+    width: 160px;
+    height: 160px;
+    margin-bottom: 0;
+    margin-right: -70px;
   }
 
-  .hero-catchphrase {
-    bottom: 20%;
-  }
+  .kautas-char { font-size: 1.6rem; }
 
-  .hero-catchphrase h1 {
-    font-size: 1.4rem;
+  #final-catchphrase h1 {
+    font-size: 2rem;
     padding: 0 20px;
-  }
-
-  .hero-character {
-    width: 200px;
-    height: 200px;
-  }
-
-  .hero-icon {
-    width: 80px;
-    height: 80px;
   }
 }
 
 @media (max-width: 480px) {
-  .hero-catchphrase h1 {
-    font-size: 1.2rem;
+  /* book-gif-wrap はルートCSSで100vw/100vh固定 */
+
+  #big-phone { width: 300px; height: 300px; }
+
+  #phone-character {
+    width: 130px;
+    height: 130px;
+    margin-bottom: 0;
+    margin-right: -50px;
   }
 
-  .hero-character {
-    width: 160px;
-    height: 160px;
-  }
+  .kautas-char { font-size: 1.3rem; }
 
-  .hero-icon {
-    width: 60px;
-    height: 60px;
-  }
+  #final-catchphrase h1 { font-size: 1.6rem; }
+}
+
+/* ===================== プロ演出 ===================== */
+/* スキャンライン（スマホ画面の深み） */
+.phone-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.04) 2px,
+    rgba(0,0,0,0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* スマホ画面上部の光沢 */
+.phone-screen::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 35%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 9;
+  border-radius: 3% 3% 0 0;
+}
+
+/* 背景明るさオーバーレイ */
+#bg-light-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(180,160,255,0);
+  z-index: 0;
+  pointer-events: none;
+  will-change: background;
 }
