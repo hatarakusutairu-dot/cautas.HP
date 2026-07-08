@@ -887,6 +887,25 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   pointer-events: none;
 }
 
+/* 見回しヒント（マウス環境のみ表示） */
+.exp3d-hint {
+  position: absolute;
+  left: 26px;
+  bottom: 24px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(10, 8, 24, 0.4);
+  backdrop-filter: blur(6px);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  display: none;
+  z-index: 5;
+}
+@media (pointer: fine) {
+  .exp3d-hint { display: block; }
+}
+
 /* 時間帯カード */
 .exp3d-card {
   position: absolute;
