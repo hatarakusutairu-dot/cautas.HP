@@ -452,6 +452,23 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   background: #0b0a14;
 }
 
+/* フェザーエッジ：前のセクション（ヒーローのフィナーレ）の上に
+   夜がじわっと降りてくるように溶け込ませる */
+#scene-intro::before {
+  content: '';
+  position: absolute;
+  top: -55vh;
+  left: 0;
+  right: 0;
+  height: 55vh;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(5, 5, 8, 0) 0%,
+    rgba(5, 5, 8, 0.45) 55%,
+    rgba(5, 5, 8, 0.85) 85%,
+    #050508 100%);
+}
+
 .intro-sticky {
   position: sticky;
   top: 0;
@@ -534,6 +551,14 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   background:
     linear-gradient(180deg, rgba(30, 20, 60, 0.35) 0%, transparent 45%),
     linear-gradient(0deg, rgba(255, 160, 90, 0.28) 0%, rgba(255, 120, 190, 0.10) 38%, transparent 70%);
+}
+
+/* 入場ベール：セクション開始直後だけ背景を闇に沈めておく（DOM順で背景2層の上） */
+.intro-veil {
+  position: absolute;
+  inset: 0;
+  background: #050508;
+  pointer-events: none;
 }
 
 /* --- タスクの流れ：横展開トラック --- */
@@ -811,6 +836,24 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   background: #1b1430;
 }
 
+/* フェザーエッジ：導入の明るい写真の上に「まぶたを閉じる」ように
+   紺色が滲み上がり、次の3D世界（朝）へ自然に繋ぐ */
+#scene-3d::before {
+  content: '';
+  position: absolute;
+  top: -50vh;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  pointer-events: none;
+  z-index: 5;
+  background: linear-gradient(180deg,
+    rgba(27, 20, 48, 0) 0%,
+    rgba(27, 20, 48, 0.5) 55%,
+    rgba(27, 20, 48, 0.88) 85%,
+    #1b1430 100%);
+}
+
 .exp3d-sticky {
   position: sticky;
   top: 0;
@@ -836,11 +879,11 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 #scene-3d.no3d #exp3d-canvas { display: none; }
 #scene-3d.no3d .exp3d-fallback { display: block; }
 
-/* 世界に入るときの幕（ズームイン演出用） */
+/* 世界に入るときの幕（ズームイン演出用・フェザーエッジと同色で連続させる） */
 .exp3d-iris {
   position: absolute;
   inset: 0;
-  background: #171226;
+  background: #1b1430;
   pointer-events: none;
 }
 
@@ -1155,6 +1198,21 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   z-index: 70;
   background: #100d24;
   padding: 9vh 8vw 4vh;
+}
+
+/* フェザーエッジ：夕焼けの余韻から夜へ（日暮れの繋ぎ） */
+#site-footer::before {
+  content: '';
+  position: absolute;
+  top: -30vh;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(16, 13, 36, 0) 0%,
+    rgba(16, 13, 36, 0.55) 60%,
+    #100d24 100%);
 }
 
 .footer-cols {
