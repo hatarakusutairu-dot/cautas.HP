@@ -211,6 +211,18 @@
       <div class="pain-note" style="--x:34%; --y:42%; --r:2deg">
         <span>あのクライアントの記録、<br>どこだっけ</span>
       </div>
+      <div class="pain-note" style="--x:36%; --y:12%; --r:-3deg">
+        <span>次の面談の場所、<br>どのメールだっけ…</span>
+      </div>
+      <div class="pain-note" style="--x:16%; --y:45%; --r:6deg">
+        <span>メモに必死で、<br>話に集中できない</span>
+      </div>
+      <div class="pain-note" style="--x:56%; --y:38%; --r:-6deg">
+        <span>予定はカレンダー、記録はノート、<br>請求はExcel…</span>
+      </div>
+      <div class="pain-note" style="--x:30%; --y:56%; --r:3deg">
+        <span>休みの日も、残った事務作業が<br>頭から離れない</span>
+      </div>
       <p class="pain-closing">…… 心当たり、ありませんか？</p>
     </div>
   </section>
@@ -1147,8 +1159,8 @@
     document.querySelectorAll('.pain-note').forEach((note, i) => {
       painTL.fromTo(note,
         { opacity: 0, scale: 0.55, y: 60 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.07, ease: 'back.out(1.5)' },
-        0.16 + i * 0.13);
+        { opacity: 1, scale: 1, y: 0, duration: 0.06, ease: 'back.out(1.5)' },
+        0.12 + i * 0.082);
     });
     painTL
       // 付箋が溜まったらタイトルは静かに退く

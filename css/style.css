@@ -448,7 +448,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 #scene-pain {
   position: relative;
   z-index: 70;              /* ヒーローの固定レイヤー群を覆う */
-  height: 380vh;
+  height: 430vh;            /* 付箋9枚が貼られていく尺 */
   background: #0b0a14;
 }
 
