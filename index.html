@@ -254,25 +254,25 @@
        ================================================================ -->
   <section id="scene-intro">
     <div class="intro-sticky">
-      <!-- 奥レイヤーBefore：忙しい現実（モノクロ・暗め） -->
+      <!-- 奥レイヤーBefore：忙しい現実（本番動画・モノクロ暗め処理はCSS） -->
       <div class="intro-bg" id="introBg">
-        <!-- 本番用（素材が出来たら有効化）:
-        <video class="intro-video" src="public/videos/busy-loop.mp4"
-               autoplay muted loop playsinline></video>
-        -->
-        <div class="intro-photo" style="background-image:url('public/images/photos/busy3.webp')"></div>
-        <div class="intro-photo" style="background-image:url('public/images/photos/busy6.webp')"></div>
+        <video class="intro-video"
+               poster="public/videos/busy-poster.webp"
+               autoplay muted loop playsinline>
+          <source src="public/videos/busy-loop.webm" type="video/webm">
+          <source src="public/videos/busy-loop.mp4" type="video/mp4">
+        </video>
         <div class="intro-bg-tint"></div>
       </div>
 
       <!-- 奥レイヤーAfter：アプリで明るく働く世界（進むほどこちらに変化） -->
       <div class="intro-bg-after" id="introBgAfter">
-        <!-- 本番用（素材が出来たら有効化）:
-        <video class="intro-video" src="public/videos/bright-loop.mp4"
-               autoplay muted loop playsinline></video>
-        -->
-        <div class="intro-photo-after" style="background-image:url('public/images/photos/busy2.webp')"></div>
-        <div class="intro-photo-after" style="background-image:url('public/images/photos/busy7.webp')"></div>
+        <video class="intro-video intro-video-after"
+               poster="public/videos/bright-poster.webp"
+               autoplay muted loop playsinline>
+          <source src="public/videos/bright-loop.webm" type="video/webm">
+          <source src="public/videos/bright-loop.mp4" type="video/mp4">
+        </video>
         <div class="intro-after-warm"></div>
       </div>
 
@@ -375,8 +375,8 @@
   <section id="scene-hissatsu">
     <div class="hissatsu-sticky">
       <div class="hissatsu-real">
-        <div class="hissatsu-photo" style="background-image:url('public/images/photos/busy4.webp')"></div>
-        <div class="hissatsu-photo" style="background-image:url('public/images/photos/busy8.webp')"></div>
+        <div class="hissatsu-photo" style="background-image:url('public/images/photos/busy9.webp')"></div>
+        <div class="hissatsu-photo" style="background-image:url('public/images/photos/pain1.webp')"></div>
       </div>
       <p class="hissatsu-copy1">でも、もう<br>戻らなくていい。</p>
       <div class="hissatsu-warm"></div>
@@ -835,11 +835,12 @@
     // 背景写真
     // ================================================================
     const photoSlideshow = document.getElementById('photoSlideshow');
+    // ※busy4/busy8はAI生成の崩れた文字が入っていたため busy9/busy10 に差し替え
     const photoUrls = [
       'public/images/photos/busy1.webp','public/images/photos/busy2.webp',
-      'public/images/photos/busy3.webp','public/images/photos/busy4.webp',
+      'public/images/photos/busy3.webp','public/images/photos/busy9.webp',
       'public/images/photos/busy5.webp','public/images/photos/busy6.webp',
-      'public/images/photos/busy7.webp','public/images/photos/busy8.webp'
+      'public/images/photos/busy7.webp','public/images/photos/busy10.webp'
     ];
     const slidingPhotos = [];
 

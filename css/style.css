@@ -616,7 +616,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   100% { opacity: 0; transform: scale(1.1); }
 }
 
-/* 本番動画用（素材が来たら <video> を有効化するだけで同じ見た目になる） */
+/* 本番動画（Before：モノクロ・暗め） */
 .intro-video {
   position: absolute;
   inset: 0;
@@ -624,6 +624,11 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   height: 100%;
   object-fit: cover;
   filter: grayscale(0.85) brightness(0.45);
+}
+
+/* Afterの動画はカラー・明るめ（対比） */
+.intro-video-after {
+  filter: brightness(0.85) saturate(1.05);
 }
 
 /* 奥レイヤーを締めるビネット */
