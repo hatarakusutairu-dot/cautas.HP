@@ -357,3 +357,89 @@ body {
   pointer-events: none;
   will-change: background;
 }
+
+/* ===================== 追加磨き（既存演出には不干渉） ===================== */
+
+/* 背景写真をカード風に：細い縁取り＋浮遊感のある影 */
+.sliding-photo {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
+}
+
+/* 奥行きビネット：画面周辺をわずかに落とし視線を中央へ
+   （背景写真 z1-5 の上、キャッチz15・スマホz30・絵本z50 の下） */
+#depth-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+    transparent 52%,
+    rgba(0, 0, 0, 0.42) 100%);
+}
+
+/* スクロールヒント */
+#scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scroll-hint-mouse {
+  width: 22px;
+  height: 34px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.scroll-hint-wheel {
+  width: 3px;
+  height: 7px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.75);
+  animation: scrollWheel 1.6s ease-in-out infinite;
+}
+
+@keyframes scrollWheel {
+  0%   { transform: translateY(0);   opacity: 1; }
+  60%  { transform: translateY(9px); opacity: 0; }
+  61%  { transform: translateY(0);   opacity: 0; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+
+.scroll-hint-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* 最終キャッチコピー：フェードに「ピントが合う」ブラーインを重ねる */
+#final-catchphrase {
+  filter: blur(14px);
+  will-change: opacity, filter;
+}
+
+/* ダークテーマのスクロールバー */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0a0a12; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255,100,220,0.45), rgba(100,220,255,0.45));
+  border-radius: 5px;
+  border: 2px solid #0a0a12;
+}
+html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
+
+/* テキスト選択色をブランドカラーに */
+::selection { background: rgba(255, 100, 220, 0.35); color: #fff; }

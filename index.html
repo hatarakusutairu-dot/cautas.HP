@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>cautas - 予定を入れるだけ。あとは全部、繋がる。</title>
+  <meta name="description" content="カウンセラー向け業務管理アプリ cautas（カウタス）。予約・カルテ・実績・請求を一元管理。予定を入れるだけで、あとは全部繋がる。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="cautas - 予定を入れるだけ。あとは全部、繋がる。">
+  <meta property="og:description" content="カウンセラー向け業務管理アプリ。予約・カルテ・実績・請求を一元管理。">
+  <meta property="og:site_name" content="cautas">
+  <meta name="twitter:card" content="summary_large_image">
   <!-- favicon: インラインSVGでアイコン404を防止 -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
   <link rel="stylesheet" href="css/style.css">
@@ -111,6 +117,14 @@
   <div class="photo-slideshow" id="photoSlideshow"></div>
   <!-- 背景明るさオーバーレイ -->
   <div id="bg-light-overlay"></div>
+  <!-- 奥行きビネット（背景写真の上・演出レイヤーの下） -->
+  <div id="depth-vignette" aria-hidden="true"></div>
+
+  <!-- スクロールヒント（本が開いたら表示、スクロールしたら消える） -->
+  <div id="scroll-hint" aria-hidden="true">
+    <div class="scroll-hint-mouse"><span class="scroll-hint-wheel"></span></div>
+    <span class="scroll-hint-label">SCROLL</span>
+  </div>
 
   <!-- Three.js canvas（GLBアイコン用） -->
   <canvas id="three-canvas"></canvas>
@@ -164,6 +178,8 @@
   <!-- Three.js r134（jsdelivr CDN） -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- 質感強化用の環境光（読み込めなくても本体は動く） -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/environments/RoomEnvironment.js"></script>
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
@@ -223,6 +239,17 @@
       scene3d.add(new THREE.AmbientLight(0xffffff, 1.2));
       const dL1 = new THREE.DirectionalLight(0xffeedd, 2.2); dL1.position.set(5, 10, 8);  scene3d.add(dL1);
       const dL2 = new THREE.DirectionalLight(0xaaddff, 1.5); dL2.position.set(-8, -3, 5); scene3d.add(dL2);
+
+      // 質感強化：フィルミックなトーンマッピング＋環境光(IBL)で
+      // 飛び出すアイコンに柔らかい反射と深みを追加（失敗しても本体は動く）
+      try {
+        renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer3d.toneMappingExposure = 1.15;
+        if (typeof THREE.RoomEnvironment === 'function') {
+          const pmrem = new THREE.PMREMGenerator(renderer3d);
+          scene3d.environment = pmrem.fromScene(new THREE.RoomEnvironment()).texture;
+        }
+      } catch(e) { console.warn('質感強化スキップ:', e.message); }
 
       if (typeof THREE.GLTFLoader !== 'undefined') {
         loader3d = new THREE.GLTFLoader();
@@ -291,6 +318,12 @@
           GLB_BASE + file,
           gltf => {
             const m = gltf.scene;
+            // 環境光の反射量を控えめに（白飛び防止・質感だけ乗せる）
+            m.traverse(o => {
+              if (o.isMesh && o.material && 'envMapIntensity' in o.material) {
+                o.material.envMapIntensity = 0.45;
+              }
+            });
             const s = 0.25 + Math.random() * 0.7;
             m.scale.set(0.01, 0.01, 0.01);           // 最初は極小（見えない）
             m.userData.origScale = s;                  // 本来のスケールを保存
@@ -724,8 +757,10 @@
       if (item) gsap.to(item, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' });
     }
 
+    // end は「90% bottom」：旧値の「90% top」はページ最下部より奥で物理的に到達不能となり、
+    // 最後のアイコンが永遠に表示されなかったため（画面高ぶん手前=bottom基準に修正）
     ScrollTrigger.create({
-      trigger: '.scroll-container', start: '35% top', end: '90% top',
+      trigger: '.scroll-container', start: '35% top', end: '90% bottom',
       onEnter() {
         // スマホ登場 → 背景を明るく（overlayをfade in）
         gsap.to('#bg-light-overlay', {
@@ -766,14 +801,38 @@
     // ================================================================
     // 最終キャッチフレーズ
     // ================================================================
+    // start/end を bottom 基準に修正：旧値「91% top」はどの画面サイズでも到達不能で、
+    // 最終キャッチコピーが一度も表示されなかった
     ScrollTrigger.create({
-      trigger: '.scroll-container', start: '91% top', end: '100% top',
+      trigger: '.scroll-container', start: '91% bottom', end: 'bottom bottom',
       onEnter() {
-        gsap.to('#final-catchphrase', { opacity:1, duration:0.8, ease:'power2.out' });
+        gsap.to('#final-catchphrase', { opacity:1, filter:'blur(0px)', duration:0.8, ease:'power2.out' });
         gsap.to(scenePhone, { x:window.innerWidth*1.3, duration:0.8, ease:'power2.in', delay:0.2 });
       },
-      onLeaveBack() { gsap.to('#final-catchphrase', { opacity:0, duration:0.4 }); }
+      onLeaveBack() { gsap.to('#final-catchphrase', { opacity:0, filter:'blur(14px)', duration:0.4 }); }
     });
+
+    // ================================================================
+    // スクロールヒント：絵本が開いたら表示、スクロールしたら消える
+    // ================================================================
+    (function initScrollHint() {
+      const hint = document.getElementById('scroll-hint');
+      if (!hint) return;
+      let hidden = false;
+      const waitBook = setInterval(() => {
+        if (bookStarted) {
+          clearInterval(waitBook);
+          if (!hidden) gsap.to(hint, { opacity: 1, duration: 0.8, delay: 1.2, ease: 'power2.out' });
+        }
+      }, 200);
+      window.addEventListener('scroll', () => {
+        if (!hidden && window.scrollY > 40) {
+          hidden = true;
+          gsap.killTweensOf(hint);
+          gsap.to(hint, { opacity: 0, y: 12, duration: 0.5, ease: 'power2.in' });
+        }
+      }, { passive: true });
+    })();
 
     // ================================================================
     // リサイズ
