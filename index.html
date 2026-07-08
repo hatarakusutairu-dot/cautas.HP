@@ -113,6 +113,21 @@
     </div>
   </div>
 
+  <!-- ヘッダー（要件7章：透明→スクロールで色付き / スキップ導線） -->
+  <header id="site-header">
+    <a class="header-logo" href="#">cautas</a>
+    <nav class="header-nav">
+      <a href="#scene-features">機能</a>
+      <a href="#pricing">料金</a>
+      <a class="nav-soon" href="#" onclick="return false">Guide<span>準備中</span></a>
+    </nav>
+    <div class="header-right">
+      <a class="header-skip" href="#scene-cta">スキップ ⏩</a>
+      <a class="header-cta" href="https://cautas.pages.dev/" target="_blank" rel="noopener">無料で試す</a>
+    </div>
+    <button id="menu-btn" aria-label="メニュー">☰</button>
+  </header>
+
   <!-- 背景スライドショー -->
   <div class="photo-slideshow" id="photoSlideshow"></div>
   <!-- 背景明るさオーバーレイ -->
@@ -262,6 +277,173 @@
       <div id="task-progress" aria-hidden="true">1 / 5</div>
     </div>
   </section>
+
+  <!-- ================================================================
+       3D体験セクション（要件6-6：朝・昼・夕の3ポイント）
+       解釈：時間帯で光と色が変わる3D空間。世界へズームインして入り、
+       朝=予定確認 → 昼=セッション記録 → 夕=おわってる、をカードで見せる。
+       WebGL不可の環境はグラデーション背景にフォールバック。
+       ================================================================ -->
+  <section id="scene-3d">
+    <div class="exp3d-sticky">
+      <canvas id="exp3d-canvas"></canvas>
+      <div class="exp3d-fallback"></div>
+      <div class="exp3d-iris"></div>
+
+      <div class="exp3d-card" id="exp3d-card-morning">
+        <div class="exp3d-time">ASA ── 朝</div>
+        <h3>ひらくだけで、今日が見える。</h3>
+        <p>予定・場所・URL・クライアント情報が一枚に。緑のロボが揃えて待っています。</p>
+        <img src="public/images/characters/character-green.webp" alt="緑ロボ">
+      </div>
+      <div class="exp3d-card" id="exp3d-card-noon">
+        <div class="exp3d-time">HIRU ── 昼</div>
+        <h3>話すことに、集中するだけ。</h3>
+        <p>セッションの記録は白うさぎにおまかせ。音声がそのまま言葉になります。</p>
+        <img src="public/images/characters/character-rabbit.webp" alt="白うさぎ">
+      </div>
+      <div class="exp3d-card" id="exp3d-card-evening">
+        <div class="exp3d-time">YUU ── 夕</div>
+        <h3>気づけば、ぜんぶ終わってる。</h3>
+        <p>実績はカウント済み。請求書も1ポチ。あとは、ゆっくり休むだけ。</p>
+        <img src="public/images/characters/character-pink.webp" alt="ピンクロボ">
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       必殺演出セクション（要件6-7：パターン2）
+       現実（実写・モノクロ）が一瞬戻る →「でも、もう戻らなくていい。」
+       → 現実が溶けて、明るい絵本世界だけが残る → 感情ゴールのコピー
+       ================================================================ -->
+  <section id="scene-hissatsu">
+    <div class="hissatsu-sticky">
+      <div class="hissatsu-real">
+        <div class="hissatsu-photo" style="background-image:url('public/images/photos/busy4.webp')"></div>
+        <div class="hissatsu-photo" style="background-image:url('public/images/photos/busy8.webp')"></div>
+      </div>
+      <p class="hissatsu-copy1">でも、もう<br>戻らなくていい。</p>
+      <div class="hissatsu-warm"></div>
+      <h2 class="hissatsu-copy2">クライアントに集中できる<br>毎日へ。</h2>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       機能紹介セクション（要件6-8：Duolingo風・絵本の続き）
+       夕焼け→夜空グラデの上に、絵本風の白カード×5（左右交互）
+       UIスクショは仮のモックUI（実アプリのスクショが来たら差し替え）
+       ================================================================ -->
+  <section id="scene-features">
+    <h2 class="features-title">Cautasが、かわりにやること</h2>
+
+    <div class="feature-block">
+      <div class="feature-chara"><img src="public/images/characters/character-green.webp" alt="緑ロボ"></div>
+      <div class="feature-card">
+        <div class="ui-mock"><div class="ui-bar"><i></i><i></i><i></i></div>
+          <div class="ui-row">📅 <b>10:00 Aさん</b>｜🗺 渋谷オフィス｜🔗 URL</div>
+          <div class="ui-row">📅 <b>14:00 Bさん</b>｜📞 電話セッション</div>
+        </div>
+        <h3>予定管理</h3>
+        <p>「予定を入れたら、場所もURLも全部ここに」</p>
+      </div>
+    </div>
+
+    <div class="feature-block reverse">
+      <div class="feature-chara"><img src="public/images/characters/character-rabbit-hold.webp" alt="白うさぎ"></div>
+      <div class="feature-card">
+        <div class="ui-mock"><div class="ui-bar"><i></i><i></i><i></i></div>
+          <div class="ui-row">🎙 録音中… <span class="ui-wave">▂▄▆▄▂▄▆</span></div>
+          <div class="ui-row">📝 「今日は眠れているとのこと…」</div>
+        </div>
+        <h3>カルテ記録</h3>
+        <p>「話すだけで記録。書く時間はもういらない」</p>
+      </div>
+    </div>
+
+    <div class="feature-block">
+      <div class="feature-chara"><img src="public/images/characters/character-rabbit.webp" alt="白うさぎ"></div>
+      <div class="feature-card">
+        <div class="ui-mock"><div class="ui-bar"><i></i><i></i><i></i></div>
+          <div class="ui-row">🤖 AI分析：傾聴比率 68%</div>
+          <div class="ui-row">💡 次回の話題候補が3件あります</div>
+        </div>
+        <h3>AI分析</h3>
+        <p>「振り返りはAIにおまかせ」</p>
+      </div>
+    </div>
+
+    <div class="feature-block reverse">
+      <div class="feature-chara"><img src="public/images/characters/character-pink.webp" alt="ピンクロボ"></div>
+      <div class="feature-card">
+        <div class="ui-mock"><div class="ui-bar"><i></i><i></i><i></i></div>
+          <div class="ui-row">📊 今月のセッション：<b>23件</b></div>
+          <div class="ui-row">📈 前月比 +4件</div>
+        </div>
+        <h3>実績管理</h3>
+        <p>「数えなくていい。見れば分かる」</p>
+      </div>
+    </div>
+
+    <div class="feature-block">
+      <div class="feature-chara"><img src="public/images/characters/character-pink.webp" alt="ピンクロボ"></div>
+      <div class="feature-card">
+        <div class="ui-mock"><div class="ui-bar"><i></i><i></i><i></i></div>
+          <div class="ui-row">💰 未請求 <b>2件</b> → [請求書を発行]</div>
+          <div class="ui-row">✅ Aさん 10/2 発行済み</div>
+        </div>
+        <h3>請求</h3>
+        <p>「1ポチで請求書。漏れも防げる」</p>
+      </div>
+    </div>
+
+    <p class="features-note" id="pricing">まず<b>無料</b>で試せます（料金プランは準備中）</p>
+  </section>
+
+  <!-- ================================================================
+       CTAセクション（要件6-9：絵本の最終ページ）
+       夕焼け空・流れる雲・手を振るうさぎ・ポップなボタン
+       ================================================================ -->
+  <section id="scene-cta">
+    <div class="cta-cloud cta-cloud1"></div>
+    <div class="cta-cloud cta-cloud2"></div>
+    <div class="cta-cloud cta-cloud3"></div>
+    <div class="cta-rabbit">
+      <img class="cta-wave-a" src="public/images/characters/character-rabbit-up.webp" alt="手を振る白うさぎ">
+      <img class="cta-wave-b" src="public/images/characters/character-rabbit-down.webp" alt="">
+    </div>
+    <h2 class="cta-copy">クライアントに集中できる<br>毎日へ。</h2>
+    <a class="cta-main" href="https://cautas.pages.dev/" target="_blank" rel="noopener">まず無料で試す</a>
+    <a class="cta-sub" href="#" onclick="return false">もっと詳しく（Guide 準備中）</a>
+    <p class="cta-owari">─ おしまい ─</p>
+  </section>
+
+  <!-- フッター（要件8章） -->
+  <footer id="site-footer">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>サービス</h4>
+        <a href="#scene-features">機能</a>
+        <a href="#pricing">料金</a>
+      </div>
+      <div class="footer-col">
+        <h4>サポート</h4>
+        <a href="#" onclick="return false">Guide（準備中）</a>
+        <a href="#" onclick="return false">FAQ（準備中）</a>
+        <a href="#" onclick="return false">お問い合わせ</a>
+      </div>
+      <div class="footer-col">
+        <h4>会社</h4>
+        <a href="#" onclick="return false">運営情報</a>
+        <a href="#" onclick="return false">プライバシーポリシー</a>
+        <a href="#" onclick="return false">利用規約</a>
+      </div>
+    </div>
+    <div class="footer-sleep">
+      <img src="public/images/characters/character-rabbit.webp" alt="">
+      <span>zzz…</span>
+    </div>
+    <p class="footer-copy">© 2026 Cautas. All rights reserved.</p>
+  </footer>
 
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -1002,6 +1184,214 @@
         { opacity: 1, y: '0vh', duration: 0.34, ease: 'none' }, 0.38)
       // 4) キャラ：右へ歩き抜ける
       .to('#intro-walker', { x: '115vw', duration: 0.10, ease: 'none' }, 0.90);
+
+    // ================================================================
+    // ヘッダー：スクロールで色付き / モバイルメニュー
+    // ================================================================
+    const siteHeader = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      siteHeader.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+    document.getElementById('menu-btn').addEventListener('click', () => {
+      siteHeader.classList.toggle('menu-open');
+    });
+
+    // ================================================================
+    // 3D体験（朝・昼・夕）：光と色が変わる3D空間＋時間帯カード
+    // ================================================================
+    (function initExperience3D() {
+      const section = document.getElementById('scene-3d');
+      const canvas  = document.getElementById('exp3d-canvas');
+      let exp = null;
+
+      // 時間帯ごとの空気（背景色・フォグ・キーライト色/強さ）
+      const PHASES = [
+        { bg: 0xf7c9b2, key: 0xffe0c2, keyInt: 2.4, amb: 0.9 },  // 朝：やわらかい暁色
+        { bg: 0xcfe4f7, key: 0xffffff, keyInt: 3.0, amb: 1.1 },  // 昼：白く明るい光
+        { bg: 0x2a1e4d, key: 0xff9a5c, keyInt: 2.2, amb: 0.5 }   // 夕：オレンジと紫
+      ];
+
+      // 時間帯カード：進行度から直接 opacity/y を計算（スクラブと完全同期）
+      const EXP_CARDS = [
+        { el: document.getElementById('exp3d-card-morning'), in: 0.07, out: 0.32 },
+        { el: document.getElementById('exp3d-card-noon'),    in: 0.40, out: 0.65 },
+        { el: document.getElementById('exp3d-card-evening'), in: 0.73, out: 0.97 }
+      ];
+      function updateExpCards(p) {
+        const FADE = 0.05;
+        EXP_CARDS.forEach(c => {
+          let op = 0, y = 50;
+          if (p >= c.in && p <= c.out) {
+            const fi = Math.min(1, (p - c.in) / FADE);   // フェードイン進行
+            const fo = Math.min(1, (c.out - p) / FADE);  // フェードアウト残量
+            op = Math.min(fi, fo);
+            y  = (1 - fi) * 50 - (1 - fo) * 40;
+          } else if (p > c.out) {
+            y = -40;
+          }
+          gsap.set(c.el, { opacity: op, y: y, scale: 0.94 + op * 0.06 });
+        });
+      }
+
+      try {
+        if (typeof THREE === 'undefined') throw new Error('THREE missing');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        try {
+          renderer.outputEncoding = THREE.sRGBEncoding;
+          renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        } catch (e) {}
+
+        const scene  = new THREE.Scene();
+        scene.background = new THREE.Color(PHASES[0].bg);
+        scene.fog = new THREE.Fog(PHASES[0].bg, 10, 34);
+        const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+        camera.position.set(0, 0, 12);
+
+        const amb = new THREE.AmbientLight(0xffffff, PHASES[0].amb);
+        const key = new THREE.DirectionalLight(PHASES[0].key, PHASES[0].keyInt);
+        key.position.set(6, 8, 6);
+        scene.add(amb, key);
+
+        const resize = () => {
+          const w = canvas.clientWidth || window.innerWidth;
+          const h = canvas.clientHeight || window.innerHeight;
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        // アイコンはセクションに近づいたら遅延ロード（初期表示を軽く保つ）
+        const meshes = [];
+        let glbRequested = false;
+        const EXP_GLBS = ['calender.glb', 'mic.glb', 'chart.glb', 'folder.glb', 'heart.glb', 'clock.glb'];
+        function loadIcons() {
+          if (glbRequested || typeof THREE.GLTFLoader === 'undefined') return;
+          glbRequested = true;
+          const loader = new THREE.GLTFLoader();
+          EXP_GLBS.forEach((file, i) => {
+            loader.load('public/images/icons/' + file, gltf => {
+              const m = gltf.scene;
+              const angle = (i / EXP_GLBS.length) * Math.PI * 2;
+              m.position.set(Math.cos(angle) * 5.2, Math.sin(angle * 2) * 2.2, Math.sin(angle) * 3 - 2);
+              const s = 1.1 + (i % 3) * 0.35;
+              m.scale.set(s, s, s);
+              m.userData.baseY = m.position.y;
+              m.userData.spin  = 0.003 + (i % 3) * 0.002;
+              m.userData.bob   = 0.5 + Math.random();
+              scene.add(m);
+              meshes.push(m);
+            }, undefined, () => {});
+          });
+        }
+        ScrollTrigger.create({
+          trigger: section, start: 'top bottom',
+          onEnter: loadIcons, once: true
+        });
+
+        let active = false;
+        exp = { progress: 0 };
+
+        (function loop() {
+          requestAnimationFrame(loop);
+          if (!active) return;
+          const t = Date.now() * 0.001;
+          meshes.forEach(m => {
+            m.rotation.y += m.userData.spin * 2;
+            m.rotation.x += m.userData.spin;
+            m.position.y = m.userData.baseY + Math.sin(t * m.userData.bob) * 0.4;
+          });
+          // 進行度で時間帯をブレンド（0-0.5:朝→昼 / 0.5-1:昼→夕）
+          const p = exp.progress;
+          const seg = p < 0.5 ? 0 : 1;
+          const tt  = p < 0.5 ? p / 0.5 : (p - 0.5) / 0.5;
+          const a = PHASES[seg], b = PHASES[seg + 1];
+          scene.background.copy(new THREE.Color(a.bg).lerp(new THREE.Color(b.bg), tt));
+          scene.fog.color.copy(scene.background);
+          key.color.copy(new THREE.Color(a.key).lerp(new THREE.Color(b.key), tt));
+          key.intensity = a.keyInt + (b.keyInt - a.keyInt) * tt;
+          amb.intensity = a.amb + (b.amb - a.amb) * tt;
+          // カメラをゆっくり旅させる（縦の移動＋周回）
+          camera.position.x = Math.sin(p * Math.PI * 1.2) * 2.2;
+          camera.position.y = 1.2 - p * 2.4;
+          camera.lookAt(0, 0, -1);
+          renderer.render(scene, camera);
+        })();
+
+        ScrollTrigger.create({
+          trigger: section, start: 'top bottom', end: 'bottom top',
+          onToggle: self => { active = self.isActive; }
+        });
+
+        // スクラブ：進行度・入口の幕・時間帯カード（カードはonUpdateで決定的に計算）
+        const tl3d = gsap.timeline({
+          scrollTrigger: {
+            trigger: section, start: 'top top', end: 'bottom bottom', scrub: 0.6,
+            onUpdate(self) { updateExpCards(self.progress); }
+          }
+        });
+        tl3d
+          .to(exp, { progress: 1, duration: 1, ease: 'none' }, 0)
+          // 世界に入る：幕がフェード＋ズームの余韻
+          .fromTo(canvas, { scale: 1.18 }, { scale: 1, duration: 0.14, ease: 'power2.out' }, 0)
+          .to('.exp3d-iris', { opacity: 0, duration: 0.1, ease: 'none' }, 0);
+
+      } catch (e) {
+        console.warn('3D体験フォールバック:', e.message);
+        section.classList.add('no3d');
+        // フォールバックでもカードだけは見せる
+        ScrollTrigger.create({
+          trigger: section, start: 'top top', end: 'bottom bottom', scrub: 0.6,
+          onUpdate(self) { updateExpCards(self.progress); }
+        });
+        gsap.to('.exp3d-iris', {
+          opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: section, start: 'top top', end: '10% top', scrub: 0.6 }
+        });
+      }
+    })();
+
+    // ================================================================
+    // 必殺演出：現実が一瞬戻る →「でも、もう戻らなくていい。」→ 絵本世界へ
+    // ================================================================
+    const hisTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#scene-hissatsu', start: 'top top', end: 'bottom bottom', scrub: 0.6
+      }
+    });
+    hisTL
+      // 現実（モノクロ）がじわっと戻る
+      .to('.hissatsu-real', { opacity: 1, duration: 0.18, ease: 'none' }, 0.06)
+      .to('.hissatsu-photo', { opacity: 1, duration: 0.01 }, 0.06)
+      .fromTo('.hissatsu-copy1', { opacity: 0, scale: 0.96 },
+        { opacity: 1, scale: 1, duration: 0.10, ease: 'power2.out' }, 0.20)
+      // 現実もコピーも、光に溶けて消える
+      .to('.hissatsu-copy1', { opacity: 0, filter: 'blur(12px)', duration: 0.08 }, 0.46)
+      .to('.hissatsu-real',  { opacity: 0, duration: 0.16, ease: 'none' }, 0.48)
+      .to('.hissatsu-warm',  { opacity: 1, duration: 0.18, ease: 'none' }, 0.48)
+      // 感情ゴール
+      .fromTo('.hissatsu-copy2', { opacity: 0, y: 40, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.12, ease: 'power2.out' }, 0.70);
+
+    // ================================================================
+    // 機能紹介：ブロックごとに下からふわっと（要件11-2）
+    // ================================================================
+    document.querySelectorAll('.feature-block').forEach(block => {
+      gsap.from(block, {
+        opacity: 0, y: 70, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: { trigger: block, start: 'top 82%', toggleActions: 'play none none reverse' }
+      });
+    });
+    gsap.from('.features-title', {
+      opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
+      scrollTrigger: { trigger: '.features-title', start: 'top 85%' }
+    });
+    gsap.from('.cta-rabbit, .cta-copy, .cta-main, .cta-sub', {
+      opacity: 0, y: 50, stagger: 0.12, duration: 0.8, ease: 'back.out(1.4)',
+      scrollTrigger: { trigger: '#scene-cta', start: 'top 65%' }
+    });
 
     // ================================================================
     // スクロールヒント：絵本が開いたら表示、スクロールしたら消える
