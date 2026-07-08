@@ -172,6 +172,43 @@
   <!-- スクロールコンテナ -->
   <div class="scroll-container"><section class="hero"></section></div>
 
+  <!-- ================================================================
+       導入セクション：Before/After の2重構造
+       奥 = 忙しく働く人（リアル動画）／手前 = アプリで快適に働くキャラ
+       ※現在は仮素材（busy写真ループ＋歩くうさぎ）。本素材が出来たら差し替え：
+         - 奥動画: .intro-photo 2枚を削除し、コメントアウトの <video> を有効化
+         - 歩きキャラ: JS の WALKER_FRAMES に連番を列挙（下記参照）
+       ================================================================ -->
+  <section id="scene-intro">
+    <div class="intro-sticky">
+      <!-- 奥レイヤー：忙しい現実（モノクロ・暗め） -->
+      <div class="intro-bg" id="introBg">
+        <!-- 本番用（素材が出来たら有効化）:
+        <video class="intro-video" src="public/videos/busy-loop.mp4"
+               autoplay muted loop playsinline></video>
+        -->
+        <div class="intro-photo" style="background-image:url('public/images/photos/busy3.webp')"></div>
+        <div class="intro-photo" style="background-image:url('public/images/photos/busy6.webp')"></div>
+        <div class="intro-bg-tint"></div>
+      </div>
+
+      <!-- 手前レイヤー：温かい世界を歩くキャラ -->
+      <div class="intro-fg">
+        <div id="intro-walker">
+          <img id="walker-img"
+               src="public/images/characters/rabbitl.webp"
+               alt="アプリを使って快適に働く人（仮キャラ）">
+        </div>
+      </div>
+
+      <!-- コピー（仮） -->
+      <div class="intro-copy">
+        <p class="intro-copy-before">終わらない事務作業に、追われる毎日。</p>
+        <h2 class="intro-copy-after">Cautasと歩けば、<br>仕事はもっと軽くなる。</h2>
+      </div>
+    </div>
+  </section>
+
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -811,6 +848,59 @@
       },
       onLeaveBack() { gsap.to('#final-catchphrase', { opacity:0, filter:'blur(14px)', duration:0.4 }); }
     });
+
+    // ================================================================
+    // 導入セクション：奥=忙しい現実 / 手前=歩くキャラ（Before/After）
+    // ================================================================
+    // 本番の歩きキャラ連番が出来たらここを差し替える（Cbookと同じ方式）。
+    // 例: const WALKER_FRAMES = Array.from({length: 6}, (_, i) =>
+    //       `public/images/characters/walk${i + 1}.webp`);
+    // いまは仮素材：透過済みのうさぎ2ポーズをトコトコ切替
+    const WALKER_FRAMES = [
+      'public/images/characters/rabbitl.webp',
+      'public/images/characters/rabbitr.webp'
+    ];
+    const WALK_CYCLES   = 9;   // セクション通過中に歩きサイクルを回す回数
+    const walkerImg     = document.getElementById('walker-img');
+
+    // 連番の先読み（本素材が入ったら自動で効く）
+    WALKER_FRAMES.forEach(src => { const im = new Image(); im.src = src; });
+
+    // キャラがスクロールに合わせて左から右へ歩き切る
+    gsap.fromTo('#intro-walker',
+      { x: '-45vw' },
+      {
+        x: '110vw',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#scene-intro',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.6,
+          onUpdate(self) {
+            if (WALKER_FRAMES.length > 1) {
+              const idx = Math.floor(self.progress * WALK_CYCLES * WALKER_FRAMES.length)
+                          % WALKER_FRAMES.length;
+              if (walkerImg.dataset.f != idx) {
+                walkerImg.dataset.f = idx;
+                walkerImg.src = WALKER_FRAMES[idx];
+              }
+            }
+          }
+        }
+      }
+    );
+
+    // コピーの表示（キャラが中央あたりに来たタイミング）
+    ScrollTrigger.create({
+      trigger: '#scene-intro',
+      start: '30% top',
+      onEnter: () => gsap.to('.intro-copy',
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power2.out' }),
+      onLeaveBack: () => gsap.to('.intro-copy',
+        { opacity: 0, y: 24, filter: 'blur(10px)', duration: 0.4, ease: 'power2.in' })
+    });
+    gsap.set('.intro-copy', { y: 24, filter: 'blur(10px)' });
 
     // ================================================================
     // スクロールヒント：絵本が開いたら表示、スクロールしたら消える
