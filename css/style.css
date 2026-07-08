@@ -444,6 +444,103 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 /* テキスト選択色をブランドカラーに */
 ::selection { background: rgba(255, 100, 220, 0.35); color: #fff; }
 
+/* ===================== 困りごとセクション（要件2-3） ===================== */
+#scene-pain {
+  position: relative;
+  z-index: 70;              /* ヒーローの固定レイヤー群を覆う */
+  height: 380vh;
+  background: #0b0a14;
+}
+
+/* フェザーエッジ：ヒーローのフィナーレに夜が降りてくる */
+#scene-pain::before {
+  content: '';
+  position: absolute;
+  top: -55vh;
+  left: 0;
+  right: 0;
+  height: 55vh;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(11, 10, 20, 0) 0%,
+    rgba(11, 10, 20, 0.45) 55%,
+    rgba(11, 10, 20, 0.85) 85%,
+    #0b0a14 100%);
+}
+
+.pain-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  /* 中央がわずかに明るい闇（付箋に目が行く） */
+  background: radial-gradient(ellipse at 50% 45%,
+    rgba(60, 50, 90, 0.35) 0%, transparent 60%);
+}
+
+.pain-title {
+  position: absolute;
+  top: 12%;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.12em;
+  line-height: 1.8;
+  opacity: 0;
+}
+
+/* 悩みの付箋：くすんだ紙がテープで貼られている */
+.pain-note {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: rotate(var(--r));
+  width: min(300px, 42vw);
+  padding: 22px 24px;
+  background: #cfc9bd;
+  color: #3a3540;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* 貼り付けテープ */
+.pain-note::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 74px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.pain-note span {
+  font-size: clamp(0.85rem, 1.6vw, 1rem);
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+}
+
+.pain-closing {
+  position: absolute;
+  bottom: 12%;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.25em;
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  #scene-pain { height: 320vh; }
+  .pain-note { width: 58vw; padding: 16px 18px; }
+  .pain-title { top: 9%; padding: 0 16px; }
+}
+
 /* ===================== 導入セクション（Before/After 2重構造） ===================== */
 #scene-intro {
   position: relative;

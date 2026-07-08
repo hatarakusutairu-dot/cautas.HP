@@ -188,6 +188,34 @@
   <div class="scroll-container"><section class="hero"></section></div>
 
   <!-- ================================================================
+       困りごとセクション（要件2-3：ターゲットの困りごと）
+       物語の流れ：ヒーロー（変化の予感）→ ここで共感（あなたの毎日）
+       → 導入「それは変えられる」→ タスクの流れ「どんなふうに」
+       暗闇に悩みの付箋がひとつずつ貼られて積み重なっていく
+       ================================================================ -->
+  <section id="scene-pain">
+    <div class="pain-sticky">
+      <h2 class="pain-title">毎日、こんなことに<br>追われていませんか？</h2>
+      <div class="pain-note" style="--x:10%; --y:30%; --r:-5deg">
+        <span>セッション後の記録づくりで、<br>今日も残業…</span>
+      </div>
+      <div class="pain-note" style="--x:60%; --y:24%; --r:4deg">
+        <span>報告書、<br>何を書けばいいんだっけ</span>
+      </div>
+      <div class="pain-note" style="--x:7%; --y:60%; --r:3deg">
+        <span>実績の集計、<br>後回しにしてもう3ヶ月</span>
+      </div>
+      <div class="pain-note" style="--x:63%; --y:58%; --r:-4deg">
+        <span>あの請求、<br>出したっけ…？</span>
+      </div>
+      <div class="pain-note" style="--x:34%; --y:42%; --r:2deg">
+        <span>あのクライアントの記録、<br>どこだっけ</span>
+      </div>
+      <p class="pain-closing">…… 心当たり、ありませんか？</p>
+    </div>
+  </section>
+
+  <!-- ================================================================
        導入〜タスクの流れセクション（Before/After 2重構造 + 横展開）
        流れ：
         1) キャラが左→中央へ歩く（コピー表示）
@@ -1105,6 +1133,29 @@
 
     // 連番の先読み（本素材が入ったら自動で効く）
     WALKER_FRAMES.forEach(src => { const im = new Image(); im.src = src; });
+
+    // ================================================================
+    // 困りごとセクション：悩みの付箋がひとつずつ貼られて積み重なる
+    // ================================================================
+    const painTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#scene-pain', start: 'top top', end: 'bottom bottom', scrub: 0.6
+      }
+    });
+    painTL.fromTo('.pain-title', { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.08, ease: 'power2.out' }, 0.03);
+    document.querySelectorAll('.pain-note').forEach((note, i) => {
+      painTL.fromTo(note,
+        { opacity: 0, scale: 0.55, y: 60 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.07, ease: 'back.out(1.5)' },
+        0.16 + i * 0.13);
+    });
+    painTL
+      // 付箋が溜まったらタイトルは静かに退く
+      .to('.pain-title', { opacity: 0.3, duration: 0.1, ease: 'none' }, 0.6)
+      // 問いかけ →（次のセクションで「変えられる」と答える）
+      .fromTo('.pain-closing', { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.08, ease: 'power2.out' }, 0.84);
 
     // --- マスタータイムライン ---
     // 歩き（縦の入り）→ 横展開（タスク5シーン）→ 背景変化（Before→After）→ 退場
