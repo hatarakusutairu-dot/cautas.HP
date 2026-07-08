@@ -478,6 +478,21 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
     rgba(60, 50, 90, 0.35) 0%, transparent 60%);
 }
 
+/* 記憶のシーン：付箋とペアの写真が浮かんで奥へ沈む */
+.pain-memories {
+  position: absolute;
+  inset: 0;
+}
+
+.pain-memory {
+  position: absolute;
+  inset: -4%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  will-change: transform, opacity, filter;
+}
+
 .pain-title {
   position: absolute;
   top: 12%;

@@ -195,6 +195,18 @@
        ================================================================ -->
   <section id="scene-pain">
     <div class="pain-sticky">
+      <!-- 記憶のシーン：付箋が貼られる瞬間に浮かび、奥へ沈んで消える（付箋と同順） -->
+      <div class="pain-memories" aria-hidden="true">
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy6.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy3.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy1.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy8.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy4.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy5.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy2.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy7.webp')"></div>
+        <div class="pain-memory" style="background-image:url('public/images/photos/busy3.webp')"></div>
+      </div>
       <h2 class="pain-title">毎日、こんなことに<br>追われていませんか？</h2>
       <div class="pain-note" style="--x:10%; --y:30%; --r:-5deg">
         <span>セッション後の記録づくりで、<br>今日も残業…</span>
@@ -1149,9 +1161,27 @@
     // ================================================================
     // 困りごとセクション：悩みの付箋がひとつずつ貼られて積み重なる
     // ================================================================
+    // 記憶のシーン：付箋i の出現時刻に合わせ、浮かぶ→奥へ沈む を進行度から直接計算
+    const painMemories = document.querySelectorAll('.pain-memory');
+    const PAIN_NOTE_AT = (i) => 0.12 + i * 0.082;   // 付箋iの出現タイミング（下のtweenと同値）
+    function updatePainMemories(p) {
+      painMemories.forEach((mem, i) => {
+        const ti = PAIN_NOTE_AT(i);
+        const rise = Math.max(0, Math.min(1, (p - (ti - 0.035)) / 0.045)); // 浮かび上がり
+        const sink = Math.max(0, Math.min(1, (p - (ti + 0.025)) / 0.11));  // 奥への沈み
+        const op = rise * (1 - sink) * 0.55;
+        gsap.set(mem, {
+          opacity: op,
+          scale: 1.18 - rise * 0.06 - sink * 0.30,   // 縮む＝奥へ遠ざかる
+          filter: `grayscale(0.92) brightness(0.45) blur(${(sink * 9).toFixed(1)}px)`
+        });
+      });
+    }
+
     const painTL = gsap.timeline({
       scrollTrigger: {
-        trigger: '#scene-pain', start: 'top top', end: 'bottom bottom', scrub: 0.6
+        trigger: '#scene-pain', start: 'top top', end: 'bottom bottom', scrub: 0.6,
+        onUpdate(self) { updatePainMemories(self.progress); }
       }
     });
     painTL.fromTo('.pain-title', { opacity: 0, y: 40 },
@@ -1160,7 +1190,7 @@
       painTL.fromTo(note,
         { opacity: 0, scale: 0.55, y: 60 },
         { opacity: 1, scale: 1, y: 0, duration: 0.06, ease: 'back.out(1.5)' },
-        0.12 + i * 0.082);
+        PAIN_NOTE_AT(i));
     });
     painTL
       // 付箋が溜まったらタイトルは静かに退く
