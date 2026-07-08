@@ -173,15 +173,21 @@
   <div class="scroll-container"><section class="hero"></section></div>
 
   <!-- ================================================================
-       導入セクション：Before/After の2重構造
-       奥 = 忙しく働く人（リアル動画）／手前 = アプリで快適に働くキャラ
-       ※現在は仮素材（busy写真ループ＋歩くうさぎ）。本素材が出来たら差し替え：
-         - 奥動画: .intro-photo 2枚を削除し、コメントアウトの <video> を有効化
-         - 歩きキャラ: JS の WALKER_FRAMES に連番を列挙（下記参照）
+       導入〜タスクの流れセクション（Before/After 2重構造 + 横展開）
+       流れ：
+        1) キャラが左→中央へ歩く（コピー表示）
+        2) 中央で歩き続け、タスク5シーンのパネルが右→左へ流れる（横展開）
+           パネルは千鳥配置＋放物線の縦の動きで「流れ・動き」を演出
+        3) 進むほど背景がモノクロの忙しさ→明るい働き方へクロスフェード（変化）
+        4) 歩き切って右へ抜ける
+       ※仮素材の差し替えポイント：
+        - 奥Before動画: #introBg 内コメントの <video> を有効化（busy-loop.mp4）
+        - 奥After動画: #introBgAfter 内コメントの <video> を有効化（bright-loop.mp4）
+        - 歩きキャラ連番: JS の WALKER_FRAMES に列挙
        ================================================================ -->
   <section id="scene-intro">
     <div class="intro-sticky">
-      <!-- 奥レイヤー：忙しい現実（モノクロ・暗め） -->
+      <!-- 奥レイヤーBefore：忙しい現実（モノクロ・暗め） -->
       <div class="intro-bg" id="introBg">
         <!-- 本番用（素材が出来たら有効化）:
         <video class="intro-video" src="public/videos/busy-loop.mp4"
@@ -192,7 +198,52 @@
         <div class="intro-bg-tint"></div>
       </div>
 
-      <!-- 手前レイヤー：温かい世界を歩くキャラ -->
+      <!-- 奥レイヤーAfter：アプリで明るく働く世界（進むほどこちらに変化） -->
+      <div class="intro-bg-after" id="introBgAfter">
+        <!-- 本番用（素材が出来たら有効化）:
+        <video class="intro-video" src="public/videos/bright-loop.mp4"
+               autoplay muted loop playsinline></video>
+        -->
+        <div class="intro-photo-after" style="background-image:url('public/images/photos/busy2.webp')"></div>
+        <div class="intro-photo-after" style="background-image:url('public/images/photos/busy7.webp')"></div>
+        <div class="intro-after-warm"></div>
+      </div>
+
+      <!-- タスクの流れ：5シーンの横展開トラック -->
+      <div id="task-track" aria-label="Cautasを使ったタスクの流れ">
+        <div class="task-panel">
+          <div class="task-scene-num">SCENE 1｜予約</div>
+          <p class="task-message">「入力したら全部繋がる」</p>
+          <p class="task-desc">予定を入れるだけで、場所・URL・電話番号を緑のロボが自動で紐付け。</p>
+          <img class="task-chara" src="public/images/characters/character-green.webp" alt="緑ロボ（データ担当）">
+        </div>
+        <div class="task-panel">
+          <div class="task-scene-num">SCENE 2｜セッション前</div>
+          <p class="task-message">「1ポチで出る」</p>
+          <p class="task-desc">クライアント情報も過去の記録も、アプリを開けばすぐそこに。</p>
+          <img class="task-chara" src="public/images/characters/character-green.webp" alt="緑ロボ（データ担当）">
+        </div>
+        <div class="task-panel">
+          <div class="task-scene-num">SCENE 3｜カルテ記録</div>
+          <p class="task-message">「話すだけで記録」</p>
+          <p class="task-desc">白うさぎが音声をそのまま文字に。あなたの手は空いたまま。</p>
+          <img class="task-chara" src="public/images/characters/character-rabbit.webp" alt="白うさぎ（記録担当）">
+        </div>
+        <div class="task-panel">
+          <div class="task-scene-num">SCENE 4｜報告書</div>
+          <p class="task-message">「AIが下書き」</p>
+          <p class="task-desc">振り返りはAIにおまかせ。あなたは確認するだけ。</p>
+          <img class="task-chara" src="public/images/characters/character-rabbit.webp" alt="白うさぎ（記録担当）">
+        </div>
+        <div class="task-panel">
+          <div class="task-scene-num">SCENE 5｜請求</div>
+          <p class="task-message">「漏れなく一瞬で」</p>
+          <p class="task-desc">ピンクのロボが請求書を作成。未請求もひと目でわかる。</p>
+          <img class="task-chara" src="public/images/characters/character-pink.webp" alt="ピンクロボ（管理担当）">
+        </div>
+      </div>
+
+      <!-- 手前レイヤー：温かい光をまとって歩くキャラ -->
       <div class="intro-fg">
         <div id="intro-walker">
           <img id="walker-img"
@@ -206,6 +257,9 @@
         <p class="intro-copy-before">終わらない事務作業に、追われる毎日。</p>
         <h2 class="intro-copy-after">Cautasと歩けば、<br>仕事はもっと軽くなる。</h2>
       </div>
+
+      <!-- 進捗インジケータ（1/5〜5/5） -->
+      <div id="task-progress" aria-hidden="true">1 / 5</div>
     </div>
   </section>
 
@@ -866,41 +920,88 @@
     // 連番の先読み（本素材が入ったら自動で効く）
     WALKER_FRAMES.forEach(src => { const im = new Image(); im.src = src; });
 
-    // キャラがスクロールに合わせて左から右へ歩き切る
-    gsap.fromTo('#intro-walker',
-      { x: '-45vw' },
-      {
-        x: '110vw',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '#scene-intro',
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 0.6,
-          onUpdate(self) {
-            if (WALKER_FRAMES.length > 1) {
-              const idx = Math.floor(self.progress * WALK_CYCLES * WALKER_FRAMES.length)
-                          % WALKER_FRAMES.length;
-              if (walkerImg.dataset.f != idx) {
-                walkerImg.dataset.f = idx;
-                walkerImg.src = WALKER_FRAMES[idx];
-              }
+    // --- マスタータイムライン ---
+    // 歩き（縦の入り）→ 横展開（タスク5シーン）→ 背景変化（Before→After）→ 退場
+    // をひとつのスクラブで完全同期させる
+    const taskTrack    = document.getElementById('task-track');
+    const taskPanels   = Array.from(taskTrack.children);
+    const taskProgress = document.getElementById('task-progress');
+    const TASK_START   = 0.20;   // 横展開の開始（キャラが中央に着く）
+    const TASK_END     = 0.90;   // 横展開の終了
+    const TASK_SPAN    = TASK_END - TASK_START;
+
+    gsap.set('.intro-copy', { y: 24, filter: 'blur(10px)' });
+
+    // パネルの左端位置（放物線の縦の動き計算用・リサイズで再取得）
+    let panelOffsets = [];
+    const measurePanels = () => {
+      panelOffsets = taskPanels.map(p => p.offsetLeft + p.offsetWidth / 2);
+    };
+    window.addEventListener('load', measurePanels);
+    ScrollTrigger.addEventListener('refreshInit', measurePanels);
+
+    const introTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#scene-intro',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate(self) {
+          const p = self.progress;
+
+          // 歩きコマ送り（連番が入れば自動でそのコマ数で回る）
+          if (WALKER_FRAMES.length > 1) {
+            const idx = Math.floor(p * WALK_CYCLES * WALKER_FRAMES.length)
+                        % WALKER_FRAMES.length;
+            if (walkerImg.dataset.f != idx) {
+              walkerImg.dataset.f = idx;
+              walkerImg.src = WALKER_FRAMES[idx];
             }
+          }
+
+          // 横展開中：パネルの放物線モーション＋進捗インジケータ
+          if (p >= TASK_START && p <= TASK_END && panelOffsets.length) {
+            const trackX = gsap.getProperty(taskTrack, 'x');
+            const vw = window.innerWidth;
+            taskPanels.forEach((panel, i) => {
+              // パネル中心の画面上の位置（-1=左端外, 0=中央, 1=右端外）
+              const d = ((trackX + panelOffsets[i]) - vw / 2) / vw;
+              // 放物線：端では浮き、中央で定位置に降りる（縦の動き）
+              gsap.set(panel, {
+                y: d * d * 140,
+                rotation: d * 3,
+                opacity: 1 - Math.min(0.55, Math.max(0, Math.abs(d) - 0.55))
+              });
+            });
+            const sceneIdx = Math.min(4, Math.floor((p - TASK_START) / TASK_SPAN * 5));
+            taskProgress.textContent = (sceneIdx + 1) + ' / 5';
           }
         }
       }
-    );
-
-    // コピーの表示（キャラが中央あたりに来たタイミング）
-    ScrollTrigger.create({
-      trigger: '#scene-intro',
-      start: '30% top',
-      onEnter: () => gsap.to('.intro-copy',
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power2.out' }),
-      onLeaveBack: () => gsap.to('.intro-copy',
-        { opacity: 0, y: 24, filter: 'blur(10px)', duration: 0.4, ease: 'power2.in' })
     });
-    gsap.set('.intro-copy', { y: 24, filter: 'blur(10px)' });
+
+    introTL
+      // 1) キャラ：左から中央へ（縦の入り）
+      .fromTo('#intro-walker', { x: '-45vw' }, { x: '37vw', duration: 0.18, ease: 'none' }, 0)
+      // コピー：イン→アウト（横展開が始まる前に退く）
+      .to('.intro-copy', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.05, ease: 'power2.out' }, 0.05)
+      .to('.intro-copy', { opacity: 0, y: -26, filter: 'blur(10px)', duration: 0.04, ease: 'power2.in' }, 0.15)
+      // 2) 横展開：トラックが右から左へ流れる（キャラは中央で歩き続ける）
+      .fromTo(taskTrack,
+        { x: () => window.innerWidth },
+        { x: () => -(taskTrack.scrollWidth + window.innerWidth * 0.05),
+          duration: TASK_SPAN, ease: 'none' },
+        TASK_START)
+      // インジケータの表示・非表示
+      .to(taskProgress, { opacity: 1, duration: 0.03 }, TASK_START)
+      .to(taskProgress, { opacity: 0, duration: 0.03 }, TASK_END - 0.03)
+      // 3) 背景の変化：モノクロの忙しさ → 明るい働き方（縦ドリフト付き）
+      .to('#introBg',       { opacity: 0, y: '-3vh', duration: 0.34, ease: 'none' }, 0.38)
+      .fromTo('#introBgAfter', { opacity: 0, y: '4vh' },
+        { opacity: 1, y: '0vh', duration: 0.34, ease: 'none' }, 0.38)
+      // 4) キャラ：右へ歩き抜ける
+      .to('#intro-walker', { x: '115vw', duration: 0.10, ease: 'none' }, 0.90);
 
     // ================================================================
     // スクロールヒント：絵本が開いたら表示、スクロールしたら消える

@@ -448,7 +448,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 #scene-intro {
   position: relative;
   z-index: 70;              /* ヒーローの固定レイヤー群を覆いながらスライドイン */
-  height: 260vh;            /* スクロール尺（キャラが歩き切る長さ） */
+  height: 700vh;            /* スクロール尺（歩き＋タスク5シーンの横展開） */
   background: #0b0a14;
 }
 
@@ -504,6 +504,118 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   background: radial-gradient(ellipse at center,
     transparent 40%,
     rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* --- 奥レイヤーAfter：アプリで明るく働く世界（横展開が進むと現れる） --- */
+.intro-bg-after {
+  position: absolute;
+  inset: 0;
+  opacity: 0;               /* JSがスクロールに応じてクロスフェード */
+  background: #171226;
+}
+
+.intro-photo-after {
+  position: absolute;
+  inset: -6%;
+  background-size: cover;
+  background-position: center;
+  /* Beforeとの対比：カラー・明るめ（本番は明るい動画に差し替え） */
+  filter: brightness(0.8) saturate(1.05);
+  opacity: 0;
+  animation: introKenburns 24s linear infinite;
+  will-change: opacity, transform;
+}
+.intro-photo-after:nth-child(2) { animation-delay: -12s; }
+
+/* 温かい光のグレーディング（Afterの空気感） */
+.intro-after-warm {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(30, 20, 60, 0.35) 0%, transparent 45%),
+    linear-gradient(0deg, rgba(255, 160, 90, 0.28) 0%, rgba(255, 120, 190, 0.10) 38%, transparent 70%);
+}
+
+/* --- タスクの流れ：横展開トラック --- */
+#task-track {
+  position: absolute;
+  top: 10vh;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 7vw;
+  padding-left: 4vw;
+  will-change: transform;
+  z-index: 2;               /* 背景の上・歩くキャラの下 */
+}
+
+.task-panel {
+  flex-shrink: 0;
+  width: min(480px, 62vw);
+  padding: 30px 34px 34px;
+  border-radius: 22px;
+  background: rgba(18, 14, 38, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  position: relative;
+  will-change: transform;
+}
+
+/* 千鳥配置：高い・低いを交互に（縦の動き） */
+.task-panel:nth-child(odd)  { margin-top: 2vh; }
+.task-panel:nth-child(even) { margin-top: 14vh; }
+
+.task-scene-num {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  color: #ff8fd8;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.task-message {
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  text-shadow: 0 0 30px rgba(255, 120, 200, 0.35);
+}
+
+.task-desc {
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.9;
+  padding-right: 84px;      /* キャラ画像ぶんの逃げ */
+}
+
+.task-chara {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  width: 86px;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.5));
+}
+
+/* --- 進捗インジケータ --- */
+#task-progress {
+  position: absolute;
+  right: 34px;
+  bottom: 30px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.65);
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(10, 8, 24, 0.45);
+  backdrop-filter: blur(6px);
+  opacity: 0;               /* 横展開中のみJSが表示 */
+  z-index: 5;
 }
 
 /* --- 手前レイヤー：温かい世界を歩くキャラ --- */
@@ -574,7 +686,13 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 }
 
 @media (max-width: 768px) {
-  #scene-intro { height: 220vh; }
+  #scene-intro { height: 560vh; }
   #intro-walker { width: clamp(150px, 38vw, 240px); bottom: 8vh; }
   .intro-copy { top: 20%; padding: 0 20px; }
+  #task-track { top: 8vh; gap: 9vw; }
+  .task-panel { width: 74vw; padding: 22px 24px 26px; }
+  .task-panel:nth-child(even) { margin-top: 10vh; }
+  .task-desc { padding-right: 62px; }
+  .task-chara { width: 64px; }
+  #task-progress { right: 18px; bottom: 18px; }
 }
