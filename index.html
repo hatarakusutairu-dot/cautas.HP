@@ -119,7 +119,7 @@
   <div id="scene-notebook">
     <div id="book-gif-wrap">
       <img id="book-gif"
-           src="public/images/characters/BOOKcalendar.gif"
+           src="public/images/characters/Cbook1.png"
            alt="絵本アニメーション">
     </div>
   </div>
@@ -167,6 +167,11 @@
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
+
+    // リロード時にブラウザがスクロール位置を復元すると、絵本演出（0〜30%区間）を
+    // 通り過ぎた状態で始まり演出が丸ごとスキップされるため、常に先頭から開始する
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
 
     // ================================================================
     // DOM参照（TDZ防止：最上部で全宣言）
@@ -427,6 +432,15 @@
       gsap.delayedCall(0.55, () => {
         loadingScreen.style.display = 'none';
         document.body.style.overflow = 'auto';
+        // ブラウザのスクロール位置復元は「スクロール可能になった瞬間」に遅延実行される
+        // ことがあるため、ユーザーが操作するまでの間は先頭位置を強制する
+        window.scrollTo(0, 0);
+        let userScrolled = false;
+        const markUser = () => { userScrolled = true; };
+        ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(ev =>
+          window.addEventListener(ev, markUser, { once: true, passive: true }));
+        const guard = setInterval(() => { if (!userScrolled) window.scrollTo(0, 0); }, 100);
+        setTimeout(() => clearInterval(guard), 1500);
         gsap.to(shutterPanels, { scaleY: 0, duration: 0.4, stagger: 0.05, ease: 'power2.inOut', transformOrigin: 'bottom' });
         gsap.delayedCall(0.65, startBookAnimation);
       });
@@ -518,7 +532,8 @@
     );
     const CBOOK_TOTAL = CBOOK_FRAMES.length;  // 30枚
     // GLB飛び出しは Cbook17 → index 16
-    const GLB_LAUNCH_NAME = 'Cbook17.png';
+    // （速いスクロールでフレームが飛んでも発火するよう「到達済み」判定にする）
+    const GLB_LAUNCH_INDEX = 16;
     // ===== GLB飛び出し原点の調整 =====
     // GLB_ORIGIN_Y: 0.0=画面上端, 0.5=中央, 1.0=下端
     // 絵本ページが画面下半分にある場合は 0.55〜0.70 が目安
@@ -563,8 +578,8 @@
             bookGifEl.dataset.frame = idx;
             bookGifEl.src = CBOOK_FRAMES[idx];
           }
-      // Cbook17到達でGLB飛び出し（一度だけ）
-          if (!glbLaunched && CBOOK_FRAMES[idx].includes(GLB_LAUNCH_NAME)) {
+      // Cbook17以降に到達でGLB飛び出し（一度だけ・フレーム飛ばしでも発火）
+          if (!glbLaunched && idx >= GLB_LAUNCH_INDEX) {
             glbLaunched = true;
             console.log('▶ Cbook17到達 → GLB飛び出し');
             const r  = bookGifEl.getBoundingClientRect();
