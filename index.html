@@ -478,12 +478,18 @@
     <div class="cta-cloud cta-cloud1"></div>
     <div class="cta-cloud cta-cloud2"></div>
     <div class="cta-cloud cta-cloud3"></div>
-    <div class="cta-rabbit">
-      <img src="public/images/characters/rabbit-joy.webp" alt="手を振る白うさぎ">
+    <!-- 主役はカウンセラー本人（穏やかな毎日）。周りをロボたちが浮遊して見守る -->
+    <div class="cta-family">
+      <img class="cta-human" src="public/images/characters/human-relax.webp" alt="穏やかにくつろぐカウンセラー">
+      <img class="cta-float cta-float-rabbit" src="public/images/characters/rabbit-joy.webp" alt="手を振る白うさぎ">
+      <img class="cta-float cta-float-green" src="public/images/characters/green-joy.webp" alt="喜ぶ緑ロボ">
+      <img class="cta-float cta-float-pink" src="public/images/characters/pink-joy.webp" alt="喜ぶピンクロボ">
     </div>
     <h2 class="cta-copy">クライアントに集中できる<br>毎日へ。</h2>
-    <a class="cta-main" href="https://cautas.pages.dev/" target="_blank" rel="noopener">まず無料で試す</a>
-    <a class="cta-sub" href="#" onclick="return false">もっと詳しく（Guide 準備中）</a>
+    <div class="cta-actions">
+      <a class="cta-main" href="https://cautas.pages.dev/" target="_blank" rel="noopener">まず無料で試す</a>
+      <a class="cta-sub" href="#" onclick="return false">もっと詳しく（Guide 準備中）</a>
+    </div>
     <p class="cta-owari">─ おしまい ─</p>
   </section>
 
@@ -1877,7 +1883,7 @@
       opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
       scrollTrigger: { trigger: '.features-title', start: 'top 85%' }
     });
-    gsap.from('.cta-rabbit, .cta-copy, .cta-main, .cta-sub', {
+    gsap.from('.cta-family, .cta-copy, .cta-actions', {
       opacity: 0, y: 50, stagger: 0.12, duration: 0.8, ease: 'back.out(1.4)',
       scrollTrigger: { trigger: '#scene-cta', start: 'top 65%' }
     });

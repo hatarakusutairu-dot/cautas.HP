@@ -1361,28 +1361,46 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   to   { transform: translateX(160vw); }
 }
 
-/* 手を振るうさぎ（up/downの2ポーズ切替） */
-.cta-rabbit {
+/* 主役＝くつろぐカウンセラー、周りをロボたちが浮遊 */
+.cta-family {
   position: relative;
-  width: clamp(170px, 24vw, 260px);
+  width: clamp(230px, 27vw, 300px);
   aspect-ratio: 1;
-  margin-bottom: 12px;
-}
-.cta-rabbit img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  filter: drop-shadow(0 16px 32px rgba(90, 40, 60, 0.35));
-  transform-origin: 50% 100%;
-  animation: ctaSway 2.8s ease-in-out infinite;
+  margin-top: 40px;          /* 浮遊ロボの頭上分の余白（ヘッダー被り防止） */
+  margin-bottom: 10px;
 }
 
-/* なめらかな手振り：体を揺らしながら時々小さく弾む */
-@keyframes ctaSway {
-  0%, 100% { transform: rotate(-3deg) translateY(0); }
-  20%      { transform: rotate(-1deg) translateY(-7px); }
-  50%      { transform: rotate(3deg)  translateY(0); }
-  70%      { transform: rotate(1deg)  translateY(-7px); }
+.cta-human {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 80%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 16px 32px rgba(90, 40, 60, 0.35));
+  animation: ctaBreath 4.2s ease-in-out infinite;
+}
+
+/* 呼吸のようなゆったりした上下（くつろぎ） */
+@keyframes ctaBreath {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-6px); }
+}
+
+.cta-float {
+  position: absolute;
+  width: 34%;
+  filter: drop-shadow(0 10px 22px rgba(90, 40, 60, 0.3));
+  animation: ctaFloat 3.4s ease-in-out infinite;
+}
+
+.cta-float-rabbit { right: -14%; top: 4%;   width: 40%; }
+.cta-float-green  { left: -16%;  top: 12%;  animation-duration: 3.9s; animation-delay: -1.3s; }
+.cta-float-pink   { right: -20%; top: 48%;  animation-duration: 4.4s; animation-delay: -2.1s; }
+
+/* ふわふわ浮遊（それぞれ周期をずらす） */
+@keyframes ctaFloat {
+  0%, 100% { transform: translateY(0)     rotate(-3deg); }
+  50%      { transform: translateY(-16px) rotate(3deg); }
 }
 
 .cta-copy {
@@ -1392,6 +1410,12 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   letter-spacing: 0.08em;
   line-height: 1.8;
   margin-bottom: 34px;
+}
+
+.cta-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .cta-main {
@@ -1418,7 +1442,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 }
 
 .cta-owari {
-  margin-top: 9vh;
+  margin-top: 6vh;
   color: rgba(87, 50, 75, 0.55);
   letter-spacing: 0.5em;
   font-size: 0.85rem;
