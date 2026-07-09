@@ -253,6 +253,93 @@ a:hover { text-decoration: underline; }
 .g-note::before { content: '⚠ '; }
 .g-tip::before  { content: '💡 '; }
 
+/* ===== UIスクリーンショット枠 =====
+   画像が来るまではプレースホルダー表示。
+   届いたら <img> を入れて class に has-img を足すだけで差し替わる */
+.g-shot {
+  margin: 18px 0 22px;
+  border: 2px dashed #e3d7cb;
+  border-radius: 16px;
+  background: #fdfbf8;
+  padding: 34px 20px;
+  text-align: center;
+  color: #a99c90;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.g-shot .g-shot-icon { display: block; font-size: 1.7rem; margin-bottom: 8px; }
+.g-shot b { color: #8d7f72; }
+.g-shot.has-img {
+  border: none;
+  background: none;
+  padding: 0;
+}
+.g-shot.has-img img {
+  max-width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(58, 49, 66, 0.14);
+  border: 1px solid var(--line);
+}
+.g-shot.has-img figcaption { margin-top: 8px; font-size: 0.8rem; color: var(--ink-soft); }
+
+/* ===== キャラクターの吹き出し =====
+   コツ・注意はキャラにしゃべらせる */
+.g-chara {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 22px 0;
+}
+.g-chara img {
+  width: 72px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgba(58, 49, 66, 0.15));
+}
+.g-bubble {
+  position: relative;
+  flex: 1;
+  background: var(--accent-bg);
+  border-radius: 16px;
+  padding: 13px 18px;
+  font-size: 0.93rem;
+  line-height: 1.85;
+}
+.g-bubble::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 24px;
+  border: 9px solid transparent;
+  border-right-color: var(--accent-bg);
+  border-left: 0;
+}
+.g-bubble .g-who {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+/* コツ（緑系）と注意（オレンジ系） */
+.g-chara.is-tip .g-bubble { background: #eef7e6; }
+.g-chara.is-tip .g-bubble::before { border-right-color: #eef7e6; }
+.g-chara.is-tip .g-bubble .g-who { color: #58a002; }
+.g-chara.is-note .g-bubble { background: #fdf1ec; }
+.g-chara.is-note .g-bubble::before { border-right-color: #fdf1ec; }
+.g-chara.is-note .g-bubble .g-who { color: #d97c4f; }
+
+/* 記事タイトル横のキャラ */
+.g-art-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.g-art-head img { width: 88px; flex-shrink: 0; }
+
+/* カテゴリカードのキャラ画像 */
+.g-cat img.g-cat-chara { width: 44px; height: 44px; object-fit: contain; }
+
 /* 関連リンク */
 .g-related { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); }
 .g-related h2 { border: none; padding: 0; font-size: 1rem; }

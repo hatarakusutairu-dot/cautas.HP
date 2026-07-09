@@ -4,11 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cautasとは？ ─ できることまとめ | Cautas Guide</title>
-  <meta name="description" content="Cautasはカウンセラー向けの業務管理アプリ。予約・カルテ・実績・請求をひとつに繋げて、事務作業の時間を減らします。">
+  <meta name="description" content="Cautas（かうたす）はカウンセラー向けの業務管理アプリ。予約・カルテ・実績・請求をひとつに繋げて、事務作業の時間を減らします。">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
   <link rel="stylesheet" href="guide.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+    .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 18px 0; }
+    .flow span { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-size: 0.9rem; font-weight: 700; }
+    .flow i { color: var(--accent); font-style: normal; font-weight: 900; }
+    .flow span.auto { background: var(--accent-bg); border-color: transparent; color: var(--accent); }
   </style>
 </head>
 <body>
@@ -28,51 +32,81 @@
         <a href="index.html">Guide</a> ／ <a href="index.html#categories">はじめ方</a> ／ Cautasとは？
       </div>
 
-      <h1>Cautasとは？ ─ できることまとめ</h1>
-      <div class="g-art-meta">カテゴリ：はじめ方</div>
+      <div class="g-art-head">
+        <img src="../public/images/characters/human-morning.webp" alt="カウンセラー">
+        <div>
+          <h1>Cautasとは？ ─ できることまとめ</h1>
+          <div class="g-art-meta">カテゴリ：はじめ方</div>
+        </div>
+      </div>
 
       <h2>できること</h2>
       <p>
-        Cautas（カウタス）は、<b>カウンセラー向けの業務管理アプリ</b>です。
-        バラバラになりがちな事務作業を、「予定」を起点にひとつに繋げます。
+        Cautas（かうたす）は、<b>カウンセラー向けの業務管理アプリ</b>です。
+        バラバラになりがちな事務作業を「予定」を起点にひとつに繋げます。
       </p>
-      <ul>
-        <li><b>予約管理</b> ─ 予定に場所・URL・電話番号が自動で紐づく</li>
-        <li><b>クライアント情報管理</b> ─ 過去の記録が予定からすぐ出せる</li>
-        <li><b>カルテ記録</b> ─ セッション後に話すだけで音声が記録になる</li>
-        <li><b>AI分析</b> ─ セッションの振り返りをAIがお手伝い</li>
-        <li><b>実績管理</b> ─ セッション件数は自動でカウント</li>
-        <li><b>請求</b> ─ 未請求がひと目で分かり、請求書もワンタップ発行</li>
-      </ul>
-      <p>キャッチコピーのとおり、<b>「予定を入れるだけ。あとは全部、繋がる。」</b>が基本の考え方です。</p>
 
-      <h2>使う場面</h2>
+      <div class="flow">
+        <span>📅 予定を入れる</span><i>→</i>
+        <span>💬 セッション</span><i>→</i>
+        <span>🎙 話して記録</span><i>→</i>
+        <span class="auto">実績カウント（自動）</span><i>→</i>
+        <span class="auto">未請求に計上（自動）</span><i>→</i>
+        <span>💰 請求書は1ポチ</span>
+      </div>
+
+      <div class="g-shot">
+        <span class="g-shot-icon">📷</span>
+        <b>スクショ No.2</b>：ロビー（ホーム画面）<br>今日の予定・タスク・未請求がひと目で分かる様子
+      </div>
+
+      <h2>3体のロボがかわりに働く</h2>
+      <div class="g-chara">
+        <img src="../public/images/characters/green-work.webp" alt="緑のロボ">
+        <div class="g-bubble"><span class="g-who">緑のロボ（データ担当）</span>
+          予定・場所・URL・クライアント情報はボクが揃えるよ。
+          <a href="calendar.html">予定管理</a>と<a href="clients.html">クライアント管理</a>はおまかせ。
+        </div>
+      </div>
+      <div class="g-chara">
+        <img src="../public/images/characters/rabbit-work.webp" alt="白うさぎ">
+        <div class="g-bubble"><span class="g-who">白うさぎ（記録担当）</span>
+          セッションのあと、🎤に話すだけで<a href="karte.html">カルテ</a>にするよ。
+          <a href="ai-report.html">AI要約や報告書</a>の下書きもわたしの仕事。
+        </div>
+      </div>
+      <div class="g-chara">
+        <img src="../public/images/characters/pink-work.webp" alt="ピンクのロボ">
+        <div class="g-bubble"><span class="g-who">ピンクのロボ（管理担当）</span>
+          <a href="performance.html">実績のカウント</a>と<a href="invoice.html">請求</a>はワタシ。
+          完了したセッションは自動で数えて、未請求も見逃さないよ。
+        </div>
+      </div>
+
+      <h2>主な画面</h2>
+      <ul>
+        <li><b>ロビー</b> ─ 今日の予定・タスク・未請求アラートが集まるホーム</li>
+        <li><b>カレンダー</b> ─ 予定の作成・編集（月／週表示）</li>
+        <li><b>クライアント／企業</b> ─ 相談者と法人契約先の管理</li>
+        <li><b>カルテ</b> ─ セッション記録・AI要約・報告書</li>
+        <li><b>実績</b> ─ 売上・件数の自動集計</li>
+        <li><b>請求書</b> ─ 未請求の管理と請求書発行</li>
+        <li>ほかに：タスク・目標（AIアシスタント付き）・カウンセラー名鑑・設定</li>
+      </ul>
+
+      <h2>こんな方に</h2>
       <ul>
         <li>セッション後の記録づくりで、毎回残業になっている</li>
         <li>予定・記録・請求がカレンダー／ノート／Excelに散らばっている</li>
         <li>実績の集計や請求漏れのチェックを後回しにしがち</li>
-        <li>面談中、メモに必死で話に集中できない</li>
       </ul>
-      <p>ひとつでも当てはまるなら、Cautasが力になれます。</p>
 
-      <h2>手順（ざっくり全体の流れ）</h2>
-      <ol class="g-steps">
-        <li><b>予定を入れる</b>クライアント・場所・URLを登録すると、以降すべてこの予定に繋がります。</li>
-        <li><b>セッションをする</b>記録はあとで音声から。面談中は話すことに集中できます。</li>
-        <li><b>あとはCautasにおまかせ</b>実績のカウント、未請求の管理、請求書の発行までワンタップです。</li>
-      </ol>
-      <p>くわしくは <a href="first-3-steps.html">最初の3ステップ</a> をどうぞ。</p>
-
-      <h2>よくあるミス</h2>
-      <div class="g-note">
-        予定を入れずに記録や請求から始めようとすると、繋がりの良さが活きません。
-        まずは<b>予定の登録から</b>始めるのがおすすめです。
-      </div>
-
-      <h2>コツ</h2>
-      <div class="g-tip">
-        最初は完璧に設定しようとせず、直近1件の予定だけ入れて一連の流れ
-        （予定→記録→請求）を試すと、全体像が早くつかめます。
+      <div class="g-chara is-tip">
+        <img src="../public/images/characters/green-front.webp" alt="緑のロボ">
+        <div class="g-bubble"><span class="g-who">緑のロボ</span>
+          まずは<a href="first-3-steps.html">最初の3ステップ</a>で、
+          予定→記録→自動カウントの流れを1件だけ体験してみて。5分で全体像がつかめるよ。
+        </div>
       </div>
 
       <div class="g-related">

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI分析と報告書づくり | Cautas Guide</title>
+  <meta name="description" content="かうたすのAI機能一覧（要約・音声・リスク分析・名刺読み取り）と報告書の作り方、現在の制限事項を説明します。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="stylesheet" href="guide.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+  </style>
+</head>
+<body>
+
+  <header class="g-header">
+    <a class="g-logo" href="../">cautas<span>Guide</span></a>
+    <div class="g-header-right">
+      <a class="g-back" href="index.html">← Guide トップへ</a>
+      <a class="g-cta" href="https://cautas.pages.dev/" target="_blank" rel="noopener">無料で試す</a>
+    </div>
+  </header>
+
+  <main class="g-main">
+    <article class="g-article">
+
+      <div class="g-breadcrumb">
+        <a href="index.html">Guide</a> ／ <a href="index.html#categories">報告書・AI分析</a> ／ AI分析と報告書づくり
+      </div>
+
+      <div class="g-art-head">
+        <img src="../public/images/characters/rabbit-front.webp" alt="白うさぎ">
+        <div>
+          <h1>AI分析と報告書づくり</h1>
+          <div class="g-art-meta">カテゴリ：報告書・AI分析　｜　案内役：白うさぎ</div>
+        </div>
+      </div>
+
+      <h2>できること（AI機能の一覧）</h2>
+      <ul>
+        <li><b>カルテAI要約</b> ─ セッション内容から様子・進捗・次回・タグを下書き</li>
+        <li><b>音声の文字起こし</b> ─ 🎤で話すと文字になる（<a href="karte.html">カルテの記事</a>参照）</li>
+        <li><b>離脱リスク分析</b> ─ クライアント詳細の「リスク分析を実行」。頻度と履歴からリスクとフォロー案を提案</li>
+        <li><b>目標設計アシスタント</b> ─ 「目標」画面で対話しながら目標とタスクを作れる</li>
+        <li><b>名刺読み取り</b> ─ 「企業」で名刺画像から企業名・担当者・連絡先を自動入力</li>
+        <li><b>報告書生成</b> ─ カルテから報告書のドラフトを作る（この記事の後半）</li>
+        <li><b>セッション準備タスク提案</b> ─ 24時間以内にセッションがあると、準備タスクを自動で提案</li>
+      </ul>
+
+      <div class="g-chara is-tip">
+        <img src="../public/images/characters/rabbit-work.webp" alt="白うさぎ">
+        <div class="g-bubble"><span class="g-who">白うさぎ</span>
+          AIはぜんぶ<b>ボタンを押したときだけ</b>動くよ（自動で書き換えたりしない）。
+          生成された文章はいつでも自分で直せるから、下書きとして気軽に使ってね。
+        </div>
+      </div>
+
+      <h2>報告書の作り方</h2>
+      <p>報告書は3か所から作れます：</p>
+      <ul>
+        <li>カルテ詳細の「報告書作成」→ <b>セッション報告書</b>（本人向け）／<b>経過報告書</b>（企業人事向け）</li>
+        <li>カルテ一覧の「月次報告書」→ 期間を指定して月次報告書</li>
+        <li>実績（講師業）の「研修報告書作成」→ 研修報告書</li>
+      </ul>
+
+      <ol class="g-steps">
+        <li><b>タイプを選ぶ</b>セッション報告書か、経過報告書か。</li>
+        <li><b>報告先・期間・含める項目を選ぶ</b>報告先は「本人（クライアント）」「企業人事部」「上司・管理職」「その他」。</li>
+        <li><b>「AIで生成」or「手動で作成」</b>AIならカルテの内容からドラフトが出ます。</li>
+        <li><b>プレビューで編集して「保存」</b></li>
+      </ol>
+
+      <div class="g-shot">
+        <span class="g-shot-icon">📷</span>
+        <b>スクショ No.18</b>：報告書作成画面<br>タイプ選択〜生成の流れ
+      </div>
+
+      <h2>いまの制限（ここは正直に）</h2>
+      <div class="g-chara is-note">
+        <img src="../public/images/characters/rabbit-front.webp" alt="白うさぎ">
+        <div class="g-bubble"><span class="g-who">ごめんね、開発中</span>
+          保存した報告書を<b>あとから一覧で開き直す画面はまだ準備中</b>なの。
+          生成した報告書は、その場でコピーして手元の文書にも保存しておくのがおすすめ。
+          プレビューの一部も「準備中です」と出ることがあるよ。
+        </div>
+      </div>
+
+      <div class="g-chara is-tip">
+        <img src="../public/images/characters/rabbit-work.webp" alt="白うさぎ">
+        <div class="g-bubble"><span class="g-who">白うさぎ</span>
+          カルテの「報告書に含めない内容」「非公開メモ」に書いたことは、
+          報告書をつくるときに配慮される仕組みだよ。
+          本人や企業に見せない前提のメモは、最初からその欄に書いておいてね。
+        </div>
+      </div>
+
+      <div class="g-related">
+        <h2>関連記事</h2>
+        <div class="g-articles">
+          <a class="g-article-link" href="karte.html">
+            <span class="g-art-cat">カルテ・記録</span>カルテを書く・話して記録する
+          </a>
+          <a class="g-article-link" href="clients.html">
+            <span class="g-art-cat">予約管理</span>クライアントを登録する
+          </a>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="g-footer">
+    <a href="index.html">Guide トップ</a><a href="../">紹介サイト</a>
+    <p style="margin-top:10px">© 2026 Cautas. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

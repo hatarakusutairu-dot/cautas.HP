@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cautas Guide ─ 説明書・ヘルプセンター</title>
-  <meta name="description" content="カウンセラー向け業務管理アプリ Cautas の使い方ガイド。はじめ方・予約管理・カルテ記録・AI分析・実績・請求の説明書です。">
+  <meta name="description" content="カウンセラー向け業務管理アプリ Cautas（かうたす）の使い方ガイド。はじめ方・予約管理・カルテ記録・AI分析・実績・請求の説明書です。">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
   <link rel="stylesheet" href="guide.css">
   <style>
@@ -25,7 +25,7 @@
 
     <div class="g-hero">
       <h1>なにかお困りですか？</h1>
-      <p>Cautasの使い方を、カテゴリまたは検索から探せます。</p>
+      <p>Cautas（かうたす）の使い方を、カテゴリまたは検索から探せます。</p>
       <input class="g-search" id="guide-search" type="search"
              placeholder="キーワードで探す（例：予定 / 記録 / 請求）" aria-label="記事を検索">
     </div>
@@ -44,38 +44,38 @@
     <h2 class="g-sec-title" id="categories">カテゴリから探す</h2>
     <div class="g-cats">
       <a class="g-cat" href="what-is-cautas.html">
-        <div class="g-cat-emoji">🌱</div>
+        <img class="g-cat-chara" src="../public/images/characters/human-morning.webp" alt="">
         <h3>はじめ方</h3>
-        <p>Cautasとは・最初の3ステップ・初心者むけFAQ</p>
+        <p>Cautasとは・最初の3ステップ</p>
       </a>
-      <a class="g-cat is-soon" href="#">
-        <div class="g-cat-emoji">📅</div>
-        <h3>予約管理<span class="g-soon-badge">準備中</span></h3>
+      <a class="g-cat" href="calendar.html">
+        <img class="g-cat-chara" src="../public/images/characters/green-work.webp" alt="">
+        <h3>予約管理</h3>
         <p>予定入力・クライアント紐付け・場所やURLの管理</p>
       </a>
-      <a class="g-cat is-soon" href="#">
-        <div class="g-cat-emoji">🎙</div>
-        <h3>カルテ・記録<span class="g-soon-badge">準備中</span></h3>
-        <p>音声記録・文字変換・記録の編集</p>
+      <a class="g-cat" href="karte.html">
+        <img class="g-cat-chara" src="../public/images/characters/rabbit-work.webp" alt="">
+        <h3>カルテ・記録</h3>
+        <p>音声記録・文字変換・テンプレート</p>
       </a>
-      <a class="g-cat is-soon" href="#">
-        <div class="g-cat-emoji">🤖</div>
-        <h3>報告書・AI分析<span class="g-soon-badge">準備中</span></h3>
-        <p>AI分析・報告書の下書き・出力</p>
+      <a class="g-cat" href="ai-report.html">
+        <img class="g-cat-chara" src="../public/images/characters/rabbit-front.webp" alt="">
+        <h3>報告書・AI分析</h3>
+        <p>AI要約・リスク分析・報告書の下書き</p>
       </a>
-      <a class="g-cat is-soon" href="#">
-        <div class="g-cat-emoji">📊</div>
-        <h3>実績管理<span class="g-soon-badge">準備中</span></h3>
-        <p>自動カウント・期間集計・目標設定</p>
+      <a class="g-cat" href="performance.html">
+        <img class="g-cat-chara" src="../public/images/characters/pink-work.webp" alt="">
+        <h3>実績管理</h3>
+        <p>自動カウント・期間集計・過去実績の入力</p>
       </a>
-      <a class="g-cat is-soon" href="#">
-        <div class="g-cat-emoji">💰</div>
-        <h3>請求<span class="g-soon-badge">準備中</span></h3>
-        <p>請求書作成・未請求管理・発行履歴</p>
+      <a class="g-cat" href="invoice.html">
+        <img class="g-cat-chara" src="../public/images/characters/pink-front.webp" alt="">
+        <h3>請求</h3>
+        <p>請求書作成・未請求管理・PDF保存</p>
       </a>
-      <a class="g-cat is-soon" href="#">
-        <div class="g-cat-emoji">❓</div>
-        <h3>FAQ<span class="g-soon-badge">準備中</span></h3>
+      <a class="g-cat" href="faq.html">
+        <img class="g-cat-chara" src="../public/images/characters/human-relax.webp" alt="">
+        <h3>FAQ</h3>
         <p>よくある質問・トラブル対応</p>
       </a>
     </div>
@@ -84,24 +84,40 @@
     <h2 class="g-sec-title">人気の記事</h2>
     <div class="g-articles" id="article-list">
       <a class="g-article-link" href="what-is-cautas.html"
-         data-keys="cautasとは かうたす はじめて 初めて 初心者 なに 何 できること 機能 概要">
+         data-keys="cautasとは かうたす はじめて 初めて 初心者 なに 何 できること 機能 概要 ロボ キャラクター">
         <span class="g-art-cat">はじめ方</span>Cautasとは？ ─ できることまとめ
       </a>
       <a class="g-article-link" href="first-3-steps.html"
-         data-keys="はじめ方 最初 3ステップ 予定 登録 アカウント 始める スタート 設定 無料">
+         data-keys="はじめ方 最初 3ステップ 登録 アカウント 始める スタート 設定 無料 確認メール google ログイン">
         <span class="g-art-cat">はじめ方</span>最初の3ステップ ─ 予定を入れるところから
       </a>
-      <a class="g-article-link is-soon" href="#"
-         data-keys="音声 記録 カルテ セッション 録音 文字">
-        <span class="g-art-cat">カルテ・記録</span>音声でカルテを記録する（準備中）
+      <a class="g-article-link" href="calendar.html"
+         data-keys="予定 カレンダー セッション 予約 繰り返し 場所 url 電話 カテゴリ 編集 削除 複製 終日 料金">
+        <span class="g-art-cat">予約管理</span>予定を入れる ─ 場所もURLも全部ここに
       </a>
-      <a class="g-article-link is-soon" href="#"
-         data-keys="請求 請求書 未請求 発行 漏れ">
-        <span class="g-art-cat">請求</span>請求書を1ポチで発行する（準備中）
+      <a class="g-article-link" href="clients.html"
+         data-keys="クライアント 相談者 登録 企業 法人 b2b 名刺 住所 カナ リスク分析 削除">
+        <span class="g-art-cat">予約管理</span>クライアントを登録する
       </a>
-      <a class="g-article-link is-soon" href="#"
-         data-keys="実績 集計 カウント 件数 月">
-        <span class="g-art-cat">実績管理</span>今月の実績を確認する（準備中）
+      <a class="g-article-link" href="karte.html"
+         data-keys="カルテ 記録 音声 マイク 録音 文字起こし テンプレート ai要約 セッション内容 非公開メモ">
+        <span class="g-art-cat">カルテ・記録</span>カルテを書く・話して記録する
+      </a>
+      <a class="g-article-link" href="ai-report.html"
+         data-keys="ai 分析 要約 報告書 月次 経過 研修 リスク 名刺 目標 アシスタント">
+        <span class="g-art-cat">報告書・AI分析</span>AI分析と報告書づくり
+      </a>
+      <a class="g-article-link" href="performance.html"
+         data-keys="実績 集計 カウント 件数 売上 月 年度 過去実績 完了 ダッシュボード">
+        <span class="g-art-cat">実績管理</span>実績は自動でカウントされる
+      </a>
+      <a class="g-article-link" href="invoice.html"
+         data-keys="請求 請求書 未請求 発行 漏れ pdf 印刷 支払 入金 振込 消費税 発行者 屋号">
+        <span class="g-art-cat">請求</span>請求書を作成・発行する
+      </a>
+      <a class="g-article-link" href="faq.html"
+         data-keys="faq 質問 トラブル ログインできない 安全 セキュリティ 複数端末 スマホ オフライン 削除 復元 料金 無料">
+        <span class="g-art-cat">FAQ</span>よくある質問（FAQ）
       </a>
     </div>
 

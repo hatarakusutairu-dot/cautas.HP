@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>請求書を作成・発行する | Cautas Guide</title>
+  <meta name="description" content="かうたすの請求。未請求セッションからの請求書作成、発行・入金の流れ、PDF保存、発行者情報の設定を図解で説明します。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="stylesheet" href="guide.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+  </style>
+</head>
+<body>
+
+  <header class="g-header">
+    <a class="g-logo" href="../">cautas<span>Guide</span></a>
+    <div class="g-header-right">
+      <a class="g-back" href="index.html">← Guide トップへ</a>
+      <a class="g-cta" href="https://cautas.pages.dev/" target="_blank" rel="noopener">無料で試す</a>
+    </div>
+  </header>
+
+  <main class="g-main">
+    <article class="g-article">
+
+      <div class="g-breadcrumb">
+        <a href="index.html">Guide</a> ／ <a href="index.html#categories">請求</a> ／ 請求書を作成・発行する
+      </div>
+
+      <div class="g-art-head">
+        <img src="../public/images/characters/pink-front.webp" alt="ピンクのロボ">
+        <div>
+          <h1>請求書を作成・発行する</h1>
+          <div class="g-art-meta">カテゴリ：請求　｜　案内役：ピンクのロボ</div>
+        </div>
+      </div>
+
+      <h2>できること</h2>
+      <p>
+        完了したセッションは自動で<b>「未請求」</b>に並びます。チェックして1ボタンで請求書に。
+        請求漏れが仕組みで防げます。
+      </p>
+
+      <h2>最初に1回だけ：発行者情報の設定</h2>
+      <div class="g-chara is-note">
+        <img src="../public/images/characters/pink-front.webp" alt="ピンクのロボ">
+        <div class="g-bubble"><span class="g-who">いちばん大事</span>
+          「設定」の請求書設定に<b>屋号・氏名・住所・振込先</b>を入れておいてね。
+          ここが空のままだと、請求書の「請求元」が<b>空欄のまま印刷されちゃう</b>の。
+        </div>
+      </div>
+
+      <div class="g-shot">
+        <span class="g-shot-icon">📷</span>
+        <b>スクショ No.17</b>：設定画面（請求書設定）<br>発行者情報の入力欄
+      </div>
+
+      <h2>手順（請求書の作成）</h2>
+      <ol class="g-steps">
+        <li><b>「請求書」を開く</b>最初に「未請求セッション」タブが表示されます。</li>
+        <li><b>請求したいセッションにチェック</b>複数まとめて選べます。</li>
+        <li><b>「選択から請求書作成」を押す</b></li>
+        <li><b>内容を確認して保存</b>宛先は「個人」「企業」を切り替えて選択（その場で新規登録も可）。「請求書を作成しました」と出たら完了。</li>
+      </ol>
+
+      <div class="g-shot">
+        <span class="g-shot-icon">📷</span>
+        <b>スクショ No.14</b>：未請求セッションのタブ<br>チェック→「選択から請求書作成」の流れ
+      </div>
+
+      <div class="g-shot">
+        <span class="g-shot-icon">📷</span>
+        <b>スクショ No.15</b>：請求書の作成画面<br>宛名（個人／企業）の切り替え
+      </div>
+
+      <div class="g-chara is-tip">
+        <img src="../public/images/characters/pink-work.webp" alt="ピンクのロボ">
+        <div class="g-bubble"><span class="g-who">ピンクのロボ</span>
+          請求書を作ると、そのセッションは自動で「請求済」になって未請求一覧から消えるよ。
+          消費税10%の計算も、請求書番号（INV-年-月-番号）も、ぜんぶワタシがやっておくね。
+        </div>
+      </div>
+
+      <h2>発行 → 入金の流れ</h2>
+      <p>請求書一覧で請求書を選ぶと、状態に応じたボタンが出ます：</p>
+      <ul>
+        <li><b>下書き</b> →「発行」ボタン（発行後は編集できません）</li>
+        <li><b>発行済み</b> →「支払済」ボタン（入金を確認したら押す）</li>
+      </ul>
+
+      <h2>PDFにする・印刷する</h2>
+      <p>
+        請求書の「PDF」ボタンを押すと印刷用ページが開きます。
+        ページ内の「印刷 / PDF保存」（またはブラウザの印刷 → PDFに保存）で書類になります。
+      </p>
+
+      <div class="g-shot">
+        <span class="g-shot-icon">📷</span>
+        <b>スクショ No.16</b>：請求書の印刷ページ<br>記載項目の全体
+      </div>
+
+      <h2>よくあるミス</h2>
+      <div class="g-chara is-note">
+        <img src="../public/images/characters/pink-front.webp" alt="ピンクのロボ">
+        <div class="g-bubble"><span class="g-who">よくあるミス</span>
+          未請求一覧にセッションが出てこないときは、予定がまだ「完了」になっていないかも。
+          <b>完了にしたセッションだけ</b>が未請求に並ぶ仕組みだよ。
+        </div>
+      </div>
+
+      <div class="g-related">
+        <h2>関連記事</h2>
+        <div class="g-articles">
+          <a class="g-article-link" href="performance.html">
+            <span class="g-art-cat">実績管理</span>実績は自動でカウントされる
+          </a>
+          <a class="g-article-link" href="clients.html">
+            <span class="g-art-cat">予約管理</span>クライアントを登録する
+          </a>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="g-footer">
+    <a href="index.html">Guide トップ</a><a href="../">紹介サイト</a>
+    <p style="margin-top:10px">© 2026 Cautas. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

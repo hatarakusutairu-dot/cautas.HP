@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>よくある質問（FAQ） | Cautas Guide</title>
+  <meta name="description" content="かうたすのよくある質問。データの安全性、複数端末での利用、削除の注意、ログインできないとき、料金について。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="stylesheet" href="guide.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+    .faq-q { font-weight: 900; margin: 30px 0 6px; }
+    .faq-q::before { content: 'Q. '; color: var(--accent); }
+    .faq-a { margin: 0 0 8px; }
+    .faq-a::before { content: 'A. '; color: #58a002; font-weight: 900; }
+  </style>
+</head>
+<body>
+
+  <header class="g-header">
+    <a class="g-logo" href="../">cautas<span>Guide</span></a>
+    <div class="g-header-right">
+      <a class="g-back" href="index.html">← Guide トップへ</a>
+      <a class="g-cta" href="https://cautas.pages.dev/" target="_blank" rel="noopener">無料で試す</a>
+    </div>
+  </header>
+
+  <main class="g-main">
+    <article class="g-article">
+
+      <div class="g-breadcrumb">
+        <a href="index.html">Guide</a> ／ <a href="index.html#categories">FAQ</a> ／ よくある質問
+      </div>
+
+      <div class="g-art-head">
+        <img src="../public/images/characters/human-relax.webp" alt="カウンセラー">
+        <div>
+          <h1>よくある質問（FAQ）</h1>
+          <div class="g-art-meta">カテゴリ：FAQ</div>
+        </div>
+      </div>
+
+      <h2>データについて</h2>
+
+      <p class="faq-q">クライアントの記録は安全ですか？</p>
+      <p class="faq-a">
+        データはクラウドに保存され、<b>利用者ごとに厳密に分離</b>されています。他の利用者からあなたの記録は見えません。
+        カルテの「非公開メモ」「報告書に含めない内容」は、報告書をつくる際にも配慮される設計です。
+      </p>
+
+      <p class="faq-q">別のPCやスマホからも使えますか？</p>
+      <p class="faq-a">
+        使えます。クライアント・予定・カルテ・請求書などの基本データはクラウド保存なので、
+        同じアカウントでログインすればどの端末でも同じです。
+      </p>
+      <div class="g-chara is-note">
+        <img src="../public/images/characters/rabbit-front.webp" alt="白うさぎ">
+        <div class="g-bubble"><span class="g-who">ただしね</span>
+          <b>カルテのテンプレート</b>と画面の表示設定（カレンダーの見た目、ロビーの並び順など）は
+          端末ごとの保存で、別の端末には付いてこないの。気をつけてね。
+        </div>
+      </div>
+
+      <p class="faq-q">オフラインでも使えますか？</p>
+      <p class="faq-a">いいえ、インターネット接続が必要です。接続がないと保存・読み込みができません。</p>
+
+      <p class="faq-q">削除したデータは戻せますか？</p>
+      <p class="faq-a">
+        戻せません。クライアント・カルテ・請求書の削除は、確認ダイアログのあと<b>完全に削除</b>されます。
+        予定を削除すると、その繰り返し分もまとめて消えます。削除の前にひと呼吸おいてください。
+      </p>
+
+      <h2>ログイン・アカウント</h2>
+
+      <p class="faq-q">ログインできません</p>
+      <p class="faq-a">表示されるメッセージで対処が変わります：</p>
+      <ul>
+        <li>「メールアドレスまたはパスワードが正しくありません。」→ 入力を確認。忘れた場合は「パスワードをお忘れですか？」からリセット</li>
+        <li>「メールアドレスが確認されていません。」→ 登録時に届いた<b>確認メールのリンク</b>を先にクリック</li>
+        <li>原因不明のエラー（500など）→ サーバー側の一時的な問題のことがあります。時間をおいても直らなければ運営へお問い合わせください</li>
+      </ul>
+
+      <p class="faq-q">Googleアカウントでも登録できますか？</p>
+      <p class="faq-a">できます。ログイン画面の「Googleで登録」「Googleでログイン」からどうぞ。</p>
+
+      <h2>機能の制限（正直コーナー）</h2>
+
+      <p class="faq-q">繰り返し予定が途中までしか表示されません</p>
+      <p class="faq-a">
+        繰り返しの個別日程は<b>先の90日分まで</b>自動生成される仕様です。
+        期間が近づいたら登録し直してください。
+      </p>
+
+      <p class="faq-q">保存した報告書があとから見つかりません</p>
+      <p class="faq-a">
+        保存した報告書を一覧で開き直す画面は<b>準備中</b>です。
+        当面は、生成した報告書をその場でコピーして手元にも保存してください。
+      </p>
+
+      <h2>料金</h2>
+
+      <p class="faq-q">いくらかかりますか？</p>
+      <p class="faq-a">
+        いまは<b>すべての機能を無料</b>で使えます。有料プランは検討中で、変更の際は事前にお知らせします。
+      </p>
+
+      <div class="g-chara is-tip">
+        <img src="../public/images/characters/green-work.webp" alt="緑のロボ">
+        <div class="g-bubble"><span class="g-who">緑のロボ</span>
+          ここに載っていない困りごとは、<a href="../#scene-cta">紹介サイト</a>や
+          アプリ内からお問い合わせください（専用窓口は準備中です）。
+        </div>
+      </div>
+
+      <div class="g-related">
+        <h2>関連記事</h2>
+        <div class="g-articles">
+          <a class="g-article-link" href="what-is-cautas.html">
+            <span class="g-art-cat">はじめ方</span>Cautasとは？ ─ できることまとめ
+          </a>
+          <a class="g-article-link" href="first-3-steps.html">
+            <span class="g-art-cat">はじめ方</span>最初の3ステップ
+          </a>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="g-footer">
+    <a href="index.html">Guide トップ</a><a href="../">紹介サイト</a>
+    <p style="margin-top:10px">© 2026 Cautas. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
