@@ -444,6 +444,9 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 /* テキスト選択色をブランドカラーに */
 ::selection { background: rgba(255, 100, 220, 0.35); color: #fff; }
 
+/* パフォーマンス：画面外セクションのCSSアニメーションを休止 */
+.anim-paused * { animation-play-state: paused !important; }
+
 /* ===================== 困りごとセクション（要件2-3） ===================== */
 #scene-pain {
   position: relative;

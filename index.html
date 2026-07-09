@@ -553,6 +553,13 @@
     bookGifEl.addEventListener('load',  () => console.log('✅ bookGif ロード成功:', bookGifEl.src));
     bookGifEl.addEventListener('error', () => console.warn('❌ bookGif ロード失敗:', bookGifEl.src));
     const scenePhone     = document.getElementById('scene-phone');
+
+    // パフォーマンス：ヒーロー領域を過ぎたら背景の描画ループを休ませる
+    let heroActive = true;
+    window.addEventListener('scroll', () => {
+      const sc = document.querySelector('.scroll-container');
+      heroActive = window.scrollY < sc.offsetHeight + window.innerHeight;
+    }, { passive: true });
     const kautasChars    = document.querySelectorAll('.kautas-char');
     const rabbitImg      = document.getElementById('rabbit-img');
     const circumference  = 2 * Math.PI * 22;
@@ -572,7 +579,7 @@
     try {
       const canvas3d = document.getElementById('three-canvas');
       renderer3d = new THREE.WebGLRenderer({ canvas: canvas3d, alpha: true, antialias: true });
-      renderer3d.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer3d.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       renderer3d.setSize(window.innerWidth, window.innerHeight);
       try { renderer3d.outputEncoding = THREE.sRGBEncoding; } catch(e) {}
 
@@ -603,9 +610,10 @@
         console.warn('GLTFLoader未定義 → アイコンはスキップ');
       }
 
-      // レンダーループ
+      // レンダーループ（ヒーロー領域外では描画を休止）
       (function loop() {
         requestAnimationFrame(loop);
+        if (!heroActive) return;
         if (glbRunning) {
           glbMeshes.forEach(item => {
             if (!item.absorbed) {
@@ -882,6 +890,7 @@
       slidingPhotos.push({element:img,startX:sX,startY:sY,endX:eX,endY:eY,angle,speed,progress:prog,absorbed:false,currentX:cX,currentY:cY,direction:dir});
     }
     function animatePhotos() {
+      if (!heroActive) { requestAnimationFrame(animatePhotos); return; }
       slidingPhotos.forEach(p => {
         if (p.absorbed) return;
         p.progress += p.speed * 0.002;
@@ -1167,6 +1176,8 @@
     const walkerImg     = document.getElementById('walker-img');
     // お供の白うさぎ（歩き2ポーズを人型のコマと同期して切替）
     const frabbitImg    = document.getElementById('frabbit-img');
+    const fGreenImg     = document.querySelector('#follower-green img');
+    const fPinkImg      = document.querySelector('#follower-pink img');
 
     // 連番の先読み（本素材が入ったら自動で効く）
     WALKER_FRAMES.forEach(src => { const im = new Image(); im.src = src; });
@@ -1177,12 +1188,22 @@
     // 記憶のシーン：付箋i の出現時刻に合わせ、浮かぶ→奥へ沈む を進行度から直接計算
     const painMemories = document.querySelectorAll('.pain-memory');
     const PAIN_NOTE_AT = (i) => 0.12 + i * 0.082;   // 付箋iの出現タイミング（下のtweenと同値）
+    const painMemActive = new Array(painMemories.length).fill(false);
     function updatePainMemories(p) {
       painMemories.forEach((mem, i) => {
         const ti = PAIN_NOTE_AT(i);
         const rise = Math.max(0, Math.min(1, (p - (ti - 0.035)) / 0.045)); // 浮かび上がり
         const sink = Math.max(0, Math.min(1, (p - (ti + 0.025)) / 0.11));  // 奥への沈み
         const op = rise * (1 - sink) * 0.55;
+        // 見えていない写真は触らない（blurフィルタ更新は重いため）
+        if (op <= 0.001) {
+          if (painMemActive[i]) {
+            painMemActive[i] = false;
+            gsap.set(mem, { opacity: 0, filter: 'none' });
+          }
+          return;
+        }
+        painMemActive[i] = true;
         gsap.set(mem, {
           opacity: op,
           scale: 1.18 - rise * 0.06 - sink * 0.30,   // 縮む＝奥へ遠ざかる
@@ -1259,17 +1280,17 @@
           // 緑・ピンクのトコトコ歩き：人型と同じ歩調で体を揺らし小さく跳ねる
           // （スクロール連動＝止まれば隊列全員が止まる）
           const stride = p * WALK_CYCLES * Math.PI * 2;
-          gsap.set('#follower-green img', {
+          gsap.set(fGreenImg, {
             rotation: Math.sin(stride) * 5,
             y: -Math.abs(Math.sin(stride)) * 8,
             transformOrigin: '50% 100%'
           });
-          gsap.set('#follower-pink img', {
+          gsap.set(fPinkImg, {
             rotation: Math.sin(stride + 1.1) * 5,
             y: -Math.abs(Math.sin(stride + 1.1)) * 8,
             transformOrigin: '50% 100%'
           });
-          gsap.set('#frabbit-img', {
+          gsap.set(frabbitImg, {
             y: -Math.abs(Math.sin(stride + 0.5)) * 5
           });
 
@@ -1853,6 +1874,31 @@
       opacity: 0, y: 50, stagger: 0.12, duration: 0.8, ease: 'back.out(1.4)',
       scrollTrigger: { trigger: '#scene-cta', start: 'top 65%' }
     });
+
+    // ================================================================
+    // パフォーマンス：画面外セクションの動画とCSSアニメを休止
+    // ================================================================
+    const introVideos = document.querySelectorAll('#scene-intro video');
+    function applyIntroActivity(active) {
+      introVideos.forEach(v => { if (active) { v.play().catch(() => {}); } else { v.pause(); } });
+      document.getElementById('scene-intro').classList.toggle('anim-paused', !active);
+    }
+    const introGate = ScrollTrigger.create({
+      trigger: '#scene-intro', start: 'top bottom', end: 'bottom top',
+      onToggle(self) { applyIntroActivity(self.isActive); }
+    });
+    ['scene-pain', 'scene-hissatsu', 'scene-features', 'scene-cta'].forEach(id => {
+      const st = ScrollTrigger.create({
+        trigger: '#' + id, start: 'top bottom', end: 'bottom top',
+        onToggle(self) {
+          document.getElementById(id).classList.toggle('anim-paused', !self.isActive);
+        }
+      });
+      // 初期状態を反映（onToggleは変化時のみ発火するため）
+      document.getElementById(id).classList.toggle('anim-paused', !st.isActive);
+    });
+    // 初期状態を反映（ページ先頭では導入セクションは画面外＝動画停止）
+    applyIntroActivity(introGate.isActive);
 
     // ================================================================
     // スクロールヒント：絵本が開いたら表示、スクロールしたら消える
