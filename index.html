@@ -324,7 +324,7 @@
           <div class="walker-checks" aria-hidden="true"><span>✓</span><span>✓</span><span>✓</span></div>
         </div>
         <div class="intro-follower" id="follower-rabbit">
-          <img id="frabbit-img" src="public/images/characters/rabbitl.webp" alt="記録を任された白うさぎ">
+          <img id="frabbit-img" src="public/images/characters/rabbit-phone1.webp" alt="スマホ（仕事）を預かって歩く白うさぎ">
           <div class="follower-tasks" aria-hidden="true"><span>🎙</span><span>📝</span></div>
         </div>
         <div class="intro-follower" id="follower-green">
@@ -1249,10 +1249,10 @@
             if (walkerImg.dataset.f != idx) {
               walkerImg.dataset.f = idx;
               walkerImg.src = WALKER_FRAMES[idx];
-              // うさぎは半サイクルごとに左右の足を入れ替え
+              // うさぎ（スマホを預かって歩く）は半サイクルごとに左右の足を入れ替え
               frabbitImg.src = idx < 3
-                ? 'public/images/characters/rabbitl.webp'
-                : 'public/images/characters/rabbitr.webp';
+                ? 'public/images/characters/rabbit-phone1.webp'
+                : 'public/images/characters/rabbit-phone2.webp';
             }
           }
 
@@ -1408,13 +1408,14 @@
         // （maximeguillon.com の「スクロール＝空間を前進する」構造の解釈）
         const PATH_LEN = 56;   // 旅の全長（zの深さ）
         const ZONES = [
-          { z: -8,  chara: 'green-work.webp',  side: -1 },  // 朝：緑ロボ（予定を見せる）
-          { z: -28, chara: 'rabbit-work.webp', side:  1 },  // 昼：白うさぎ（話を聞く）
-          { z: -48, chara: 'pink-joy.webp',   side: -1 }   // 夕：ピンクロボ（ぜんぶ完了）
+          { z: -8,  chara: 'green-work.webp',  human: 'human-morning.webp', side: -1 },  // 朝：本人が予定確認＋緑ロボ
+          { z: -28, chara: 'rabbit-work.webp', human: 'human-talk.webp',    side:  1 },  // 昼：本人が話す＋うさぎが記録
+          { z: -48, chara: 'pink-joy.webp',   human: 'human-relax.webp',  side: -1 }   // 夕：本人がくつろぐ＋ピンクが喜ぶ
         ];
         const meshes = [];
         let glbRequested = false;
-        const EXP_GLBS = ['calender.glb', 'folder.glb', 'mic.glb', 'clock.glb', 'chart.glb', 'heart.glb'];
+        // heart.glb は素材自体が暗色で逆光時に黒い塊に見えるため回廊では不使用
+        const EXP_GLBS = ['calender.glb', 'pencil.glb', 'mic.glb', 'folder.glb', 'chart.glb', 'clock.glb'];
 
         // --- タイムワープ：ゾーン付近でカメラが減速して「立ち止まる」 ---
         // スクロール量p(一様)→移動距離tの変換表。ゾーン近くは速度を落として滞在させる
@@ -1675,14 +1676,22 @@
           wp(2, checkSprite(), -2.3, -0.15, -50.6, 0.45);
           wp(2, checkSprite(), -1.0, 0.25, -50.0, 0.65);
 
-          // ロボキャラ：情景の床の上に立って迎えてくれる（スプライト＝常にカメラを向く）
+          // ロボキャラ＋カウンセラー本人：情景の床の上に一緒にいる（スプライト＝常にカメラを向く）
           const texLoader = new THREE.TextureLoader();
           ZONES.forEach(zone => {
             texLoader.load('public/images/characters/' + zone.chara, tex => {
               const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
               const aspect = tex.image ? tex.image.width / tex.image.height : 1;
+              sp.scale.set(2.6 * aspect, 2.6, 1);
+              sp.position.set(zone.side * 2.0, -1.25, zone.z + 0.8);
+              scene.add(sp);
+            });
+            // 本人（あなたの1日の主人公）：立ち止まりの視線の先に
+            texLoader.load('public/images/characters/' + zone.human, tex => {
+              const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+              const aspect = tex.image ? tex.image.width / tex.image.height : 1;
               sp.scale.set(3.0 * aspect, 3.0, 1);
-              sp.position.set(zone.side * 2.2, -1.05, zone.z + 0.6);
+              sp.position.set(zone.side * 3.4, -1.1, zone.z - 1.6);
               scene.add(sp);
             });
           });
