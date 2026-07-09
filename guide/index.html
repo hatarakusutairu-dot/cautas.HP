@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cautas Guide ─ 説明書・ヘルプセンター</title>
+  <meta name="description" content="カウンセラー向け業務管理アプリ Cautas の使い方ガイド。はじめ方・予約管理・カルテ記録・AI分析・実績・請求の説明書です。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="stylesheet" href="guide.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+  </style>
+</head>
+<body>
+
+  <header class="g-header">
+    <a class="g-logo" href="../">cautas<span>Guide</span></a>
+    <div class="g-header-right">
+      <a class="g-back" href="../">← 紹介サイトへ戻る</a>
+      <a class="g-cta" href="https://cautas.pages.dev/" target="_blank" rel="noopener">無料で試す</a>
+    </div>
+  </header>
+
+  <main class="g-main">
+
+    <div class="g-hero">
+      <h1>なにかお困りですか？</h1>
+      <p>Cautasの使い方を、カテゴリまたは検索から探せます。</p>
+      <input class="g-search" id="guide-search" type="search"
+             placeholder="キーワードで探す（例：予定 / 記録 / 請求）" aria-label="記事を検索">
+    </div>
+
+    <!-- はじめての方へ -->
+    <div class="g-start">
+      <img src="../public/images/characters/green-front.webp" alt="緑ロボ">
+      <div>
+        <h2>はじめての方へ</h2>
+        <p>Cautasってなに？から最初の設定まで、順番にご案内します。</p>
+      </div>
+      <a class="g-start-link" href="what-is-cautas.html">はじめる →</a>
+    </div>
+
+    <!-- カテゴリ -->
+    <h2 class="g-sec-title" id="categories">カテゴリから探す</h2>
+    <div class="g-cats">
+      <a class="g-cat" href="what-is-cautas.html">
+        <div class="g-cat-emoji">🌱</div>
+        <h3>はじめ方</h3>
+        <p>Cautasとは・最初の3ステップ・初心者むけFAQ</p>
+      </a>
+      <a class="g-cat is-soon" href="#">
+        <div class="g-cat-emoji">📅</div>
+        <h3>予約管理<span class="g-soon-badge">準備中</span></h3>
+        <p>予定入力・クライアント紐付け・場所やURLの管理</p>
+      </a>
+      <a class="g-cat is-soon" href="#">
+        <div class="g-cat-emoji">🎙</div>
+        <h3>カルテ・記録<span class="g-soon-badge">準備中</span></h3>
+        <p>音声記録・文字変換・記録の編集</p>
+      </a>
+      <a class="g-cat is-soon" href="#">
+        <div class="g-cat-emoji">🤖</div>
+        <h3>報告書・AI分析<span class="g-soon-badge">準備中</span></h3>
+        <p>AI分析・報告書の下書き・出力</p>
+      </a>
+      <a class="g-cat is-soon" href="#">
+        <div class="g-cat-emoji">📊</div>
+        <h3>実績管理<span class="g-soon-badge">準備中</span></h3>
+        <p>自動カウント・期間集計・目標設定</p>
+      </a>
+      <a class="g-cat is-soon" href="#">
+        <div class="g-cat-emoji">💰</div>
+        <h3>請求<span class="g-soon-badge">準備中</span></h3>
+        <p>請求書作成・未請求管理・発行履歴</p>
+      </a>
+      <a class="g-cat is-soon" href="#">
+        <div class="g-cat-emoji">❓</div>
+        <h3>FAQ<span class="g-soon-badge">準備中</span></h3>
+        <p>よくある質問・トラブル対応</p>
+      </a>
+    </div>
+
+    <!-- 人気記事 -->
+    <h2 class="g-sec-title">人気の記事</h2>
+    <div class="g-articles" id="article-list">
+      <a class="g-article-link" href="what-is-cautas.html"
+         data-keys="cautasとは かうたす はじめて 初めて 初心者 なに 何 できること 機能 概要">
+        <span class="g-art-cat">はじめ方</span>Cautasとは？ ─ できることまとめ
+      </a>
+      <a class="g-article-link" href="first-3-steps.html"
+         data-keys="はじめ方 最初 3ステップ 予定 登録 アカウント 始める スタート 設定 無料">
+        <span class="g-art-cat">はじめ方</span>最初の3ステップ ─ 予定を入れるところから
+      </a>
+      <a class="g-article-link is-soon" href="#"
+         data-keys="音声 記録 カルテ セッション 録音 文字">
+        <span class="g-art-cat">カルテ・記録</span>音声でカルテを記録する（準備中）
+      </a>
+      <a class="g-article-link is-soon" href="#"
+         data-keys="請求 請求書 未請求 発行 漏れ">
+        <span class="g-art-cat">請求</span>請求書を1ポチで発行する（準備中）
+      </a>
+      <a class="g-article-link is-soon" href="#"
+         data-keys="実績 集計 カウント 件数 月">
+        <span class="g-art-cat">実績管理</span>今月の実績を確認する（準備中）
+      </a>
+    </div>
+
+    <!-- 検索ヒットなし（空状態のみキャラが登場） -->
+    <div class="g-empty" id="search-empty">
+      <img src="../public/images/characters/rabbit-front.webp" alt="白うさぎ">
+      <p>その言葉では見つかりませんでした。<br>別のキーワードで試してみてください。</p>
+    </div>
+
+    <p class="g-support">
+      解決しないときは：<a href="../#scene-cta">紹介サイトのCTA</a> から、または
+      <a href="https://cautas.pages.dev/" target="_blank" rel="noopener">アプリ内</a> でお問い合わせください（窓口は準備中です）。
+    </p>
+
+  </main>
+
+  <footer class="g-footer">
+    <a href="../">紹介サイト</a><a href="../#scene-features">機能</a><a href="../#pricing">料金</a>
+    <p style="margin-top:10px">© 2026 Cautas. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // 検索：タイトル＋data-keysに対する単純な部分一致フィルタ（要件9-1）
+    const searchEl = document.getElementById('guide-search');
+    const items    = Array.from(document.querySelectorAll('#article-list .g-article-link'));
+    const emptyEl  = document.getElementById('search-empty');
+    searchEl.addEventListener('input', () => {
+      const q = searchEl.value.trim().toLowerCase();
+      let hit = 0;
+      items.forEach(a => {
+        const text = (a.textContent + ' ' + (a.dataset.keys || '')).toLowerCase();
+        const show = !q || text.includes(q);
+        a.style.display = show ? '' : 'none';
+        if (show) hit++;
+      });
+      emptyEl.style.display = (q && hit === 0) ? 'block' : 'none';
+    });
+  </script>
+
+</body>
+</html>
