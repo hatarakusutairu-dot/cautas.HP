@@ -313,12 +313,23 @@
         </div>
       </div>
 
-      <!-- 手前レイヤー：温かい光をまとって歩くキャラ -->
+      <!-- 手前レイヤー：手ぶらで歩くカウンセラー＋お供のロボ行進（Cautasが仕事を持って付いてくる） -->
       <div class="intro-fg">
         <div id="intro-walker">
           <img id="walker-img"
-               src="public/images/characters/rabbitl.webp"
-               alt="アプリを使って快適に働く人（仮キャラ）">
+               src="public/images/characters/walk1.webp"
+               alt="手ぶらで軽やかに歩くカウンセラー">
+          <!-- 完了通知：歩いている間にも仕事が片付いていく -->
+          <div class="walker-checks" aria-hidden="true"><span>✓</span><span>✓</span><span>✓</span></div>
+        </div>
+        <div class="intro-follower" id="follower-rabbit">
+          <img id="frabbit-img" src="public/images/characters/rabbitl.webp" alt="スマホ（仕事）を預かる白うさぎ">
+        </div>
+        <div class="intro-follower" id="follower-green">
+          <img src="public/images/characters/character-green.webp" alt="予定を整える緑ロボ">
+        </div>
+        <div class="intro-follower" id="follower-pink">
+          <img src="public/images/characters/character-pink.webp" alt="実績と請求を数えるピンクロボ">
         </div>
       </div>
 
@@ -1145,16 +1156,13 @@
     // ================================================================
     // 導入セクション：奥=忙しい現実 / 手前=歩くキャラ（Before/After）
     // ================================================================
-    // 本番の歩きキャラ連番が出来たらここを差し替える（Cbookと同じ方式）。
-    // 例: const WALKER_FRAMES = Array.from({length: 6}, (_, i) =>
-    //       `public/images/characters/walk${i + 1}.webp`);
-    // いまは仮素材：透過済みのうさぎ2ポーズをトコトコ切替
-    const WALKER_FRAMES = [
-      'public/images/characters/rabbitl.webp',
-      'public/images/characters/rabbitr.webp'
-    ];
-    const WALK_CYCLES   = 9;   // セクション通過中に歩きサイクルを回す回数
+    // 歩きキャラ本番素材：6コマの歩行サイクル（walk-sheet.png から切り出し）
+    const WALKER_FRAMES = Array.from({ length: 6 }, (_, i) =>
+      `public/images/characters/walk${i + 1}.webp`);
+    const WALK_CYCLES   = 7;   // セクション通過中に歩きサイクルを回す回数
     const walkerImg     = document.getElementById('walker-img');
+    // お供の白うさぎ（歩き2ポーズを人型のコマと同期して切替）
+    const frabbitImg    = document.getElementById('frabbit-img');
 
     // 連番の先読み（本素材が入ったら自動で効く）
     WALKER_FRAMES.forEach(src => { const im = new Image(); im.src = src; });
@@ -1230,13 +1238,17 @@
         onUpdate(self) {
           const p = self.progress;
 
-          // 歩きコマ送り（連番が入れば自動でそのコマ数で回る）
+          // 歩きコマ送り（人型6コマ＋お供うさぎ2ポーズを同期）
           if (WALKER_FRAMES.length > 1) {
             const idx = Math.floor(p * WALK_CYCLES * WALKER_FRAMES.length)
                         % WALKER_FRAMES.length;
             if (walkerImg.dataset.f != idx) {
               walkerImg.dataset.f = idx;
               walkerImg.src = WALKER_FRAMES[idx];
+              // うさぎは半サイクルごとに左右の足を入れ替え
+              frabbitImg.src = idx < 3
+                ? 'public/images/characters/rabbitl.webp'
+                : 'public/images/characters/rabbitr.webp';
             }
           }
 
@@ -1266,6 +1278,13 @@
       .to('.intro-veil', { opacity: 0, duration: 0.07, ease: 'none' }, 0)
       // 1) キャラ：左から中央へ（縦の入り）
       .fromTo('#intro-walker', { x: '-45vw' }, { x: '37vw', duration: 0.18, ease: 'none' }, 0)
+      // お供のロボたち：少し後ろを行進（うさぎ→緑→ピンクの隊列）
+      .fromTo('#follower-rabbit', { x: '-57vw' }, { x: '25vw', duration: 0.18, ease: 'none' }, 0)
+      .fromTo('#follower-green',  { x: '-66vw' }, { x: '16vw', duration: 0.18, ease: 'none' }, 0)
+      .fromTo('#follower-pink',   { x: '-74vw' }, { x: '8vw',  duration: 0.18, ease: 'none' }, 0)
+      .to('#follower-rabbit', { x: '103vw', duration: 0.10, ease: 'none' }, 0.905)
+      .to('#follower-green',  { x: '94vw',  duration: 0.10, ease: 'none' }, 0.91)
+      .to('#follower-pink',   { x: '86vw',  duration: 0.10, ease: 'none' }, 0.915)
       // コピー：イン→アウト（横展開が始まる前に退く）
       .to('.intro-copy', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.05, ease: 'power2.out' }, 0.05)
       .to('.intro-copy', { opacity: 0, y: -26, filter: 'blur(10px)', duration: 0.04, ease: 'power2.in' }, 0.15)

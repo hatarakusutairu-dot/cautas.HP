@@ -798,6 +798,68 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.55));
 }
 
+/* 完了✓通知：歩いている間にも仕事が片付いていく */
+.walker-checks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.walker-checks span {
+  position: absolute;
+  left: 50%;
+  top: -6%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #58CC02;
+  color: #fff;
+  font-weight: 900;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(40, 120, 0, 0.35);
+  opacity: 0;
+  animation: checkFloat 3.6s ease-out infinite;
+}
+.walker-checks span:nth-child(2) { animation-delay: 1.2s; left: 34%; }
+.walker-checks span:nth-child(3) { animation-delay: 2.4s; left: 64%; }
+
+@keyframes checkFloat {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.4); }
+  12%  { opacity: 1; transform: translate(-50%, -20px) scale(1); }
+  60%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -95px) scale(0.9); }
+}
+
+/* お供のロボたち（行進の隊列） */
+.intro-follower {
+  position: absolute;
+  bottom: 5vh;
+  left: 0;
+  will-change: transform;
+}
+
+#follower-rabbit { width: clamp(95px, 11vw, 155px); bottom: 5.5vh; }
+#follower-green  { width: clamp(70px, 8.5vw, 118px); bottom: 6vh; }
+#follower-pink   { width: clamp(70px, 8.5vw, 118px); bottom: 6vh; }
+
+.intro-follower img {
+  width: 100%;
+  display: block;
+  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45));
+}
+
+/* 緑とピンクはふわふわ浮きながら付いてくる */
+#follower-green img { animation: followBob 1.7s ease-in-out infinite; }
+#follower-pink img  { animation: followBob 2.0s ease-in-out infinite reverse; }
+
+@keyframes followBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-12px) rotate(2deg); }
+}
+
 /* --- コピー --- */
 .intro-copy {
   position: absolute;
