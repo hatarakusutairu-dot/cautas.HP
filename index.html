@@ -361,22 +361,23 @@
       <div class="exp3d-iris"></div>
       <div class="exp3d-hint">🖱 ドラッグで見回せます</div>
 
+      <!-- 見出し・本文は<span>単位でしか改行しない（文節の途中で折り返さない） -->
       <div class="exp3d-card" id="exp3d-card-morning">
-        <div class="exp3d-time">ASA ── 朝</div>
-        <h3>ひらくだけで、今日が見える。</h3>
-        <p>予定・場所・URL・クライアント情報が一枚に。緑のロボが揃えて待っています。</p>
+        <div class="exp3d-time">MORNING ── 朝</div>
+        <h3><span>ひらくだけで、</span><span>今日が見える。</span></h3>
+        <p><span>予定・場所・URL・</span><span>クライアント情報が一枚に。</span><span>緑のロボが</span><span>揃えて待っています。</span></p>
         <img src="public/images/characters/green-front.webp" alt="緑ロボ">
       </div>
       <div class="exp3d-card" id="exp3d-card-noon">
-        <div class="exp3d-time">HIRU ── 昼</div>
-        <h3>話すことに、集中するだけ。</h3>
-        <p>セッションの記録は白うさぎにおまかせ。音声がそのまま言葉になります。</p>
+        <div class="exp3d-time">NOON ── 昼</div>
+        <h3><span>話すことに、</span><span>集中するだけ。</span></h3>
+        <p><span>セッションの記録は</span><span>白うさぎにおまかせ。</span><span>音声がそのまま</span><span>言葉になります。</span></p>
         <img src="public/images/characters/rabbit-front.webp" alt="白うさぎ">
       </div>
       <div class="exp3d-card" id="exp3d-card-evening">
-        <div class="exp3d-time">YUU ── 夕</div>
-        <h3>気づけば、ぜんぶ終わってる。</h3>
-        <p>実績はカウント済み。請求書も1ポチ。あとは、ゆっくり休むだけ。</p>
+        <div class="exp3d-time">EVENING ── 夕</div>
+        <h3><span>気づけば、</span><span>ぜんぶ終わってる。</span></h3>
+        <p><span>実績はカウント済み。</span><span>請求書も1ポチ。</span><span>あとは、</span><span>ゆっくり休むだけ。</span></p>
         <img src="public/images/characters/pink-front.webp" alt="ピンクロボ">
       </div>
     </div>
@@ -835,15 +836,28 @@
     // （CBOOK_FRAMES はスクリプト後方で宣言されるが、タイマー実行時には評価済み）
     let preloadedCount = 0;
     let assetsReady   = false;
+    // コマごとの読み込み済みフラグ＋Image参照保持（キャッシュ落ち防止）
+    // 回線が重くセーフティで先に開いた場合、絵本側は「読み込み済みの最新コマ」を
+    // 表示して固まらず、届いたコマから追いつく（showCbookFrame参照）
+    const cbookReady = [];
+    const cbookImgs  = [];
+    let onCbookFrameLoaded = null;  // 絵本表示側が後方で差し込むコールバック
     // セーフティ：先読みが極端に遅くても10秒で必ず開く
     setTimeout(() => { assetsReady = true; }, 10000);
     // 即時に先読み開始（loadイベントは動画等で遅れるため待たない）
     // ※CBOOK_FRAMESはスクリプト後方で宣言されるため、解析完了直後に実行する
     setTimeout(function preloadCbook() {
       const frames = CBOOK_FRAMES;
-      frames.forEach(src => {
+      frames.forEach((src, i) => {
         const img = new Image();
-        img.onload = img.onerror = () => {
+        cbookImgs.push(img);
+        img.onload = () => {
+          cbookReady[i] = true;
+          preloadedCount++;
+          if (preloadedCount >= frames.length) assetsReady = true;
+          if (onCbookFrameLoaded) onCbookFrameLoaded(i);
+        };
+        img.onerror = () => {
           preloadedCount++;
           if (preloadedCount >= frames.length) assetsReady = true;
         };
@@ -994,13 +1008,36 @@
     let glbLaunched    = false;
     let cbookST        = null;  // ScrollTriggerインスタンス
 
+    // ---- 絵本コマの安全表示 ----
+    // 重い回線でセーフティ（10秒）により先読み未完了のまま公開された場合でも
+    // 絵本が固まらないよう、「表示したいコマ」以下で読み込み済みの最新コマを表示し、
+    // 遅れて届いたコマから順に追いつく
+    let cbookWanted = 0;
+    function bestLoadedFrame(idx) {
+      for (let i = idx; i >= 0; i--) if (cbookReady[i]) return i;
+      return 0;
+    }
+    function showCbookFrame(idx) {
+      cbookWanted = idx;
+      const show = bestLoadedFrame(idx);
+      if (bookGifEl.dataset.frame != show) {
+        bookGifEl.dataset.frame = show;
+        bookGifEl.src = CBOOK_FRAMES[show];
+      }
+    }
+    onCbookFrameLoaded = (i) => {
+      // 表示待ちだった手前のコマが届いたら、その時点の最適コマへ即追いつく
+      const shown = parseInt(bookGifEl.dataset.frame || '0', 10);
+      if (bookStarted && i <= cbookWanted && i > shown) showCbookFrame(cbookWanted);
+    };
+
     function startBookAnimation() {
       if (bookStarted) return;
       bookStarted = true;
       console.log('▶ startBookAnimation: Cbookスクロールアニメ開始');
 
       // --- 最初のフレームを表示してフェードイン ---
-      bookGifEl.src = CBOOK_FRAMES[0];
+      showCbookFrame(0);
       sceneNotebook.style.display = 'flex';
       sceneNotebook.style.opacity = '0';
 
@@ -1025,10 +1062,7 @@
             Math.floor(self.progress * CBOOK_TOTAL),
             CBOOK_TOTAL - 1
           );
-          if (bookGifEl.dataset.frame != idx) {
-            bookGifEl.dataset.frame = idx;
-            bookGifEl.src = CBOOK_FRAMES[idx];
-          }
+          showCbookFrame(idx);
       // Cbook17以降に到達でGLB飛び出し（一度だけ・フレーム飛ばしでも発火）
           if (!glbLaunched && idx >= GLB_LAUNCH_INDEX) {
             glbLaunched = true;
@@ -1050,7 +1084,7 @@
         onLeave() {
           // Cbook32到達 → 絵本フェードアウト
           if (!bookDismissed) {
-            bookGifEl.src = CBOOK_FRAMES[CBOOK_TOTAL - 1];
+            showCbookFrame(CBOOK_TOTAL - 1);
             dismissBook();
           }
         },
@@ -1068,8 +1102,7 @@
             item.mesh.scale.set(0.01, 0.01, 0.01);
           });
           // 絵本を最初のフレームで再表示
-          bookGifEl.src = CBOOK_FRAMES[0];
-          bookGifEl.dataset.frame = 0;
+          showCbookFrame(0);
           sceneNotebook.style.display = 'flex';
           gsap.to(sceneNotebook, { opacity: 1, scale: 1, y: 0, duration: 0.4 });
         }

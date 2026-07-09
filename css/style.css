@@ -1151,6 +1151,14 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   padding-right: 92px;
 }
 
+/* 文節スパン単位でのみ折り返す（「終わって／る。」のような変な改行を防ぐ）。
+   max-width:100%で、極端に狭い画面でもカード外にはみ出さない */
+.exp3d-card h3 span,
+.exp3d-card p span {
+  display: inline-block;
+  max-width: 100%;
+}
+
 .exp3d-card img {
   position: absolute;
   right: 20px;
