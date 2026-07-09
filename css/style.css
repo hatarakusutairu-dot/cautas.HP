@@ -1211,9 +1211,56 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   position: absolute;
   inset: 0;
   opacity: 0;
+  overflow: hidden;
   background:
     radial-gradient(ellipse at 50% 65%, rgba(255, 214, 165, 0.55) 0%, transparent 55%),
     linear-gradient(180deg, #fff7ec 0%, #ffe3c2 55%, #ffc9a3 100%);
+}
+
+/* 中央の光がゆっくり呼吸する（コピーの後光） */
+.hissatsu-warm::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 70vmin;
+  height: 70vmin;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 240, 210, 0.55) 0%, transparent 62%);
+  animation: warmBreath 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes warmBreath {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);    opacity: 0.65; }
+  50%      { transform: translate(-50%, -50%) scale(1.14); opacity: 1; }
+}
+
+/* 立ちのぼる光の粒（暖かい世界〜機能紹介の背景で共用） */
+.warm-orb {
+  position: absolute;
+  left: var(--x);
+  bottom: -8%;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 226, 180, 0.5) 50%,
+    transparent 72%);
+  filter: blur(1px);
+  opacity: 0;
+  pointer-events: none;
+  animation: orbRise var(--dur, 15s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+@keyframes orbRise {
+  0%   { transform: translate(0, 0) scale(0.9);                       opacity: 0; }
+  12%  { opacity: var(--o, 0.45); }
+  82%  { opacity: var(--o, 0.45); }
+  100% { transform: translate(var(--drift, 30px), -108vh) scale(1.2); opacity: 0; }
 }
 
 .hissatsu-copy2 {
@@ -1238,6 +1285,58 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
     #b97fae 42%,
     #5d4a8a 72%,
     #241f47 100%);
+}
+
+/* 背景アニメ層（光の粒＋星）：カードより奥に敷く */
+.features-sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 機能紹介内の粒はセクション全高を昇ると速すぎるので、
+   夕焼け側（上部）でふわっと立ちのぼる程度に */
+.features-sky .warm-orb {
+  animation-name: orbDrift;
+  bottom: auto;
+  top: 38%;
+}
+
+@keyframes orbDrift {
+  0%   { transform: translate(0, 0) scale(0.9);                        opacity: 0; }
+  15%  { opacity: var(--o, 0.4); }
+  80%  { opacity: var(--o, 0.4); }
+  100% { transform: translate(var(--drift, 30px), -38vh) scale(1.15); opacity: 0; }
+}
+
+/* またたく星（グラデが夜になる下半分に配置） */
+.f-star {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9), 0 0 18px rgba(255, 230, 200, 0.4);
+  opacity: 0.15;
+  pointer-events: none;
+  animation: starTwinkle var(--dur, 3.5s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.12; transform: scale(0.8); }
+  50%      { opacity: 0.9;  transform: scale(1.25); }
+}
+
+/* カード・タイトルは背景アニメ層より手前 */
+.features-title,
+.feature-block {
+  position: relative;
+  z-index: 1;
 }
 
 .features-title {

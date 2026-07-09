@@ -393,8 +393,17 @@
         <div class="hissatsu-photo" style="background-image:url('public/images/photos/busy9.webp')"></div>
         <div class="hissatsu-photo" style="background-image:url('public/images/photos/pain1.webp')"></div>
       </div>
-      <p class="hissatsu-copy1">でも、もう<br>戻らなくていい。</p>
-      <div class="hissatsu-warm"></div>
+      <p class="hissatsu-copy1">もう、<br>戻らなくていい。</p>
+      <div class="hissatsu-warm">
+        <!-- 光の粒がゆっくり立ちのぼる（暖かい世界に「生きている」空気感を出す） -->
+        <span class="warm-orb" style="--x:12%; --s:26px; --dur:16s; --delay:-3s;  --o:0.55; --drift:40px"></span>
+        <span class="warm-orb" style="--x:26%; --s:14px; --dur:13s; --delay:-9s;  --o:0.45; --drift:-30px"></span>
+        <span class="warm-orb" style="--x:42%; --s:34px; --dur:19s; --delay:-6s;  --o:0.35; --drift:24px"></span>
+        <span class="warm-orb" style="--x:58%; --s:18px; --dur:14s; --delay:-1s;  --o:0.50; --drift:-46px"></span>
+        <span class="warm-orb" style="--x:71%; --s:24px; --dur:17s; --delay:-11s; --o:0.45; --drift:36px"></span>
+        <span class="warm-orb" style="--x:84%; --s:12px; --dur:12s; --delay:-5s;  --o:0.55; --drift:-20px"></span>
+        <span class="warm-orb" style="--x:93%; --s:20px; --dur:18s; --delay:-14s; --o:0.40; --drift:28px"></span>
+      </div>
       <h2 class="hissatsu-copy2">クライアントに集中できる<br>毎日へ。</h2>
     </div>
   </section>
@@ -405,6 +414,25 @@
        UIスクショは仮のモックUI（実アプリのスクショが来たら差し替え）
        ================================================================ -->
   <section id="scene-features">
+    <!-- 背景アニメ層：上（夕焼け側）は光の粒、下（夜側）はまたたく星 -->
+    <div class="features-sky" aria-hidden="true">
+      <span class="warm-orb" style="--x:8%;  --s:22px; --dur:17s; --delay:-4s;  --o:0.40; --drift:32px"></span>
+      <span class="warm-orb" style="--x:33%; --s:14px; --dur:13s; --delay:-8s;  --o:0.45; --drift:-26px"></span>
+      <span class="warm-orb" style="--x:64%; --s:28px; --dur:20s; --delay:-2s;  --o:0.32; --drift:40px"></span>
+      <span class="warm-orb" style="--x:88%; --s:16px; --dur:15s; --delay:-11s; --o:0.42; --drift:-34px"></span>
+      <span class="f-star" style="--x:10%; --y:48%; --dur:3.2s; --delay:0s"></span>
+      <span class="f-star" style="--x:22%; --y:62%; --dur:4.1s; --delay:-1.3s"></span>
+      <span class="f-star" style="--x:35%; --y:55%; --dur:2.8s; --delay:-0.6s"></span>
+      <span class="f-star" style="--x:47%; --y:74%; --dur:3.7s; --delay:-2.1s"></span>
+      <span class="f-star" style="--x:58%; --y:50%; --dur:3.0s; --delay:-1.8s"></span>
+      <span class="f-star" style="--x:69%; --y:66%; --dur:4.4s; --delay:-0.9s"></span>
+      <span class="f-star" style="--x:79%; --y:57%; --dur:3.4s; --delay:-2.7s"></span>
+      <span class="f-star" style="--x:88%; --y:71%; --dur:2.9s; --delay:-1.1s"></span>
+      <span class="f-star" style="--x:15%; --y:84%; --dur:3.9s; --delay:-3.0s"></span>
+      <span class="f-star" style="--x:52%; --y:88%; --dur:3.3s; --delay:-0.4s"></span>
+      <span class="f-star" style="--x:82%; --y:90%; --dur:4.0s; --delay:-2.4s"></span>
+      <span class="f-star" style="--x:30%; --y:93%; --dur:3.6s; --delay:-1.6s"></span>
+    </div>
     <h2 class="features-title">Cautasが、かわりにやること</h2>
 
     <div class="feature-block">
@@ -847,6 +875,12 @@
       gsap.delayedCall(0.55, () => {
         loadingScreen.style.display = 'none';
         document.body.style.overflow = 'auto';
+        // ヒーロー公開時は必ず黒背景から始める：
+        // スクロール位置復元やアンカー付きリロードで35%トリガーが先に発火していると
+        // body が紫(#12102a)のまま公開され「一瞬紫→黒」のちらつきになるため強制リセット
+        gsap.killTweensOf(['body', '#bg-light-overlay']);
+        gsap.set('body', { backgroundColor: '#030308' });
+        gsap.set('#bg-light-overlay', { backgroundColor: 'rgba(200,180,255,0)' });
         // ブラウザのスクロール位置復元は「スクロール可能になった瞬間」に遅延実行される
         // ことがあるため、ユーザーが操作するまでの間は先頭位置を強制する
         window.scrollTo(0, 0);
