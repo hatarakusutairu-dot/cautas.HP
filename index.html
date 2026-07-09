@@ -313,23 +313,25 @@
         </div>
       </div>
 
-      <!-- 手前レイヤー：手ぶらで歩くカウンセラー＋お供のロボ行進（Cautasが仕事を持って付いてくる） -->
+      <!-- 手前レイヤー：手ぶらで歩くカウンセラー＋仕事をこなしながら随行するロボたち
+           （本人は何も持たない。仕事の成果物は各ロボの頭上からポコポコ生まれる） -->
       <div class="intro-fg">
         <div id="intro-walker">
           <img id="walker-img"
                src="public/images/characters/walk1.webp"
                alt="手ぶらで軽やかに歩くカウンセラー">
-          <!-- 完了通知：歩いている間にも仕事が片付いていく -->
-          <div class="walker-checks" aria-hidden="true"><span>✓</span><span>✓</span><span>✓</span></div>
         </div>
         <div class="intro-follower" id="follower-rabbit">
-          <img id="frabbit-img" src="public/images/characters/rabbitl.webp" alt="スマホ（仕事）を預かる白うさぎ">
+          <img id="frabbit-img" src="public/images/characters/rabbitl.webp" alt="記録を任された白うさぎ">
+          <div class="follower-tasks" aria-hidden="true"><span>🎙</span><span>📝</span></div>
         </div>
         <div class="intro-follower" id="follower-green">
           <img src="public/images/characters/green-walk.webp" alt="予定を整える緑ロボ">
+          <div class="follower-tasks" aria-hidden="true"><span>📅</span><span>🔗</span></div>
         </div>
         <div class="intro-follower" id="follower-pink">
           <img src="public/images/characters/pink-walk.webp" alt="実績と請求を数えるピンクロボ">
+          <div class="follower-tasks" aria-hidden="true"><span>🧾</span><span>✅</span></div>
         </div>
       </div>
 
@@ -1251,6 +1253,23 @@
                 : 'public/images/characters/rabbitr.webp';
             }
           }
+
+          // 緑・ピンクのトコトコ歩き：人型と同じ歩調で体を揺らし小さく跳ねる
+          // （スクロール連動＝止まれば隊列全員が止まる）
+          const stride = p * WALK_CYCLES * Math.PI * 2;
+          gsap.set('#follower-green img', {
+            rotation: Math.sin(stride) * 5,
+            y: -Math.abs(Math.sin(stride)) * 8,
+            transformOrigin: '50% 100%'
+          });
+          gsap.set('#follower-pink img', {
+            rotation: Math.sin(stride + 1.1) * 5,
+            y: -Math.abs(Math.sin(stride + 1.1)) * 8,
+            transformOrigin: '50% 100%'
+          });
+          gsap.set('#frabbit-img', {
+            y: -Math.abs(Math.sin(stride + 0.5)) * 5
+          });
 
           // 横展開中：パネルの放物線モーション＋進捗インジケータ
           if (p >= TASK_START && p <= TASK_END && panelOffsets.length) {
