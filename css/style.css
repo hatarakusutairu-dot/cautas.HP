@@ -1373,11 +1373,17 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   inset: 0;
   width: 100%;
   filter: drop-shadow(0 16px 32px rgba(90, 40, 60, 0.35));
+  transform-origin: 50% 100%;
+  animation: ctaSway 2.8s ease-in-out infinite;
 }
-.cta-wave-a { animation: waveA 1.3s steps(1) infinite; }
-.cta-wave-b { animation: waveB 1.3s steps(1) infinite; }
-@keyframes waveA { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-@keyframes waveB { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+/* なめらかな手振り：体を揺らしながら時々小さく弾む */
+@keyframes ctaSway {
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  20%      { transform: rotate(-1deg) translateY(-7px); }
+  50%      { transform: rotate(3deg)  translateY(0); }
+  70%      { transform: rotate(1deg)  translateY(-7px); }
+}
 
 .cta-copy {
   font-size: clamp(1.7rem, 4vw, 2.8rem);

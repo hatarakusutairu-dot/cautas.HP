@@ -256,7 +256,7 @@
     <div class="intro-sticky">
       <!-- 奥レイヤーBefore：忙しい現実（本番動画・モノクロ暗め処理はCSS） -->
       <div class="intro-bg" id="introBg">
-        <video class="intro-video"
+        <video class="intro-video" preload="metadata"
                poster="public/videos/busy-poster.webp"
                autoplay muted loop playsinline>
           <source src="public/videos/busy-loop.webm" type="video/webm">
@@ -267,7 +267,7 @@
 
       <!-- 奥レイヤーAfter：アプリで明るく働く世界（進むほどこちらに変化） -->
       <div class="intro-bg-after" id="introBgAfter">
-        <video class="intro-video intro-video-after"
+        <video class="intro-video intro-video-after" preload="metadata"
                poster="public/videos/bright-poster.webp"
                autoplay muted loop playsinline>
           <source src="public/videos/bright-loop.webm" type="video/webm">
@@ -479,8 +479,7 @@
     <div class="cta-cloud cta-cloud2"></div>
     <div class="cta-cloud cta-cloud3"></div>
     <div class="cta-rabbit">
-      <img class="cta-wave-a" src="public/images/characters/character-rabbit-up.webp" alt="手を振る白うさぎ">
-      <img class="cta-wave-b" src="public/images/characters/character-rabbit-down.webp" alt="">
+      <img src="public/images/characters/rabbit-joy.webp" alt="手を振る白うさぎ">
     </div>
     <h2 class="cta-copy">クライアントに集中できる<br>毎日へ。</h2>
     <a class="cta-main" href="https://cautas.pages.dev/" target="_blank" rel="noopener">まず無料で試す</a>
@@ -804,7 +803,9 @@
     let assetsReady   = false;
     // セーフティ：先読みが極端に遅くても10秒で必ず開く
     setTimeout(() => { assetsReady = true; }, 10000);
-    window.addEventListener('load', () => {
+    // 即時に先読み開始（loadイベントは動画等で遅れるため待たない）
+    // ※CBOOK_FRAMESはスクリプト後方で宣言されるため、解析完了直後に実行する
+    setTimeout(function preloadCbook() {
       const frames = CBOOK_FRAMES;
       frames.forEach(src => {
         const img = new Image();
@@ -814,7 +815,7 @@
         };
         img.src = src;
       });
-    });
+    }, 0);
 
     function updateProgress() {
       if (progress < 100) {
@@ -1731,6 +1732,12 @@
             }, undefined, () => {});
           });
         }
+        // 導入セクションの途中で先読み構築（3D到達時にはキャラが揃っている）
+        ScrollTrigger.create({
+          trigger: '#scene-intro', start: '20% top',
+          onEnter: buildWorld, once: true
+        });
+        // 保険：直接飛んできた場合もセクション手前で構築
         ScrollTrigger.create({
           trigger: section, start: 'top bottom',
           onEnter: buildWorld, once: true
