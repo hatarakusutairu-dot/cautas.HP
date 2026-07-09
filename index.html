@@ -1299,13 +1299,14 @@
       .to('.intro-veil', { opacity: 0, duration: 0.07, ease: 'none' }, 0)
       // 1) キャラ：左から中央へ（縦の入り）
       .fromTo('#intro-walker', { x: '-45vw' }, { x: '37vw', duration: 0.18, ease: 'none' }, 0)
-      // お供のロボたち：少し後ろを行進（うさぎ→緑→ピンクの隊列）
+      // お供のロボたち：前後からフォローする隊形
+      // 先頭=緑（予定を先回りして整える）／後ろ=うさぎ（記録を預かる）→ピンク（実績を数える）
+      .fromTo('#follower-green',  { x: '-20vw' }, { x: '64vw', duration: 0.18, ease: 'none' }, 0)
       .fromTo('#follower-rabbit', { x: '-57vw' }, { x: '25vw', duration: 0.18, ease: 'none' }, 0)
-      .fromTo('#follower-green',  { x: '-66vw' }, { x: '16vw', duration: 0.18, ease: 'none' }, 0)
-      .fromTo('#follower-pink',   { x: '-74vw' }, { x: '8vw',  duration: 0.18, ease: 'none' }, 0)
+      .fromTo('#follower-pink',   { x: '-70vw' }, { x: '12vw', duration: 0.18, ease: 'none' }, 0)
+      .to('#follower-green',  { x: '140vw', duration: 0.10, ease: 'none' }, 0.895)
       .to('#follower-rabbit', { x: '103vw', duration: 0.10, ease: 'none' }, 0.905)
-      .to('#follower-green',  { x: '94vw',  duration: 0.10, ease: 'none' }, 0.91)
-      .to('#follower-pink',   { x: '86vw',  duration: 0.10, ease: 'none' }, 0.915)
+      .to('#follower-pink',   { x: '90vw',  duration: 0.10, ease: 'none' }, 0.915)
       // コピー：イン→アウト（横展開が始まる前に退く）
       .to('.intro-copy', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.05, ease: 'power2.out' }, 0.05)
       .to('.intro-copy', { opacity: 0, y: -26, filter: 'blur(10px)', duration: 0.04, ease: 'power2.in' }, 0.15)
@@ -1612,11 +1613,7 @@
           island(ZONES[0], g => {
             put(g, new C(3.4, 3.7, 0.3, 24), M(0xe9dac8), 0, 0, 0);
             put(g, new C(1.6, 1.6, 0.06, 20), M(0xd9a8a0), 0.2, 0.2, 0.4);
-            put(g, new B(2.0, 0.12, 1.0), M(0x9a7b5f), -0.9, 1.05, -0.4);
-            put(g, new B(0.12, 0.9, 0.9), M(0x8a6b50), -1.75, 0.6, -0.4);
-            put(g, new B(0.12, 0.9, 0.9), M(0x8a6b50), -0.05, 0.6, -0.4);
-            put(g, new B(0.62, 0.05, 0.45), M(0x4a4a55), -0.9, 1.15, -0.3);
-            put(g, new B(0.62, 0.42, 0.04), M(0x3a3a46), -0.9, 1.38, -0.52, -0.25);
+            // 机とPCは本人イラスト側に描かれているため3Dでは置かない
             put(g, new C(0.3, 0.36, 0.34, 10), M(0xc96f4a), 1.5, 0.4, 0.9);
             put(g, new THREE.ConeGeometry(0.55, 1.0, 8), M(0x5da96a), 1.5, 1.1, 0.9);
             put(g, new B(1.7, 1.5, 0.1), M(0xfaf3e8), 0.6, 1.8, -1.75);
@@ -1630,11 +1627,7 @@
             put(g, new C(1.7, 1.7, 0.06, 20), M(0xb8cfe0), 0, 0.2, 0);
             put(g, new C(0.75, 0.75, 0.08, 16), M(0xf3ede2), 0, 0.95, 0);
             put(g, new C(0.08, 0.1, 0.85, 8), M(0xb0a595), 0, 0.5, 0);
-            [[-1.5, -1], [1.5, 1]].forEach(([x, dir]) => {
-              put(g, new B(0.85, 0.5, 0.85), M(0x81a1c4), x, 0.3, 0.2);
-              put(g, new B(0.85, 0.16, 0.85), M(0x6f8fb5), x, 0.62, 0.2);
-              put(g, new B(0.16, 0.8, 0.85), M(0x5f7fa5), x + dir * 0.35, 1.0, 0.2);
-            });
+            // 椅子は本人イラスト側に描かれているため3Dでは置かない
             // 言葉リンク：「話す」の吹き出し（椅子の上）
             prop(1, g, bubbleSprite(), -1.5, 2.7, 0.2, 0.25);
           });
@@ -1645,10 +1638,7 @@
             put(g, new B(2.6, 2.0, 0.12), M(0x5a4a72), 0, 1.7, -1.7);
             put(g, new THREE.PlaneGeometry(2.3, 1.7),
               M(0xff9a5c, { emissive: 0xff8a4c, emissiveIntensity: 1.0 }), 0, 1.7, -1.62);
-            put(g, new B(1.9, 0.5, 0.9), M(0xc4788f), -0.3, 0.55, 0.5);
-            put(g, new B(1.9, 0.7, 0.22), M(0xb4687f), -0.3, 1.0, 0.06);
-            put(g, new B(0.26, 0.62, 0.9), M(0xb4687f), -1.38, 0.85, 0.5);
-            put(g, new B(0.26, 0.62, 0.9), M(0xb4687f), 0.78, 0.85, 0.5);
+            // ソファは本人イラスト側に描かれているため3Dでは置かない
             put(g, new C(0.05, 0.07, 1.5, 8), M(0x8a8a95), 1.7, 0.95, -0.4);
             put(g, new THREE.ConeGeometry(0.4, 0.5, 10),
               M(0xffd9a0, { emissive: 0xffc070, emissiveIntensity: 0.9 }), 1.7, 1.9, -0.4);
