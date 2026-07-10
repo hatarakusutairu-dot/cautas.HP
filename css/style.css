@@ -1419,6 +1419,54 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 .ui-bar i:first-child { background: #ff8fd8; }
 .ui-row b { color: #ffd9a0; }
 .ui-wave { color: #64dcff; letter-spacing: 2px; }
+.ui-chip {
+  display: inline-block;
+  font-size: 0.76rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 2px 11px;
+  margin: 0 5px 4px 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 機能カードの追加要素：新機能バッジ・補足文 */
+.feature-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: linear-gradient(135deg, #ff64dc, #ff9a5c);
+  border-radius: 999px;
+  padding: 4px 14px;
+  margin-bottom: 12px;
+}
+.feature-card p.feature-sub {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  font-weight: 500;
+  color: #6f5a76;
+  letter-spacing: 0;
+}
+
+/* セキュリティの安心バンド（機微情報の分離を訴求） */
+.trust-band {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 2vh auto 0;
+  text-align: center;
+  font-size: 0.94rem;
+  line-height: 1.95;
+  color: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 16px 26px;
+}
+.trust-band b { color: #bcd4ff; font-weight: 700; }
 
 /* ===================== 料金（要件6-8：まず無料で試せます） ===================== */
 .pricing-box {
