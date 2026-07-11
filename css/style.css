@@ -1468,6 +1468,25 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 }
 .trust-band b { color: #bcd4ff; font-weight: 700; }
 
+/* ===== アプリ未公開のあいだ、CTAを「準備中」で押せなくする ===== */
+.is-soon {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.62;
+}
+.soon-tag {
+  display: inline-block;
+  font-size: 0.62em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  border-radius: 999px;
+  padding: 1px 9px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 /* ===================== 料金（要件6-8：まず無料で試せます） ===================== */
 .pricing-box {
   position: relative;
