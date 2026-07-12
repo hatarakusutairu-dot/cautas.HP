@@ -46,6 +46,8 @@ a:hover { text-decoration: underline; }
   font-size: 1.15rem;
   letter-spacing: 0.18em;
   color: var(--ink);
+  white-space: nowrap;      /* 「かうたす Guide」を1行で固定 */
+  flex-shrink: 0;
 }
 .g-logo:hover { text-decoration: none; }
 .g-logo span { color: var(--accent); font-weight: 700; margin-left: 6px; letter-spacing: 0.1em; }
@@ -376,6 +378,9 @@ a:hover { text-decoration: underline; }
 /* ===================== モバイル ===================== */
 @media (max-width: 620px) {
   .g-back { display: none; }
+  .g-header { padding: 12px 16px; }
+  .g-header-right { gap: 12px; }
+  .g-logo { letter-spacing: 0.1em; font-size: 1.05rem; }
   .g-start { flex-wrap: wrap; }
   .g-start .g-start-link { margin-left: 92px; }
 }
