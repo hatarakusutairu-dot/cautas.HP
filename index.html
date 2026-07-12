@@ -558,13 +558,24 @@
         ★ 創業メンバー募集中 ─ 先着で、ずっとこの価格のまま使えます（物価の変動で年最大3%の調整はあります）。いま始める方への、最初のありがとうです。
       </div>
 
+      <!-- 月払い／年払い 切替 -->
+      <div class="bill-wrap">
+        <div class="bill-toggle" role="group" aria-label="支払い周期の切り替え">
+          <button type="button" class="bill-opt is-active" data-cycle="monthly">月払い</button>
+          <button type="button" class="bill-opt" data-cycle="yearly">年払い<small>2ヶ月分お得</small></button>
+        </div>
+      </div>
+
       <!-- 料金カード ×4 -->
       <div class="plan-cards">
         <!-- フリー -->
         <div class="plan-card">
           <div class="plan-name">フリー</div>
           <div class="plan-for">まず試したい／名鑑に載りたい方</div>
-          <div class="plan-price">¥0<span>/月</span></div>
+          <div class="plan-price">
+            <span class="price-monthly">¥0<span class="per">/月</span></span>
+            <span class="price-yearly">¥0<span class="per">/年</span></span>
+          </div>
           <div class="plan-price-note">ずっと無料</div>
           <ul class="plan-list">
             <li>クライアント 3名まで</li>
@@ -578,9 +589,15 @@
         <div class="plan-card">
           <div class="plan-name">ライト</div>
           <div class="plan-for">副業・雇われ・傾聴中心で、記録に集中したい方</div>
-          <div class="plan-price">¥3,300<span>/月</span></div>
+          <div class="plan-price">
+            <span class="price-monthly">¥3,300<span class="per">/月</span></span>
+            <span class="price-yearly">¥33,000<span class="per">/年</span></span>
+          </div>
           <div class="founding-only plan-founding">創業価格 ¥2,200／月</div>
-          <div class="plan-price-note">年払 ¥33,000</div>
+          <div class="plan-price-note">
+            <span class="price-monthly">年払なら ¥33,000（2ヶ月分お得）</span>
+            <span class="price-yearly">月あたり ¥2,750 相当</span>
+          </div>
           <ul class="plan-list">
             <li>クライアント 15名まで</li>
             <li>予約・カレンダー・カルテ</li>
@@ -595,9 +612,15 @@
           <div class="plan-badge">いちばん選ばれています</div>
           <div class="plan-name">ソロ</div>
           <div class="plan-for">独立して、自分で請求書を出すカウンセラー</div>
-          <div class="plan-price">¥6,600<span>/月</span></div>
+          <div class="plan-price">
+            <span class="price-monthly">¥6,600<span class="per">/月</span></span>
+            <span class="price-yearly">¥66,000<span class="per">/年</span></span>
+          </div>
           <div class="founding-only plan-founding">創業価格 ¥4,400／月</div>
-          <div class="plan-price-note">年払 ¥66,000</div>
+          <div class="plan-price-note">
+            <span class="price-monthly">年払なら ¥66,000（2ヶ月分お得）</span>
+            <span class="price-yearly">月あたり ¥5,500 相当</span>
+          </div>
           <ul class="plan-list">
             <li>クライアント 無制限</li>
             <li><b>請求書</b>（法人宛もOK）・実績・企業管理</li>
@@ -611,9 +634,15 @@
         <div class="plan-card">
           <div class="plan-name">プロ</div>
           <div class="plan-for">企業の研修・産業カウンセリングをする方</div>
-          <div class="plan-price">¥9,800<span>/月</span></div>
+          <div class="plan-price">
+            <span class="price-monthly">¥9,800<span class="per">/月</span></span>
+            <span class="price-yearly">¥98,000<span class="per">/年</span></span>
+          </div>
           <div class="founding-only plan-founding">創業価格 ¥6,600／月</div>
-          <div class="plan-price-note">年払 ¥98,000</div>
+          <div class="plan-price-note">
+            <span class="price-monthly">年払なら ¥98,000（2ヶ月分お得）</span>
+            <span class="price-yearly">月あたり 約¥8,167 相当</span>
+          </div>
           <ul class="plan-list">
             <li>ソロのすべて</li>
             <li><b>AIが報告書を作成</b>（本人・人事・月次・研修）</li>
@@ -1578,6 +1607,22 @@
     document.getElementById('menu-btn').addEventListener('click', () => {
       siteHeader.classList.toggle('menu-open');
     });
+
+    // ================================================================
+    // 料金：月払い／年払い 切替
+    // ================================================================
+    (function initBillingToggle() {
+      const pricing = document.getElementById('pricing');
+      const opts = document.querySelectorAll('.bill-opt');
+      if (!pricing || !opts.length) return;
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          opts.forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          pricing.classList.toggle('is-yearly', btn.dataset.cycle === 'yearly');
+        });
+      });
+    })();
 
     // ================================================================
     // 3D体験（朝・昼・夕）：光と色が変わる3D空間＋時間帯カード

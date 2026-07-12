@@ -1557,6 +1557,27 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   padding: 16px 22px; color: #ffe3c2; font-size: 0.92rem; line-height: 1.85;
 }
 
+/* 月払い／年払い 切替トグル */
+.bill-wrap { text-align: center; margin-top: 4.5vh; }
+.bill-toggle {
+  display: inline-flex; gap: 4px;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px; padding: 4px;
+}
+.bill-opt {
+  border: none; background: transparent; color: rgba(255, 255, 255, 0.72);
+  font-family: inherit; font-weight: 700; font-size: 0.9rem;
+  padding: 8px 22px; border-radius: 999px; cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.bill-opt:hover { color: #fff; }
+.bill-opt.is-active { background: linear-gradient(135deg, #ff64dc, #ff9a5c); color: #fff; }
+.bill-opt small { font-size: 0.68rem; font-weight: 700; margin-left: 5px; opacity: 0.92; }
+
+/* 価格の月/年 表示切替（既定＝月払い） */
+.price-yearly { display: none; }
+.pricing.is-yearly .price-monthly { display: none; }
+.pricing.is-yearly .price-yearly { display: inline; }
+
 /* 料金カード ×4 */
 .plan-cards {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
@@ -1577,7 +1598,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 .plan-name { font-size: 1.3rem; font-weight: 900; letter-spacing: 0.1em; }
 .plan-for { font-size: 0.78rem; color: #8a7f92; line-height: 1.65; margin: 6px 0 14px; min-height: 3.3em; }
 .plan-price { font-size: 2rem; font-weight: 900; color: #2a2135; }
-.plan-price span { font-size: 0.88rem; font-weight: 700; color: #8a7f92; }
+.plan-price .per { font-size: 0.88rem; font-weight: 700; color: #8a7f92; }
 .plan-founding { font-size: 0.82rem; color: #d97c4f; font-weight: 700; margin-top: 3px; }
 .plan-price-note { font-size: 0.76rem; color: #9a8fa4; margin-top: 2px; }
 .plan-list { list-style: none; margin: 16px 0 20px; padding: 0; font-size: 0.85rem; }
@@ -1608,12 +1629,6 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 }
 .stair b { display: block; font-size: 1rem; color: #fff; margin-bottom: 6px; }
 .stair p { font-size: 0.83rem; line-height: 1.75; color: rgba(255, 255, 255, 0.75); }
-@media (min-width: 861px) {
-  .ai-stairs { padding-top: 30px; }
-  .ai-stairs .stair:nth-child(2) { transform: translateY(-10px); }
-  .ai-stairs .stair:nth-child(3) { transform: translateY(-20px); }
-  .ai-stairs .stair:nth-child(4) { transform: translateY(-30px); }
-}
 
 /* 安心・信頼の3点 */
 .trust3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 7vh; }
