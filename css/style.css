@@ -941,6 +941,9 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   transition: background 0.35s ease, backdrop-filter 0.35s ease, box-shadow 0.35s ease;
 }
 
+/* アンカーで飛んだとき、固定ヘッダーに見出しが隠れないよう余白を確保 */
+#scene-features, #pricing, #scene-cta { scroll-margin-top: 88px; }
+
 #site-header.scrolled {
   background: rgba(9, 7, 22, 0.78);
   backdrop-filter: blur(10px);
