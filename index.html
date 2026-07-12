@@ -515,26 +515,134 @@
       </div>
     </div>
 
-    <!-- セキュリティ：機微情報の厳密分離（専門用語を避け、やさしい言葉で） -->
-    <div class="trust-band">
-      🔒 カルテなどの大切な記録は、利用者ごとにしっかり分けて保管。
-      <b>あなたの記録を、ほかの人が見ることはできません。</b>
-    </div>
-
-    <!-- 料金（要件6-8：「まず無料で試せます」/ 料金は検討中） -->
-    <div class="pricing-box" id="pricing">
-      <h3 class="pricing-title">料金</h3>
-      <div class="pricing-card">
-        <div class="pricing-plan">フリープラン</div>
-        <div class="pricing-price">¥0<span>／月</span></div>
-        <ul class="pricing-list">
-          <li>予約管理・カルテ記録・AI分析</li>
-          <li>実績・請求書・名鑑への掲載</li>
-          <li>いまは全機能を無料で使えます</li>
-        </ul>
-        <p class="pricing-note">有料プランは検討中です。変更の際は事前にお知らせします。</p>
-        <span class="pricing-cta is-soon" aria-disabled="true">まず無料で試す<span class="soon-tag">準備中</span></span>
+    <!-- ================================================================
+         料金プラン（4プラン：フリー／ライト／ソロ／プロ）
+         創業メンバー価格は方針検討中のため既定は非表示。
+         表示するときは下の <div class="pricing"> に show-founding を足す。
+         プランのボタンはアプリ未公開のため準備中（申込導線ができたらhrefに）
+         ================================================================ -->
+    <div class="pricing" id="pricing">
+      <div class="pricing-head">
+        <span class="pricing-label">料金プラン</span>
+        <h2 class="pricing-h2">記録も、請求も、実績も。<br>あなたの仕事にちょうどいい分だけ。</h2>
+        <p class="pricing-lead">はじめは無料で。必要になったら、必要な分だけ。使わない機能に、お金を払わなくていい設計にしました。</p>
       </div>
+
+      <div class="pricing-what">
+        かうたすは、予約管理だけのツールでも、カルテだけのアプリでもありません。<br>
+        <b>予約・記録・請求・実績・AIまで、カウンセラーの業務が「1つ」で完結します。</b>
+      </div>
+
+      <!-- 選び方（3つの分かれ道） -->
+      <h3 class="pricing-sub">プランの選び方</h3>
+      <div class="pricing-forks">
+        <div class="fork">
+          <p class="fork-when">雇われ・副業で、記録だけしたい</p>
+          <p class="fork-plan">ライト</p>
+          <p class="fork-note">予約とカルテ、AIの下書きが使えます</p>
+        </div>
+        <div class="fork is-star">
+          <p class="fork-when">独立して、自分で請求書を出す</p>
+          <p class="fork-plan">ソロ<span>本命</span></p>
+          <p class="fork-note">請求も実績も、これひとつで回せます</p>
+        </div>
+        <div class="fork">
+          <p class="fork-when">企業の研修・産業カウンセリングをする</p>
+          <p class="fork-plan">プロ</p>
+          <p class="fork-note">AIが人事向けの報告書まで書きます</p>
+        </div>
+      </div>
+
+      <!-- 創業メンバー（既定は非表示） -->
+      <div class="founding-only pricing-founding">
+        ★ 創業メンバー募集中 ─ 先着で、ずっとこの価格のまま使えます（物価の変動で年最大3%の調整はあります）。いま始める方への、最初のありがとうです。
+      </div>
+
+      <!-- 料金カード ×4 -->
+      <div class="plan-cards">
+        <!-- フリー -->
+        <div class="plan-card">
+          <div class="plan-name">フリー</div>
+          <div class="plan-for">まず試したい／名鑑に載りたい方</div>
+          <div class="plan-price">¥0<span>/月</span></div>
+          <div class="plan-price-note">ずっと無料</div>
+          <ul class="plan-list">
+            <li>クライアント 3名まで</li>
+            <li>予約・カレンダー・カルテ</li>
+            <li>AIの下書き 月3回</li>
+            <li><b>名鑑に無料掲載</b>＋AIが相談者に紹介</li>
+          </ul>
+          <span class="plan-btn is-soon" aria-disabled="true">無料ではじめる<span class="soon-tag">準備中</span></span>
+        </div>
+        <!-- ライト -->
+        <div class="plan-card">
+          <div class="plan-name">ライト</div>
+          <div class="plan-for">副業・雇われ・傾聴中心で、記録に集中したい方</div>
+          <div class="plan-price">¥3,300<span>/月</span></div>
+          <div class="founding-only plan-founding">創業価格 ¥2,200／月</div>
+          <div class="plan-price-note">年払 ¥33,000</div>
+          <ul class="plan-list">
+            <li>クライアント 15名まで</li>
+            <li>予約・カレンダー・カルテ</li>
+            <li>AIの要約・音声入力 たっぷり</li>
+            <li>月1回、AIと自分の働き方を整理</li>
+            <li class="muted">請求書・実績は付きません</li>
+          </ul>
+          <span class="plan-btn is-soon" aria-disabled="true">ライトを選ぶ<span class="soon-tag">準備中</span></span>
+        </div>
+        <!-- ソロ ★本命 -->
+        <div class="plan-card is-star">
+          <div class="plan-badge">いちばん選ばれています</div>
+          <div class="plan-name">ソロ</div>
+          <div class="plan-for">独立して、自分で請求書を出すカウンセラー</div>
+          <div class="plan-price">¥6,600<span>/月</span></div>
+          <div class="founding-only plan-founding">創業価格 ¥4,400／月</div>
+          <div class="plan-price-note">年払 ¥66,000</div>
+          <ul class="plan-list">
+            <li>クライアント 無制限</li>
+            <li><b>請求書</b>（法人宛もOK）・実績・企業管理</li>
+            <li>AIの要約・音声入力 無制限</li>
+            <li>離脱リスク分析・名刺読み取り</li>
+            <li>思考整理AI 無制限</li>
+          </ul>
+          <span class="plan-btn plan-btn-main is-soon" aria-disabled="true">ソロを選ぶ<span class="soon-tag">準備中</span></span>
+        </div>
+        <!-- プロ -->
+        <div class="plan-card">
+          <div class="plan-name">プロ</div>
+          <div class="plan-for">企業の研修・産業カウンセリングをする方</div>
+          <div class="plan-price">¥9,800<span>/月</span></div>
+          <div class="founding-only plan-founding">創業価格 ¥6,600／月</div>
+          <div class="plan-price-note">年払 ¥98,000</div>
+          <ul class="plan-list">
+            <li>ソロのすべて</li>
+            <li><b>AIが報告書を作成</b>（本人・人事・月次・研修）</li>
+            <li>講師業の実績管理</li>
+            <li>請求書・報告書に<b>ロゴを入れて納品</b></li>
+          </ul>
+          <span class="plan-btn is-soon" aria-disabled="true">プロを選ぶ<span class="soon-tag">準備中</span></span>
+        </div>
+      </div>
+
+      <!-- AIの階段 -->
+      <h3 class="pricing-sub">AIは、上のプランほど頼もしくなります</h3>
+      <p class="pricing-sub-note">「使う」ほどではなく、「あなたの仕事が変わる」タイミングで、AIも一段上がります。</p>
+      <div class="ai-stairs">
+        <div class="stair"><span class="stair-plan">フリー</span><b>見つけてもらえる</b><p>名鑑に載れば、AIがあなたを相談者に紹介します</p></div>
+        <div class="stair"><span class="stair-plan">ライト</span><b>記録が楽になる</b><p>話した内容を、AIが要約。音声で吹き込むだけで下書きに</p></div>
+        <div class="stair"><span class="stair-plan">ソロ</span><b>一人で全部回せる</b><p>請求も実績も。AIが離脱リスクを見て、目標整理にも付き合います</p></div>
+        <div class="stair"><span class="stair-plan">プロ</span><b>報告書まで書いてくれる</b><p>人事向けの経過報告も研修報告も、AIが下書きします</p></div>
+      </div>
+
+      <!-- 安心・信頼の3点 -->
+      <div class="trust3">
+        <div class="trust3-card"><h4>🔒 カルテは、誰にも見られません</h4><p>データは利用者ごとに厳密に分離。あなたの記録を、他の人が見ることはできません。</p></div>
+        <div class="trust3-card"><h4>⚖️ 名鑑の順番は、お金で買えません</h4><p>有料でも無料でも、掲載は同じ土俵。新人の方も、埋もれずに見つけてもらえます。</p></div>
+        <div class="trust3-card"><h4>🤝 決済手数料は、いただきません</h4><p>セッション料の受け取り方は、あなたの自由。かうたすが手数料を取ることはありません。</p></div>
+      </div>
+
+      <!-- 脚注 -->
+      <p class="pricing-foot">表示はすべて税込。年払いは月払いより2ヶ月分お得です。創業メンバー価格は、使い続けるかぎり維持します（物価の変動により年最大3%の調整を行う場合があります）。音声入力は1回あたりの録音時間に上限があります。お支払いはクレジットカードまたは現金。ご不明な点は、お気軽にお問い合わせください。</p>
     </div>
   </section>
 
