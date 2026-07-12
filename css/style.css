@@ -1320,12 +1320,16 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   position: relative;
   z-index: 70;
   padding: 12vh 6vw 14vh;
-  background: linear-gradient(180deg,
-    #ffc9a3 0%,
-    #f2a68f 14%,
-    #b97fae 42%,
-    #5d4a8a 72%,
-    #241f47 100%);
+  /* 絵本風の夕暮れ背景（自作）＋既存パレットの半透明グラデを重ねて、
+     カードの可読性とセクション間の色の連続性を両立 */
+  background:
+    linear-gradient(180deg,
+      rgba(255, 201, 163, 0.72) 0%,
+      rgba(185, 127, 174, 0.60) 40%,
+      rgba(93, 74, 138, 0.72) 72%,
+      rgba(36, 31, 71, 0.92) 100%),
+    url('../public/images/features-bg.webp') center top / cover no-repeat;
+  background-color: #241f47;
 }
 
 /* 背景アニメ層（光の粒＋星）：カードより奥に敷く */
