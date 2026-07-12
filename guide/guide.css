@@ -42,12 +42,24 @@ a:hover { text-decoration: underline; }
 }
 
 .g-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 900;
   font-size: 1.15rem;
   letter-spacing: 0.18em;
   color: var(--ink);
   white-space: nowrap;      /* 「かうたす Guide」を1行で固定 */
   flex-shrink: 0;
+}
+.g-logo-mark { width: 26px; height: 26px; border-radius: 7px; }
+
+/* フッターのロゴ */
+.g-foot-mark {
+  display: block;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  margin: 0 auto 12px;
 }
 .g-logo:hover { text-decoration: none; }
 .g-logo span { color: var(--accent); font-weight: 700; margin-left: 6px; letter-spacing: 0.1em; }
