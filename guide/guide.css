@@ -52,13 +52,13 @@ a:hover { text-decoration: underline; }
   white-space: nowrap;      /* 「かうたす Guide」を1行で固定 */
   flex-shrink: 0;
 }
-.g-logo-mark { width: 26px; height: 26px; border-radius: 7px; }
+.g-logo-mark { width: 28px; height: 28px; object-fit: contain; }
 
 /* フッターのロゴ */
 .g-foot-mark {
   display: block;
-  width: 30px; height: 30px;
-  border-radius: 8px;
+  width: 32px; height: 32px;
+  object-fit: contain;
   margin: 0 auto 12px;
 }
 .g-logo:hover { text-decoration: none; }
