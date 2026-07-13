@@ -229,21 +229,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   padding: 8px 0 6px;
+  font-size: 0.82rem;      /* マーク・文字ともこの em を基準にして常に釣り合わせる */
 }
 .phone-logo {
   display: block;
-  width: 16%;
-  max-width: 40px;
+  height: 1.35em;          /* 文字サイズに連動（スマホの大きさに左右されない） */
+  width: auto;
   object-fit: contain;
 }
 .phone-app-name {
-  font-size: 0.72rem;
+  font-size: 1em;
   font-weight: 900;
   color: #ff64dc;
-  letter-spacing: 0.28em;
-  padding-left: 0.28em;    /* letter-spacing の右余白を視覚的に相殺 */
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;    /* letter-spacing の右余白を視覚的に相殺 */
   text-shadow: 0 0 10px rgba(255,100,220,0.8), 0 0 20px rgba(255,100,220,0.4);
 }
 
