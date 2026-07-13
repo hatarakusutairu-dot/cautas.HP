@@ -1339,6 +1339,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 #scene-features {
   position: relative;
   z-index: 70;
+  margin-top: -1px;   /* 前セクションと1px重ねて、サブピクセルの隙間に地色(#030308)の線が出るのを防ぐ */
   padding: 12vh 6vw 14vh;
   /* 絵本風の夕暮れ背景（自作）＋既存パレットの半透明グラデを重ねる。
      上端は必殺シーンの夕焼け色を不透明気味に、下端は CTA と同じ #241f47 に収束させ、
@@ -1762,6 +1763,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 #scene-cta {
   position: relative;
   z-index: 70;
+  margin-top: -1px;   /* 前セクションと1px重ねて境目の細い線を防ぐ */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
