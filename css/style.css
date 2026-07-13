@@ -1339,16 +1339,16 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
 #scene-features {
   position: relative;
   z-index: 70;
-  margin-top: -1px;   /* 前セクションと1px重ねて、サブピクセルの隙間に地色(#030308)の線が出るのを防ぐ */
   padding: 12vh 6vw 14vh;
   /* 絵本風の夕暮れ背景（自作）＋既存パレットの半透明グラデを重ねる。
      上端は必殺シーンの夕焼け色を不透明気味に、下端は CTA と同じ #241f47 に収束させ、
      不透明度をなめらかに増減して「盛り上がり（もっこり）」のない一本のグラデにする */
   background:
     linear-gradient(180deg,
-      rgba(255, 203, 163, 0.97) 0%,
-      rgba(248, 197, 167, 0.88) 6%,
-      rgba(222, 176, 171, 0.72) 18%,
+      rgb(255, 201, 163) 0%,          /* 必殺シーンの底の色と完全一致・不透明＝境目の段差ゼロ */
+      rgba(255, 201, 163, 0.98) 3%,
+      rgba(252, 199, 165, 0.90) 8%,
+      rgba(224, 178, 171, 0.74) 18%,
       rgba(185, 127, 174, 0.60) 40%,
       rgba(120, 92, 150, 0.66) 60%,
       rgba(93, 74, 138, 0.78) 74%,
@@ -1356,6 +1356,22 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
       #241f47 100%),
     url('../public/images/features-bg.webp') center top / cover no-repeat;
   background-color: #241f47;
+}
+
+/* 境目ブリッジ：必殺シーンとの継ぎ目に、同色の帯を「またがせて」被せる。
+   高DPI(125-175%)で出るサブピクセルの隙間線（地色#030308の透け）を物理的に覆う。
+   同じピーチ色→透明の短いフェードなので、盛り上がり(もっこり)は出ない。 */
+#scene-features::before {
+  content: '';
+  position: absolute;
+  top: -3px; left: 0; right: 0;
+  height: 16px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgb(255, 201, 163) 0%,
+    rgb(255, 201, 163) 35%,
+    rgba(255, 201, 163, 0) 100%);
 }
 
 /* 背景アニメ層（光の粒＋星）：カードより奥に敷く */
