@@ -1547,6 +1547,7 @@
     window.addEventListener('load', measurePanels);
     ScrollTrigger.addEventListener('refreshInit', measurePanels);
 
+    let walkActive = false;   // 導入セクション表示中フラグ（足踏みループ用）
     const introTL = gsap.timeline({
       scrollTrigger: {
         trigger: '#scene-intro',
@@ -1554,39 +1555,13 @@
         end: 'bottom bottom',
         scrub: 0.6,
         invalidateOnRefresh: true,
+        // 区間に入っている間だけ足踏みループを回す（画面外では止める）
+        onToggle(self) { walkActive = self.isActive; },
         onUpdate(self) {
           const p = self.progress;
 
-          // 歩きコマ送り（人型6コマ＋お供うさぎ2ポーズを同期）
-          if (WALKER_FRAMES.length > 1) {
-            const idx = Math.floor(p * WALK_CYCLES * WALKER_FRAMES.length)
-                        % WALKER_FRAMES.length;
-            if (walkerImg.dataset.f != idx) {
-              walkerImg.dataset.f = idx;
-              walkerImg.src = WALKER_FRAMES[idx];
-              // うさぎ（スマホを預かって歩く）は半サイクルごとに左右の足を入れ替え
-              frabbitImg.src = idx < 3
-                ? 'public/images/characters/rabbit-phone1.webp'
-                : 'public/images/characters/rabbit-phone2.webp';
-            }
-          }
-
-          // 緑・ピンクのトコトコ歩き：人型と同じ歩調で体を揺らし小さく跳ねる
-          // （スクロール連動＝止まれば隊列全員が止まる）
-          const stride = p * WALK_CYCLES * Math.PI * 2;
-          gsap.set(fGreenImg, {
-            rotation: Math.sin(stride) * 5,
-            y: -Math.abs(Math.sin(stride)) * 8,
-            transformOrigin: '50% 100%'
-          });
-          gsap.set(fPinkImg, {
-            rotation: Math.sin(stride + 1.1) * 5,
-            y: -Math.abs(Math.sin(stride + 1.1)) * 8,
-            transformOrigin: '50% 100%'
-          });
-          gsap.set(frabbitImg, {
-            y: -Math.abs(Math.sin(stride + 0.5)) * 5
-          });
+          // 歩きコマ送り・隊列の上下動は時間ベースの walkLoop() に移設。
+          // （スクロールを止めても足が動き続けるように）位置だけスクロール連動のまま。
 
           // 横展開中：パネルの放物線モーション＋進捗インジケータ
           if (p >= TASK_START && p <= TASK_END && panelOffsets.length) {
@@ -1640,6 +1615,32 @@
         { opacity: 1, y: '0vh', duration: 0.34, ease: 'none' }, 0.38)
       // 4) キャラ：右へ歩き抜ける
       .to('#intro-walker', { x: '115vw', duration: 0.10, ease: 'none' }, 0.90);
+
+    // 足踏みループ：スクロールを止めても止まらない（時間ベース）。
+    // 位置はスクロール連動のまま、足のコマ送りと隊列の上下動だけを常時回す。
+    const WALK_FPS = 7;   // 歩行コマの速さ（1秒あたりのコマ数）
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function walkLoop(now) {
+      if (walkActive && WALKER_FRAMES.length > 1) {
+        const frame = (now / 1000) * WALK_FPS;
+        const idx = Math.floor(frame) % WALKER_FRAMES.length;
+        if (walkerImg.dataset.f != idx) {
+          walkerImg.dataset.f = idx;
+          walkerImg.src = WALKER_FRAMES[idx];
+          // うさぎ（スマホを預かって歩く）は半サイクルごとに左右の足を入れ替え
+          frabbitImg.src = idx < 3
+            ? 'public/images/characters/rabbit-phone1.webp'
+            : 'public/images/characters/rabbit-phone2.webp';
+        }
+        // 隊列（緑・ピンク・うさぎ）も同じ歩調で体を揺らし小さく跳ねる
+        const stride = (frame / WALKER_FRAMES.length) * Math.PI * 2;
+        gsap.set(fGreenImg, { rotation: Math.sin(stride) * 5,       y: -Math.abs(Math.sin(stride)) * 8,       transformOrigin: '50% 100%' });
+        gsap.set(fPinkImg,  { rotation: Math.sin(stride + 1.1) * 5, y: -Math.abs(Math.sin(stride + 1.1)) * 8, transformOrigin: '50% 100%' });
+        gsap.set(frabbitImg, { y: -Math.abs(Math.sin(stride + 0.5)) * 5 });
+      }
+      requestAnimationFrame(walkLoop);
+    }
+    if (!reduceMotion) requestAnimationFrame(walkLoop);
 
     // ================================================================
     // ヘッダー：スクロールで色付き / モバイルメニュー
