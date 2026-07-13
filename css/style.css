@@ -990,7 +990,7 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   flex-shrink: 0;
 }
 .header-logo .brand-mark {
-  width: 40px; height: 40px;
+  width: 26px; height: 26px;
   object-fit: contain;
 }
 
