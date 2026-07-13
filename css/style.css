@@ -1340,45 +1340,21 @@ html { scrollbar-color: #5a4a7a #0a0a12; scrollbar-width: thin; }
   position: relative;
   z-index: 70;
   padding: 12vh 6vw 14vh;
-  /* 絵本風の夕暮れ背景（自作）＋既存パレットの半透明グラデを重ねて、
-     カードの可読性とセクション間の色の連続性を両立 */
+  /* 絵本風の夕暮れ背景（自作）＋既存パレットの半透明グラデを重ねる。
+     上端は必殺シーンの夕焼け色を不透明気味に、下端は CTA と同じ #241f47 に収束させ、
+     不透明度をなめらかに増減して「盛り上がり（もっこり）」のない一本のグラデにする */
   background:
     linear-gradient(180deg,
-      rgba(255, 201, 163, 0.72) 0%,
+      rgba(255, 203, 163, 0.97) 0%,
+      rgba(248, 197, 167, 0.88) 6%,
+      rgba(222, 176, 171, 0.72) 18%,
       rgba(185, 127, 174, 0.60) 40%,
-      rgba(93, 74, 138, 0.72) 72%,
-      rgba(36, 31, 71, 0.92) 100%),
+      rgba(120, 92, 150, 0.66) 60%,
+      rgba(93, 74, 138, 0.78) 74%,
+      rgba(45, 37, 80, 0.94) 90%,
+      #241f47 100%),
     url('../public/images/features-bg.webp') center top / cover no-repeat;
   background-color: #241f47;
-}
-
-/* セクション境目のフェザー（上）：必殺シーンの夕焼けから機能紹介の背景へ、
-   テクスチャの立ち上がりを夕焼け色で覆って境目を消す */
-#scene-features::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 18vh;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg,
-    rgb(255, 204, 164) 0%,
-    rgba(255, 204, 164, 0.55) 45%,
-    rgba(255, 204, 164, 0) 100%);
-}
-
-/* セクション境目のフェザー（下）：機能紹介の底を CTA と同じ #241f47 に収束させて
-   料金の下とキャラ登場シーンの境目を消す */
-#scene-features::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 14vh;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg,
-    rgba(36, 31, 71, 0) 0%,
-    #241f47 100%);
 }
 
 /* 背景アニメ層（光の粒＋星）：カードより奥に敷く */
