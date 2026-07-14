@@ -335,15 +335,15 @@
           <div class="walker-checks" aria-hidden="true"><span>✓</span><span>✓</span><span>✓</span></div>
         </div>
         <div class="intro-follower" id="follower-rabbit">
-          <img id="frabbit-img" src="public/images/characters/rabbit-phone1.webp" alt="スマホ（仕事）を預かって歩く白うさぎ">
+          <img id="frabbit-img" src="public/images/characters/rabbit-walk1.webp" alt="スマホ（仕事）を預かって歩く白うさぎ">
           <div class="follower-tasks" aria-hidden="true"><span>🎙</span><span>📝</span></div>
         </div>
         <div class="intro-follower" id="follower-green">
-          <img src="public/images/characters/green-walk.webp" alt="予定を整える緑ロボ">
+          <img src="public/images/characters/green-walk1.webp" alt="予定を整える緑ロボ">
           <div class="follower-tasks" aria-hidden="true"><span>📅</span><span>🔗</span></div>
         </div>
         <div class="intro-follower" id="follower-pink">
-          <img src="public/images/characters/pink-walk.webp" alt="実績と請求を数えるピンクロボ">
+          <img src="public/images/characters/pink-walk1.webp" alt="実績と請求を数えるピンクロボ">
           <div class="follower-tasks" aria-hidden="true"><span>🧾</span><span>✅</span></div>
         </div>
       </div>
@@ -1466,15 +1466,18 @@
     // 歩きキャラ本番素材：6コマの歩行サイクル（walk-sheet.png から切り出し）
     const WALKER_FRAMES = Array.from({ length: 6 }, (_, i) =>
       `public/images/characters/walk${i + 1}.webp`);
-    const WALK_CYCLES   = 7;   // セクション通過中に歩きサイクルを回す回数
     const walkerImg     = document.getElementById('walker-img');
-    // お供の白うさぎ（歩き2ポーズを人型のコマと同期して切替）
+    // お供たちも歩行サイクル（緑8コマ・ピンク8コマ・うさぎ4コマ）
     const frabbitImg    = document.getElementById('frabbit-img');
     const fGreenImg     = document.querySelector('#follower-green img');
     const fPinkImg      = document.querySelector('#follower-pink img');
+    const GREEN_FRAMES  = Array.from({ length: 8 }, (_, i) => `public/images/characters/green-walk${i + 1}.webp`);
+    const PINK_FRAMES   = Array.from({ length: 8 }, (_, i) => `public/images/characters/pink-walk${i + 1}.webp`);
+    const RABBIT_FRAMES = Array.from({ length: 4 }, (_, i) => `public/images/characters/rabbit-walk${i + 1}.webp`);
 
-    // 連番の先読み（本素材が入ったら自動で効く）
-    WALKER_FRAMES.forEach(src => { const im = new Image(); im.src = src; });
+    // 連番の先読み（全キャラぶん）
+    [...WALKER_FRAMES, ...GREEN_FRAMES, ...PINK_FRAMES, ...RABBIT_FRAMES]
+      .forEach(src => { const im = new Image(); im.src = src; });
 
     // ================================================================
     // 困りごとセクション：悩みの付箋がひとつずつ貼られて積み重なる
@@ -1617,26 +1620,24 @@
       .to('#intro-walker', { x: '115vw', duration: 0.10, ease: 'none' }, 0.90);
 
     // 足踏みループ：スクロールを止めても止まらない（時間ベース）。
-    // 位置はスクロール連動のまま、足のコマ送りと隊列の上下動だけを常時回す。
-    const WALK_FPS = 7;   // 歩行コマの速さ（1秒あたりのコマ数）
+    // 位置はスクロール連動のまま、4体すべての足のコマ送りを常時回す。
+    const WALK_CYCLE_SEC = 0.8;   // 1歩行サイクルの秒数（全員共通テンポ）
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function setFrame(img, frames, idx) {
+      if (img && frames.length > 1 && img.dataset.f != idx) {
+        img.dataset.f = idx;
+        img.src = frames[idx];
+      }
+    }
+    // 隊列がバラけて見えるよう、各キャラに少しだけ歩調のズレ（秒）を持たせる
+    function frameOf(t, frames) { return Math.floor(t / WALK_CYCLE_SEC * frames.length) % frames.length; }
     function walkLoop(now) {
-      if (walkActive && WALKER_FRAMES.length > 1) {
-        const frame = (now / 1000) * WALK_FPS;
-        const idx = Math.floor(frame) % WALKER_FRAMES.length;
-        if (walkerImg.dataset.f != idx) {
-          walkerImg.dataset.f = idx;
-          walkerImg.src = WALKER_FRAMES[idx];
-          // うさぎ（スマホを預かって歩く）は半サイクルごとに左右の足を入れ替え
-          frabbitImg.src = idx < 3
-            ? 'public/images/characters/rabbit-phone1.webp'
-            : 'public/images/characters/rabbit-phone2.webp';
-        }
-        // 隊列（緑・ピンク・うさぎ）も同じ歩調で体を揺らし小さく跳ねる
-        const stride = (frame / WALKER_FRAMES.length) * Math.PI * 2;
-        gsap.set(fGreenImg, { rotation: Math.sin(stride) * 5,       y: -Math.abs(Math.sin(stride)) * 8,       transformOrigin: '50% 100%' });
-        gsap.set(fPinkImg,  { rotation: Math.sin(stride + 1.1) * 5, y: -Math.abs(Math.sin(stride + 1.1)) * 8, transformOrigin: '50% 100%' });
-        gsap.set(frabbitImg, { y: -Math.abs(Math.sin(stride + 0.5)) * 5 });
+      if (walkActive) {
+        const t = now / 1000;
+        setFrame(walkerImg,  WALKER_FRAMES, frameOf(t,        WALKER_FRAMES));
+        setFrame(fGreenImg,  GREEN_FRAMES,  frameOf(t + 0.10, GREEN_FRAMES));
+        setFrame(fPinkImg,   PINK_FRAMES,   frameOf(t + 0.22, PINK_FRAMES));
+        setFrame(frabbitImg, RABBIT_FRAMES, frameOf(t + 0.05, RABBIT_FRAMES));
       }
       requestAnimationFrame(walkLoop);
     }
