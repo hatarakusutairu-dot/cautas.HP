@@ -1622,7 +1622,7 @@
     // 足踏みループ：スクロールを止めても止まらない（時間ベース）。
     // 位置はスクロール連動のまま、4体すべての足のコマ送りを常時回す。
     // 人はゆったり（アプリが代わりに働いている余裕を演出）／ロボたちはテキパキ（働いている）
-    const HUMAN_CYCLE_SEC = 1.5;  // 人の1歩行サイクル秒数（大きいほどゆっくり）
+    const HUMAN_CYCLE_SEC = 2.2;  // 人の1歩行サイクル秒数（大きいほどゆっくり）
     const BOT_CYCLE_SEC   = 0.75; // ロボたちの1歩行サイクル秒数
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     function setFrame(img, frames, idx) {
